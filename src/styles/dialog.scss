@@ -1,0 +1,115 @@
+.s-dialog {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+
+  &.s-dialog-visible {
+    display: block;
+  }
+
+  .s-dialog-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .s-dialog-wrapper {
+    position: relative;
+    z-index: 2;
+    background-color: white;
+  }
+
+  .s-dialog-icon-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #999;
+    padding: 8px;
+    font-size: 18px;
+    z-index: 99;
+  }
+
+  // 动画效果
+  & {
+    animation-fill-mode: both;
+
+    .s-dialog-mask,
+    .s-dialog-wrapper {
+      animation-duration: inherit;
+      animation-fill-mode: inherit;
+    }
+
+    &.s-dialog-effect-enter {
+      .s-dialog-mask {
+        animation-name: s-animate-fade-enter;
+      }
+    }
+
+    &.s-dialog-effect-leave {
+      .s-dialog-mask {
+        animation-name: s-animate-fade-leave;
+      }
+    }
+  }
+}
+
+// middle
+.s-dialog-position-middle {
+  .s-dialog-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate3d(-50%, -50%, 0);
+  }
+}
+
+// top
+.s-dialog-position-top {
+  .s-dialog-wrapper {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+// bottom
+.s-dialog-position-bottom {
+  .s-dialog-wrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+// left
+.s-dialog-position-left {
+  .s-dialog-wrapper {
+    position: absolute;
+    left: 0;
+    width: 70%;
+    height: 100%;
+  }
+}
+
+// right
+.s-dialog-position-right {
+  .s-dialog-wrapper {
+    position: absolute;
+    right: 0;
+    width: 70%;
+    height: 100%;
+  }
+}
+
+.s-dialog-effect {
+  animation-duration: .3s;
+}

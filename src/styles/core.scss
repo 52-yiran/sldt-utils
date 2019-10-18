@@ -1,0 +1,24 @@
+// 内容作为模板时防止显示
+.s-template {
+  display: none;
+}
+
+//清浮动
+.s-clearfix {
+  clear: both;
+
+  &:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    overflow: hidden;
+    visibility: hidden;
+  }
+}
+
+/*阻止滚动条*/
+
+.s-overflow-hidden {
+  overflow: hidden;
+}

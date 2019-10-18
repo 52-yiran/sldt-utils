@@ -1,0 +1,60 @@
+.s-toast-dialog {
+  max-width: 60%;
+  top: 45%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate3d(-50%, -50%, 0);
+
+  .s-dialog-wrapper {
+    color: white;
+    text-align: center;
+    background-color: rgba(50, 50, 51, 0.88);
+    border-radius: 4px;
+    padding: 10px 12px;
+    min-width: 90px;
+    
+    .s-toast-icon {
+      font-size: 40px;
+    }
+
+    img.s-toast-icon {
+      width: 1em;
+      height: 1em;
+    }
+
+    .s-toast-text {
+      font-size: 14px;
+      line-height: 1.2;
+      text-align: center;
+    }
+  }
+
+  &.s-toast-middle {
+    .s-dialog-wrapper {
+      padding: 16px;
+      min-width: 120px;
+      min-height: 120px;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+
+      .s-toast-text {
+        margin-top: 8px;
+      }
+    }
+  }
+
+  &.s-toast-loading {
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+
+    .s-dialog-wrapper {
+      max-width: 130px;
+    }
+  }
+}

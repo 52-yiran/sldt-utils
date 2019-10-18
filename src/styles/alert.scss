@@ -1,0 +1,40 @@
+.s-alert-dialog {
+
+  .s-dialog-wrapper {
+    color: white;
+    border-radius: 4px;
+    width: 75%;
+    min-width: 260px;
+    max-width: 320px;
+
+    .s-dialog-header {
+      padding-top: 24px;
+      font-size: 16px;
+      text-align: center;
+      color: #323233;
+    }
+
+    .s-dialog-content {
+      max-height: 60vh;
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.2;
+      white-space: pre-wrap;
+      text-align: center;
+      word-wrap: break-word;
+      color: #7d7e80;
+    }
+
+    .s-dialog-footer {
+      display: flex;
+
+      .s-btn {
+        flex: 1;
+        height: 50px;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
