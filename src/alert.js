@@ -15,14 +15,13 @@ function Alert (options) {
 
 Alert.defaultOptions = {
   className: 's-alert-dialog',
-  title: '提示',
+  title: '',
   content: '',
   confirmText: '确定',
   confirmColor: '#1989fa',
-  cancelColor: '#323233',
-  maskClose: false,
   maskOpacity: 0.5,
-  isOnce: true
+  isOnce: true,
+  preventTouchmove: true
 }
 
 export default Alert;

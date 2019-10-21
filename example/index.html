@@ -14,7 +14,7 @@
     style="width:100%;height: 100vh;" alt="">
   <div>
 
-    <div class="s-dialog" id="demoDialog">
+    <div class="s-dialog demoDialog">
       <div class="s-dialog-wrapper">
         123
       </div>
@@ -26,9 +26,9 @@
   <script>
 
     // var d = S.dialog({
-    //   className: 'demoDialog',
+    //   el:'.demoDialog',
     //   position: 'left',
-    //   iconClose: true,
+    //   closeBtn: true,
     //   // maskClose:false,
     //   // 异步拦截
     //   // onBeforeHide(next){
@@ -36,10 +36,13 @@
     //   //     next()
     //   //   }, 2000);
     //   // }
-    // });
+    // }).show();
 
-    // d.show();
-    // S.alert("欢迎光临")
+    // console.log(d)
+
+    S.confirm('确定删除吗？').then(() => {
+      S.toast.success('删除成功')
+    }, () => { })
   </script>
 </body>
 

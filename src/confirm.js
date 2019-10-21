@@ -6,7 +6,8 @@ function Confirm (options) {
 }
 
 Confirm.defaultOptions = {
-  cancelText: '取消'
+  cancelText: '取消',
+  cancelColor: '#323233'
 }
 
 export default Confirm;

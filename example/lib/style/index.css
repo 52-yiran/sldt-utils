@@ -410,7 +410,7 @@ button ::after {
 .s-icon {
   position: relative;
   font-family: "s-icon";
-  font-size: 14px;
+  font-size: inherit;
   font-style: normal;
   text-rendering: auto;
   line-height: 1;
@@ -1167,7 +1167,7 @@ button ::after {
     position: relative;
     z-index: 2;
     background-color: white; }
-  .s-dialog .s-dialog-icon-close {
+  .s-dialog .s-dialog-close-btn {
     position: absolute;
     right: 0;
     top: 0;
@@ -1225,7 +1225,7 @@ button ::after {
           animation-duration: .3s; }
 
 .s-toast-dialog {
-  max-width: 60%;
+  max-width: 80%;
   top: 45%;
   left: 50%;
   right: auto;
@@ -1237,8 +1237,8 @@ button ::after {
     text-align: center;
     background-color: rgba(50, 50, 51, .88);
     border-radius: 4px;
-    padding: 10px 12px;
-    min-width: 90px; }
+    padding: 12px;
+    min-width: 120px; }
     .s-toast-dialog .s-dialog-wrapper .s-toast-icon {
       font-size: 40px; }
     .s-toast-dialog .s-dialog-wrapper img.s-toast-icon {
@@ -1271,12 +1271,10 @@ button ::after {
     bottom: 0;
     -webkit-transform: none;
             transform: none; }
-    .s-toast-dialog.s-toast-loading .s-dialog-wrapper {
-      max-width: 130px; }
 
 .s-alert-dialog .s-dialog-wrapper {
   color: white;
-  border-radius: 4px;
+  border-radius: 5px;
   width: 75%;
   min-width: 260px;
   max-width: 320px; }
@@ -1287,22 +1285,24 @@ button ::after {
     color: #323233; }
   .s-alert-dialog .s-dialog-wrapper .s-dialog-content {
     max-height: 60vh;
-    padding: 24px;
+    padding: 32px;
     overflow-y: auto;
     font-size: 14px;
     line-height: 1.2;
     white-space: pre-wrap;
     text-align: center;
     word-wrap: break-word;
-    color: #7d7e80; }
+    color: black; }
   .s-alert-dialog .s-dialog-wrapper .s-dialog-footer {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex; }
+    display: flex;
+    border-top: 1px solid #e7e7e7; }
     .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn {
       -webkit-box-flex: 1;
           -ms-flex: 1;
               flex: 1;
-      height: 50px;
-      font-size: 16px;
-      letter-spacing: 1px; }
+      height: 58px;
+      font-size: 16px; }
+      .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:nth-child(2) {
+        border-left: 1px solid #e7e7e7; }

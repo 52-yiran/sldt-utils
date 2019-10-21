@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.4.5
+* sldt-utils v2.5.0
 * author 无痕
-* (c) Fri Oct 18 2019 17:02:24 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 21 2019 10:49:24 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -2243,22 +2243,22 @@ dialog.defaultOptions = {
   //弹框显示位置
   mountElem: 'body',
   //弹框挂载的容器，为空则不会挂载
-  iconClose: false,
-  //String,Boolean,为ture则使用内置html字符串，为字符串则使用字符串html
+  closeBtn: false,
+  //关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
   title: '',
   //标题
   content: '',
   //字符串html内容
+  cancelClass: 's-btn s-dialog-btn-cancel',
+  //取消按钮class
   cancelText: '',
   //取消按钮文字
   cancelColor: '',
   //取消按钮颜色
-  cancelClass: 's-btn s-dialog-btn-cancel',
-  //取消按钮class
-  confirmText: '',
-  //确认按钮文字
   confirmClass: 's-btn s-dialog-btn-confirm',
   //确认按钮class
+  confirmText: '',
+  //确认按钮文字
   confirmColor: '',
   //确认按钮颜色
   isOnce: false,
@@ -2314,7 +2314,7 @@ function () {
         effect = _self$options.effect,
         position = _self$options.position,
         mountElem = _self$options.mountElem,
-        iconClose = _self$options.iconClose,
+        closeBtn = _self$options.closeBtn,
         title = _self$options.title,
         content = _self$options.content,
         cancelText = _self$options.cancelText,
@@ -2401,20 +2401,18 @@ function () {
     self.el = $el.addClass(position ? 's-dialog-position-' + position : '').addClass(effect ? 's-dialog-effect' : '').addClass(className).data('s-dialog', self)[0]; // 是否显示遮罩
 
     if (mask) {
-      self.mask = $('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0];
-      $el.prepend(self.mask); // 点击遮罩是否关闭
+      self.mask = $('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
 
-      if (self.mask && maskClose) {
-        $(self.mask).on('click', cancel);
-      }
+      maskClose && $(self.mask).on('click', cancel);
+      $el.prepend(self.mask);
     }
 
     self.wrapper = $el.find('.s-dialog-wrapper')[0]; // 关闭 x
 
-    if (iconClose === true) {
-      $(self.wrapper).append($('<i class="s-icon s-icon-cross s-dialog-icon-close"></i>').on('click', cancel));
-    } else if (typeof iconClose === 'string' && iconClose) {
-      $(self.wrapper).append($(iconClose).on('click', cancel));
+    if (closeBtn === true) {
+      $(self.wrapper).append(self.closeBtn = $('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>').on('click', cancel)[0]);
+    } else if (typeof closeBtn === 'string' && closeBtn) {
+      $(self.wrapper).append(self.closeBtn = $(closeBtn).on('click', cancel)[0]);
     } // 挂载dom
 
 
@@ -2558,22 +2556,29 @@ function () {
     value: function destroy() {
       var removeElem = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var self = this;
-      var opt = self.options;
+      var _self$options2 = self.options,
+          className = _self$options2.className,
+          position = _self$options2.position,
+          onBeforeDestroy = _self$options2.onBeforeDestroy,
+          onDestroy = _self$options2.onDestroy;
 
       if (!self[inDestroy] && !self[isDestroy]) {
         self[inDestroy] = true; // 触发销毁前生命周期钩子
 
-        isFunction(opt.onBeforeDestroy) && opt.onBeforeDestroy.call(self);
+        isFunction(onBeforeDestroy) && onBeforeDestroy.call(self);
 
         var fn = function fn() {
           clearTimeout(self[visibleTimeOutId]);
           clearTimeout(self[autoCloseTimeOutId]);
-          $(self.el).removeData("s-dialog");
+          $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData("s-dialog");
+          self.mask && $(self.mask).remove();
+          self.closeBtn && $(self.closeBtn).remove();
+          $(self.el).find('.s-dialog-icon-close').remove();
           removeElem && $(self.el).remove();
           self[inDestroy] = false;
           self[isDestroy] = true; // 触发销毁后生命周期钩子
 
-          isFunction(opt.onDestroy) && opt.onDestroy.call(self);
+          isFunction(onDestroy) && onDestroy.call(self);
         };
 
         self[visible] ? self.hide(fn) : fn();
@@ -2660,7 +2665,8 @@ showLoading.defaultOptions = {
   icon: 'loading',
   effect: false,
   position: 'middle',
-  duration: 0
+  duration: 0,
+  preventTouchmove: true
 };
 function hideLoading() {
   Toast.clear();
@@ -3051,14 +3057,13 @@ function Alert(options) {
 
 Alert.defaultOptions = {
   className: 's-alert-dialog',
-  title: '提示',
+  title: '',
   content: '',
   confirmText: '确定',
   confirmColor: '#1989fa',
-  cancelColor: '#323233',
-  maskClose: false,
   maskOpacity: 0.5,
-  isOnce: true
+  isOnce: true,
+  preventTouchmove: true
 };
 
 function Confirm(options) {
@@ -3068,10 +3073,11 @@ function Confirm(options) {
 }
 
 Confirm.defaultOptions = {
-  cancelText: '取消'
+  cancelText: '取消',
+  cancelColor: '#323233'
 };
 
-var version = '2.4.5';
+var version = '2.5.0';
 var index = _objectSpread2({
   version: version
 }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {

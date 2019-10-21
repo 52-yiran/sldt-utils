@@ -2,7 +2,7 @@
 
   .s-dialog-wrapper {
     color: white;
-    border-radius: 4px;
+    border-radius: 5px;
     width: 75%;
     min-width: 260px;
     max-width: 320px;
@@ -16,24 +16,28 @@
 
     .s-dialog-content {
       max-height: 60vh;
-      padding: 24px;
+      padding: 32px;
       overflow-y: auto;
       font-size: 14px;
       line-height: 1.2;
       white-space: pre-wrap;
       text-align: center;
       word-wrap: break-word;
-      color: #7d7e80;
+      color: black;
     }
 
     .s-dialog-footer {
       display: flex;
+      border-top: 1px solid #e7e7e7;
 
       .s-btn {
         flex: 1;
-        height: 50px;
+        height: 58px;
         font-size: 16px;
-        letter-spacing: 1px;
+
+        &:nth-child(2) {
+          border-left: 1px solid #e7e7e7;
+        }
       }
     }
   }

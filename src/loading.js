@@ -10,7 +10,8 @@ showLoading.defaultOptions = {
   icon: 'loading',
   effect: false,
   position: 'middle',
-  duration: 0
+  duration: 0,
+  preventTouchmove: true
 }
 
 export function hideLoading () {
