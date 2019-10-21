@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.5.0
+* sldt-utils v2.5.1
 * author 无痕
-* (c) Mon Oct 21 2019 10:49:24 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 21 2019 14:32:22 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -102,21 +102,21 @@
     return typeof window !== 'undefined';
   };
   var inWeex = function inWeex() {
-    return typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
+    return typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform;
   };
   var weexPlatform = function weexPlatform() {
-    return inWeex() && WXEnvironment.platform.toLowerCase();
+    return inWeex() && window.WXEnvironment.platform.toLowerCase();
   };
 
   var ua = function ua() {
-    return inBrowser() && window.navigator.userAgent.toLowerCase() || '';
+    return inBrowser() ? window.navigator.userAgent.toLowerCase() : '';
   };
 
   var isMobile = function isMobile() {
     return !!ua().match(/AppleWebKit.*Mobile.*/i);
   };
   var isWeixin = function isWeixin() {
-    return ua().match(/MicroMessenger/i) == 'micromessenger';
+    return ua().match(/MicroMessenger/i) === 'micromessenger';
   };
   var isIE = function isIE() {
     return /msie|trident/.test(ua());
@@ -145,7 +145,7 @@
   }; // 是否iPad
 
   var isWebApp = function isWebApp() {
-    return ua().indexOf('safari') == -1;
+    return ua().indexOf('safari') === -1;
   }; // 是否web应该程序，没有头部与底部
 
   var hasTouch = function hasTouch() {
@@ -199,7 +199,7 @@
 
   function trim() {
     var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    return typeof str !== null ? String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') : '';
+    return str !== null ? String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') : '';
   } // 数组和对象循环
 
   function each(obj, callback) {
@@ -329,7 +329,7 @@
    * @Descripttion: 常用正则验证方法
    * @Author: 无痕
    * @Date: 2019-09-23 15:53:33
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-17 15:39:57
    */
   // 是否为整数
@@ -380,7 +380,7 @@
    * @Descripttion: base64转码
    * @Author: 无痕
    * @Date: 2019-09-23 15:48:15
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-12 15:08:26
    */
   // 下面是64个基本的编码
@@ -562,8 +562,8 @@
    * @Descripttion: 浏览器cookie封装
    * @Author: 无痕
    * @Date: 2019-09-23 15:46:54
-   * @LastEditors: 
-   * @LastEditTime: 2019-10-10 16:02:56
+   * @LastEditors:
+   * @LastEditTime: 2019-10-21 14:09:45
    */
 
   function setCookie(name, value, days) {
@@ -577,12 +577,12 @@
         expires.setTime(+expires + days * 864e+5);
       }
 
-      return document.cookie = [encodeURIComponent(name), '=', encodeURIComponent(value), expires ? '; expires=' + expires.toUTCString() : '', params.path ? '; path=' + params.path : '', params.domain ? '; domain=' + (protoType(params.domain) === "function" ? params.domain(name) : params.domain) : '', params.secure ? '; secure' : ''].join('');
+      return document.cookie = [encodeURIComponent(name), '=', encodeURIComponent(value), expires ? '; expires=' + expires.toUTCString() : '', params.path ? '; path=' + params.path : '', params.domain ? '; domain=' + (protoType(params.domain) === 'function' ? params.domain(name) : params.domain) : '', params.secure ? '; secure' : ''].join('');
     }
   }
 
   function getCookie(name) {
-    var result = undefined;
+    var result;
 
     if (document.cookie) {
       document.cookie.split('; ').some(function (item) {
@@ -625,92 +625,92 @@
    * @Descripttion: 常用格式化方法
    * @Author: 无痕
    * @Date: 2019-09-23 15:44:58
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-17 15:44:37
    */
 
   function formatDate(date) {
-    var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "YYYY-MM-DD HH:mm";
-    if (!date) { return ""; }
+    var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'YYYY-MM-DD HH:mm';
+    if (!date) { return ''; }
     var type = protoType(date);
 
-    if (type !== "date") {
-      if (type === "string") {
+    if (type !== 'date') {
+      if (type === 'string') {
         if (/^\d*$/.test(date)) {
           date = new Date(parseInt(date));
         } else {
           if (!/Invalid|NaN/.test(new Date(date).toString())) {
             date = new Date(date);
           } else {
-            date = new Date(date.replace(/-/g, "/"));
+            date = new Date(date.replace(/-/g, '/'));
           }
         }
-      } else if (type === "number") {
+      } else if (type === 'number') {
         date = new Date(date);
       }
     }
 
     var o = {
-      "M+": date.getMonth() + 1,
-      //月份           
-      "D+": date.getDate(),
-      //日           
-      "h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12,
-      //小时           
-      "H+": date.getHours(),
-      //小时           
-      "m+": date.getMinutes(),
-      //分           
-      "s+": date.getSeconds(),
-      //秒           
-      "q+": Math.floor((date.getMonth() + 3) / 3),
-      //季度           
-      "S+": date.getMilliseconds() //毫秒           
+      'M+': date.getMonth() + 1,
+      // 月份
+      'D+': date.getDate(),
+      // 日
+      'h+': date.getHours() % 12 == 0 ? 12 : date.getHours() % 12,
+      // 小时
+      'H+': date.getHours(),
+      // 小时
+      'm+': date.getMinutes(),
+      // 分
+      's+': date.getSeconds(),
+      // 秒
+      'q+': Math.floor((date.getMonth() + 3) / 3),
+      // 季度
+      'S+': date.getMilliseconds() // 毫秒
 
-    },
-        week = {
-      "0": "/u65e5",
-      "1": "/u4e00",
-      "2": "/u4e8c",
-      "3": "/u4e09",
-      "4": "/u56db",
-      "5": "/u4e94",
-      "6": "/u516d"
+    };
+    var week = {
+      '0': '/u65e5',
+      '1': '/u4e00',
+      '2': '/u4e8c',
+      '3': '/u4e09',
+      '4': '/u56db',
+      '5': '/u4e94',
+      '6': '/u516d'
     };
 
     if (/(Y+)/.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
     }
 
     if (/(E+)/.test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length > 1 ? RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468" : "") + week[date.getDay() + ""]);
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length > 1 ? RegExp.$1.length > 2 ? '/u661f/u671f' : '/u5468' : '') + week[date.getDay() + '']);
     }
 
     Object.keys(o).forEach(function (k) {
-      if (new RegExp("(" + k + ")").test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("0".repeat(RegExp.$1.length) + o[k]).substr(("" + o[k]).length));
+      if (new RegExp('(' + k + ')').test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('0'.repeat(RegExp.$1.length) + o[k]).substr(('' + o[k]).length));
       }
     });
     return fmt;
   }
 
   function formatDateRange(startDateTime, endDateTime) {
-    var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : " ~ ";
-    var startformat = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "YYYY-MM-DD HH:mm";
-    var endformat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "YYYY-MM-DD HH:mm";
-    return startDateTime && endDateTime ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : "";
+    var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ' ~ ';
+    var startformat = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'YYYY-MM-DD HH:mm';
+    var endformat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'YYYY-MM-DD HH:mm';
+    return startDateTime && endDateTime ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : '';
   }
 
   function formatSeconds(seconds) {
-    //天数
-    var d = Math.floor(seconds / (60 * 60 * 24)); //取模（余数）
+    // 天数
+    var d = Math.floor(seconds / (60 * 60 * 24)); // 取模（余数）
 
-    var modulo = seconds % (60 * 60 * 24); //小时数
+    var modulo = seconds % (60 * 60 * 24); // 小时数
 
     var h = Math.floor(modulo / (60 * 60));
-    modulo = modulo % (60 * 60); //分钟
+    modulo = modulo % (60 * 60); // 分钟
 
-    var m = Math.floor(modulo / 60); //秒
+    var m = Math.floor(modulo / 60); // 秒
 
     var s = modulo % 60;
     return {
@@ -722,21 +722,21 @@
   }
 
   function formatMoney(number, places, symbol, thousand, decimal) {
-    number = number || 0; //保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
+    number = number || 0; // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
 
-    places = !isNaN(places = Math.abs(places)) ? places : 2; //symbol表示前面表示的标志是￥ 可以写成 formatMoney(542986,2,"$")
+    places = !isNaN(places = Math.abs(places)) ? places : 2; // symbol表示前面表示的标志是￥ 可以写成 formatMoney(542986,2,"$")
 
-    symbol = symbol !== undefined ? symbol : "￥"; //thousand表示每几位用,隔开,是货币标识
+    symbol = symbol !== undefined ? symbol : '￥'; // thousand表示每几位用,隔开,是货币标识
 
-    thousand = thousand || ","; //decimal表示小数点
+    thousand = thousand || ','; // decimal表示小数点
 
-    decimal = decimal || "."; //negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
-    //i表示处理过的纯数字
+    decimal = decimal || '.'; // negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
+    // i表示处理过的纯数字
 
-    var negative = number < 0 ? "-" : "",
-        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-        j = (j = i.length) > 3 ? j % 3 : 0;
-    return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "￥1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+    var negative = number < 0 ? '-' : '';
+    var i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
+    var j = (j = i.length) > 3 ? j % 3 : 0;
+    return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
   }
 
   var format = /*#__PURE__*/Object.freeze({
@@ -759,17 +759,17 @@
       var path = String(item);
 
       if (index === 0) {
-        return path.replace(/\/+$/g, "");
+        return path.replace(/\/+$/g, '');
       } else if (index === length - 1) {
-        return path.replace(/^\/+/g, "");
+        return path.replace(/^\/+/g, '');
       } else {
-        return path.replace(/^\/+|\/+$/g, "");
+        return path.replace(/^\/+|\/+$/g, '');
       }
-    }) : args).join("/");
+    }) : args).join('/');
   }
 
   function getUrlParam(name, url) {
-    var reg = new RegExp("(\\?|&|^)" + name + "=([^&]*)(&|$)");
+    var reg = new RegExp('(\\?|&|^)' + name + '=([^&]*)(&|$)');
     var r = (url || window.location.search).match(reg);
     return r ? unescape(r[2]) : undefined;
   } // 获取根节点到匹配节点的链数组
@@ -794,7 +794,7 @@
   } // 把手机号4位数字换为*
 
   function privatePhone(phone) {
-    return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, "$1****$2");
+    return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, '$1****$2');
   } // 把不规则的数据格式转换为统一的数组[{key:value}]格式
 
   function toArrayData(data) {
@@ -802,15 +802,15 @@
     var label = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'label';
     var listData = [];
 
-    if (protoType(data) === "object") {
+    if (protoType(data) === 'object') {
       each(data, function (item, k) {
         var _listData$push;
 
         listData.push((_listData$push = {}, _defineProperty(_listData$push, value, String(k)), _defineProperty(_listData$push, label, item), _listData$push));
       });
-    } else if (protoType(data) === "array") {
+    } else if (protoType(data) === 'array') {
       each(data, function (item) {
-        if (protoType(item) === "object") {
+        if (protoType(item) === 'object') {
           listData.push(JSON.parse(JSON.stringify(item)));
         } else {
           var _listData$push2;
@@ -824,7 +824,7 @@
   }
 
   function getRandom(num) {
-    var str = "";
+    var str = '';
 
     for (var i = 0; i < num; i++) {
       str += Math.floor(Math.random() * 10);
@@ -835,10 +835,10 @@
 
   function getMaxZindex(selector, minZindex) {
     var nodes = null;
-    selector = selector || "*";
+    selector = selector || '*';
     minZindex = Math.max(1, parseInt(minZindex) || 1);
 
-    if (protoType(selector) === "string") {
+    if (protoType(selector) === 'string') {
       nodes = document.querySelectorAll(selector);
     } else if (isArrayLike(selector)) {
       nodes = selector;
@@ -861,16 +861,16 @@
   }
 
   function downloadBlob(blob, filename) {
-    var a = document.createElement("a");
+    var a = document.createElement('a');
     var href = window.URL.createObjectURL(blob);
-    a.href = href; //创建下载的链接
+    a.href = href; // 创建下载的链接
 
-    a.download = filename; //下载后文件名
+    a.download = filename; // 下载后文件名
 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    window.URL.revokeObjectURL(href); //释放掉blob对象
+    window.URL.revokeObjectURL(href); // 释放掉blob对象
   }
 
   var tools = /*#__PURE__*/Object.freeze({
@@ -929,18 +929,18 @@
 
   function getTransitionInfo(el) {
     if (supportCss3('transition')) {
-      var transition = 'transition',
-          animation = 'animation',
-          styles = window.getComputedStyle(el),
-          transitionDelays = styles[transition + 'Delay'].split(', '),
-          transitionDurations = styles[transition + 'Duration'].split(', '),
-          transitionTimeout = getTimeout(transitionDelays, transitionDurations),
-          animationDelays = styles[animation + 'Delay'].split(', '),
-          animationDurations = styles[animation + 'Duration'].split(', '),
-          animationTimeout = getTimeout(animationDelays, animationDurations),
-          type,
-          timeout = 0,
-          propCount = 0;
+      var transition = 'transition';
+      var animation = 'animation';
+      var styles = window.getComputedStyle(el);
+      var transitionDelays = styles[transition + 'Delay'].split(', ');
+      var transitionDurations = styles[transition + 'Duration'].split(', ');
+      var transitionTimeout = getTimeout(transitionDelays, transitionDurations);
+      var animationDelays = styles[animation + 'Delay'].split(', ');
+      var animationDurations = styles[animation + 'Duration'].split(', ');
+      var animationTimeout = getTimeout(animationDelays, animationDurations);
+      var type;
+      var timeout = 0;
+      var propCount = 0;
       /* istanbul ignore if */
 
       timeout = Math.max(transitionTimeout, animationTimeout);
@@ -980,24 +980,26 @@
     };
 
     if (supportCss3('transition')) {
-      var transition = 'transition',
-          transitionEndEvent = 'transitionend',
-          animationEndEvent = 'animationend',
-          ref = getTransitionInfo(el),
-          type = ref.type,
-          timeout = ref.timeout,
-          propCount = ref.propCount;
+      var transition = 'transition';
+      var transitionEndEvent = 'transitionend';
+      var animationEndEvent = 'animationend';
+      var ref = getTransitionInfo(el);
+      var type = ref.type;
+      var timeout = ref.timeout;
+      var propCount = ref.propCount;
 
       if (!type) {
         trigger();
       } else {
-        var event = type === transition ? transitionEndEvent : animationEndEvent,
-            ended = 0,
-            end = function end() {
+        var event = type === transition ? transitionEndEvent : animationEndEvent;
+        var ended = 0;
+
+        var end = function end() {
           el.removeEventListener(event, onEnd);
           trigger();
-        },
-            onEnd = function onEnd(e) {
+        };
+
+        var onEnd = function onEnd(e) {
           if (e.target === el) {
             if (++ended >= propCount) {
               end();
@@ -1035,7 +1037,7 @@
    * @Descripttion: 一个常用dom操作方法库,Dom7简化版
    * @Author: 无痕
    * @Date: 2019-10-11 09:57:44
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-12 14:51:12
    */
   function unique(arr) {
@@ -2236,69 +2238,69 @@
 
   dialog.defaultOptions = {
     el: null,
-    //与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
+    // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
     className: '',
-    //弹框class
+    // 弹框class
     effect: true,
-    //是否使用过渡效果
+    // 是否使用过渡效果
     position: 'middle',
-    //弹框显示位置
+    // 弹框显示位置
     mountElem: 'body',
-    //弹框挂载的容器，为空则不会挂载
+    // 弹框挂载的容器，为空则不会挂载
     closeBtn: false,
-    //关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
+    // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
     title: '',
-    //标题
+    // 标题
     content: '',
-    //字符串html内容
+    // 字符串html内容
     cancelClass: 's-btn s-dialog-btn-cancel',
-    //取消按钮class
+    // 取消按钮class
     cancelText: '',
-    //取消按钮文字
+    // 取消按钮文字
     cancelColor: '',
-    //取消按钮颜色
+    // 取消按钮颜色
     confirmClass: 's-btn s-dialog-btn-confirm',
-    //确认按钮class
+    // 确认按钮class
     confirmText: '',
-    //确认按钮文字
+    // 确认按钮文字
     confirmColor: '',
-    //确认按钮颜色
+    // 确认按钮颜色
     isOnce: false,
-    //是否为一次性弹框，关闭后立即销毁，并删除dom
+    // 是否为一次性弹框，关闭后立即销毁，并删除dom
     zindexSelector: '.s-dialog.s-dialog-visible',
-    //z-index层级比较选择器
+    // z-index层级比较选择器
     zindexStart: 2000,
-    //z-index初始值
+    // z-index初始值
     mask: true,
-    //是否显示遮罩
+    // 是否显示遮罩
     maskOpacity: 0.7,
-    //遮罩透明度
+    // 遮罩透明度
     maskClose: true,
-    //点击遮罩是否关闭弹框
+    // 点击遮罩是否关闭弹框
     lockScroll: false,
-    //是否阻止外层滚动,
+    // 是否阻止外层滚动,
     duration: 0,
-    //自动关闭时间,number
+    // 自动关闭时间,number
     preventTouchmove: false,
-    //是否阻止弹层touchmove滚动，手机上滚动穿透
+    // 是否阻止弹层touchmove滚动，手机上滚动穿透
     // 生命周期
     onInit: undefined,
-    //初始化
+    // 初始化
     onShow: undefined,
-    //显示后
+    // 显示后
     onHide: undefined,
-    //关闭后
+    // 关闭后
     onCancel: undefined,
-    //点击遮罩，取消按钮关闭时
+    // 点击遮罩，取消按钮关闭时
     onConfirm: undefined,
-    //点击确认按钮关闭时
+    // 点击确认按钮关闭时
     onBeforeShow: undefined,
-    //显示时拦截钩子,参数为next()可异步阻止显示
+    // 显示时拦截钩子,参数为next()可异步阻止显示
     onBeforeHide: undefined,
-    //隐藏时拦截钩子,参数为next()可异步阻止关闭
+    // 隐藏时拦截钩子,参数为next()可异步阻止关闭
     onBeforeDestroy: undefined,
-    //销毁前
-    onDestroy: undefined //销毁后
+    // 销毁前
+    onDestroy: undefined // 销毁后
 
   };
 
@@ -2368,7 +2370,7 @@
         $el = $('<div class="s-dialog"></div>');
         var $wrapper = $('<div class="s-dialog-wrapper"></div>'); // 标题
 
-        if (title !== "") {
+        if (title !== '') {
           $wrapper.append('<div class="s-dialog-header">' + title + '</div>');
         } // 内容
 
@@ -2378,15 +2380,15 @@
         } // 按钮
 
 
-        if (cancelText !== "" || confirmText !== "") {
+        if (cancelText !== '' || confirmText !== '') {
           var $footer = $('<div class="s-dialog-footer"></div>');
 
-          if (cancelText !== "") {
-            $footer.append($("<button class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</button>")).on("click", cancel));
+          if (cancelText !== '') {
+            $footer.append($("<button class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</button>")).on('click', cancel));
           }
 
-          if (confirmText !== "") {
-            $footer.append($("<button class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</button>")).on("click", confirm));
+          if (confirmText !== '') {
+            $footer.append($("<button class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</button>")).on('click', confirm));
           }
 
           $wrapper.append($footer);
@@ -2436,53 +2438,55 @@
 
         clearTimeout(self[visibleTimeOutId]);
         self[visibleTimeOutId] = setTimeout(function () {
-          //判断是否有上次未执行完的效果回调，如有，则立即执行
-          self[effectControl] && self[effectControl].trigger();
+          if (!self[visible]) {
+            // 判断是否有上次未执行完的效果回调，如有，则立即执行
+            self[effectControl] && self[effectControl].trigger();
 
-          var next = function next() {
-            // 判断是否是最新的next调用，不是则作废
-            if (next[nextId] === self[visibleTimeOutId] && !self[visible]) {
-              self[visible] = true; //锁定外层滚动
+            var next = function next() {
+              // 判断是否是最新的next调用，不是则作废
+              if (next[nextId] === self[visibleTimeOutId]) {
+                self[visible] = true; // 锁定外层滚动
 
-              opt.lockScroll && $("html,body").addClass("s-overflow-hidden");
-              $(self.el).css({
-                'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
-              }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter'); // 添加内置效果
+                opt.lockScroll && $('html,body').addClass('s-overflow-hidden');
+                $(self.el).css({
+                  'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
+                }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter'); // 添加内置效果
 
-              $(self.wrapper).addClass(getPositionEffectClass(true, opt)); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+                $(self.wrapper).addClass(getPositionEffectClass(true, opt)); // 弹框效果执行完毕,记录效果执行回掉方法控制器
 
-              self[effectControl] = whenTransitionEnds(self.wrapper, function () {
-                // 清除执行效果回调函数执行控制对象对象记录
-                self[effectControl] && (self[effectControl] = null); // 自动关闭
+                self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+                  // 清除执行效果回调函数执行控制对象对象记录
+                  self[effectControl] && (self[effectControl] = null); // 自动关闭
 
-                var duration = parseInt(opt.duration);
+                  var duration = parseInt(opt.duration);
 
-                if (duration > 0) {
-                  clearTimeout(self[autoCloseTimeOutId]);
-                  self[autoCloseTimeOutId] = setTimeout(function () {
-                    self[visible] && self.hide();
-                  }, duration);
-                } // 移除效果class
+                  if (duration > 0) {
+                    clearTimeout(self[autoCloseTimeOutId]);
+                    self[autoCloseTimeOutId] = setTimeout(function () {
+                      self[visible] && self.hide();
+                    }, duration);
+                  } // 移除效果class
 
 
-                $(self.el).removeClass('s-dialog-effect-enter'); // 移除内置效果
+                  $(self.el).removeClass('s-dialog-effect-enter'); // 移除内置效果
 
-                $(self.wrapper).removeClass(getPositionEffectClass(true, opt)); // 触发参数回掉
+                  $(self.wrapper).removeClass(getPositionEffectClass(true, opt)); // 触发参数回掉
 
-                isFunction(callback) && callback.call(self); // 触发显示后生命周期钩子
+                  isFunction(callback) && callback.call(self); // 触发显示后生命周期钩子
 
-                isFunction(opt.onShow) && opt.onShow.call(self);
-              });
+                  isFunction(opt.onShow) && opt.onShow.call(self);
+                });
+              }
+            }; // 记录本次执行的nextId
+
+
+            next[nextId] = self[visibleTimeOutId]; // 触发显示前生命周期钩子
+
+            if (isFunction(opt.onBeforeShow)) {
+              opt.onBeforeShow.call(self, next);
+            } else {
+              next();
             }
-          }; // 记录本次执行的nextId
-
-
-          next[nextId] = self[visibleTimeOutId]; // 触发显示前生命周期钩子
-
-          if (isFunction(opt.onBeforeShow)) {
-            opt.onBeforeShow.call(self, next);
-          } else {
-            next();
           }
         });
         return self;
@@ -2496,52 +2500,54 @@
 
         clearTimeout(self[visibleTimeOutId]);
         self[visibleTimeOutId] = setTimeout(function () {
-          //判断是否有上次未执行完的效果回调，如有，则立即执行
-          self[effectControl] && self[effectControl].trigger();
+          if (self[visible]) {
+            // 判断是否有上次未执行完的效果回调，如有，则立即执行
+            self[effectControl] && self[effectControl].trigger();
 
-          var next = function next() {
-            // 判断是否是最新的next调用，不是则作废
-            if (next[nextId] === self[visibleTimeOutId] && self[visible]) {
-              self[visible] = false; // 清除自动关闭定时器
+            var next = function next() {
+              // 判断是否是最新的next调用，不是则作废
+              if (next[nextId] === self[visibleTimeOutId]) {
+                self[visible] = false; // 清除自动关闭定时器
 
-              clearTimeout(self[autoCloseTimeOutId]); // 开始执行效果
+                clearTimeout(self[autoCloseTimeOutId]); // 开始执行效果
 
-              $(self.el).addClass('s-dialog-effect-leave'); // 添加内置效果
+                $(self.el).addClass('s-dialog-effect-leave'); // 添加内置效果
 
-              $(self.wrapper).addClass(getPositionEffectClass(false, opt)); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+                $(self.wrapper).addClass(getPositionEffectClass(false, opt)); // 弹框效果执行完毕,记录效果执行回掉方法控制器
 
-              self[effectControl] = whenTransitionEnds(self.wrapper, function () {
-                // 清除执行效果回调函数执行控制对象对象记录
-                self[effectControl] && (self[effectControl] = null); // 关闭隐藏
+                self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+                  // 清除执行效果回调函数执行控制对象对象记录
+                  self[effectControl] && (self[effectControl] = null); // 关闭隐藏
 
-                $(self.el).removeClass('s-dialog-visible').css({
-                  'z-index': ''
-                }).removeClass('s-dialog-effect-leave'); // 移除内置效果
+                  $(self.el).removeClass('s-dialog-visible').css({
+                    'z-index': ''
+                  }).removeClass('s-dialog-effect-leave'); // 移除内置效果
 
-                $(self.wrapper).removeClass(getPositionEffectClass(false, opt)); //解除body滚动锁定
+                  $(self.wrapper).removeClass(getPositionEffectClass(false, opt)); // 解除body滚动锁定
 
-                !$(".s-dialog.s-dialog-visible").length && $("html,body").removeClass("s-overflow-hidden"); // 触发参数回掉
+                  !$('.s-dialog.s-dialog-visible').length && $('html,body').removeClass('s-overflow-hidden'); // 触发参数回掉
 
-                isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
+                  isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
 
-                isFunction(opt.onHide) && opt.onHide.call(self); // 是否为一次性弹框，关闭后立即销毁，并删除dom
+                  isFunction(opt.onHide) && opt.onHide.call(self); // 是否为一次性弹框，关闭后立即销毁，并删除dom
 
-                opt.isOnce && self.destroy(true);
-              }); // 如果是在销毁中则立即触发移除效果关闭处理
+                  opt.isOnce && self.destroy(true);
+                }); // 如果是在销毁中则立即触发移除效果关闭处理
 
-              if (self[inDestroy]) {
-                self[effectControl].trigger();
+                if (self[inDestroy]) {
+                  self[effectControl].trigger();
+                }
               }
+            }; // 记录本次执行的nextId
+
+
+            next[nextId] = self[visibleTimeOutId]; // 触发隐藏前生命周期钩子
+
+            if (isFunction(opt.onBeforeHide)) {
+              opt.onBeforeHide.call(self, next);
+            } else {
+              next();
             }
-          }; // 记录本次执行的nextId
-
-
-          next[nextId] = self[visibleTimeOutId]; // 触发隐藏前生命周期钩子
-
-          if (isFunction(opt.onBeforeHide)) {
-            opt.onBeforeHide.call(self, next);
-          } else {
-            next();
           }
         });
         return self;
@@ -2550,7 +2556,7 @@
     }, {
       key: "toggle",
       value: function toggle(callback) {
-        return this[this[visible] ? "hide" : "show"](callback);
+        return this[this[visible] ? 'hide' : 'show'](callback);
       } // 销毁
 
     }, {
@@ -2572,7 +2578,7 @@
           var fn = function fn() {
             clearTimeout(self[visibleTimeOutId]);
             clearTimeout(self[autoCloseTimeOutId]);
-            $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData("s-dialog");
+            $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData('s-dialog');
             self.mask && $(self.mask).remove();
             self.closeBtn && $(self.closeBtn).remove();
             $(self.el).find('.s-dialog-icon-close').remove();
@@ -2618,7 +2624,8 @@
       params.content += "<p class=\"s-toast-text\">".concat(content, "</p>");
     }
 
-    return instanceToast = dialog(params).show();
+    instanceToast = dialog(params).show();
+    return instanceToast;
   }
 
   Toast.defaultOptions = {
@@ -2685,7 +2692,7 @@
    * @Descripttion: 使用rem
    * @Author: 无痕
    * @Date: 2019-09-26 11:44:03
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-08 14:54:38
    */
   var useRem = (function () {
@@ -2876,22 +2883,22 @@
    * @Descripttion: 函数防抖
    * @Author: 无痕
    * @Date: 2019-09-23 15:56:30
-   * @LastEditors: 
-   * @LastEditTime: 2019-10-18 16:48:31
+   * @LastEditors:
+   * @LastEditTime: 2019-10-21 14:13:18
    */
   function debounce(fn) {
     var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 300;
     var params = arguments.length > 2 ? arguments[2] : undefined;
-    var lastArgs,
-        lastThis,
-        maxWait,
-        result,
-        timerId,
-        lastCallTime,
-        lastInvokeTime = 0,
-        leading = false,
-        maxing = false,
-        trailing = true;
+    var lastArgs;
+    var lastThis;
+    var maxWait;
+    var result;
+    var timerId;
+    var lastCallTime;
+    var lastInvokeTime = 0;
+    var leading = false;
+    var maxing = false;
+    var trailing = true;
 
     if (!isFunction(fn)) {
       throw new TypeError('Expected a function');
@@ -2909,8 +2916,8 @@
     }
 
     function invokeFunc(time) {
-      var args = lastArgs,
-          thisArg = lastThis;
+      var args = lastArgs;
+      var thisArg = lastThis;
       lastArgs = lastThis = undefined;
       lastInvokeTime = time;
       result = fn.apply(thisArg, args);
@@ -2927,15 +2934,15 @@
     }
 
     function remainingWait(time) {
-      var timeSinceLastCall = time - lastCallTime,
-          timeSinceLastInvoke = time - lastInvokeTime,
-          timeWaiting = wait - timeSinceLastCall;
+      var timeSinceLastCall = time - lastCallTime;
+      var timeSinceLastInvoke = time - lastInvokeTime;
+      var timeWaiting = wait - timeSinceLastCall;
       return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
     }
 
     function shouldInvoke(time) {
-      var timeSinceLastCall = time - lastCallTime,
-          timeSinceLastInvoke = time - lastInvokeTime; //Either this is the first call, activity has stopped and we're at the
+      var timeSinceLastCall = time - lastCallTime;
+      var timeSinceLastInvoke = time - lastInvokeTime; // Either this is the first call, activity has stopped and we're at the
       // trailing edge, the system time has gone backwards and we're treating
       // it as the trailing edge, or we've hit the `maxWait` limit.
 
@@ -2981,8 +2988,8 @@
     function debounced() {
       var arguments$1 = arguments;
 
-      var time = new Date(),
-          isInvoking = shouldInvoke(time);
+      var time = new Date();
+      var isInvoking = shouldInvoke(time);
 
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments$1[_key];
@@ -3021,7 +3028,7 @@
    * @Descripttion: 函数节流
    * @Author: 无痕
    * @Date: 2019-09-23 16:00:25
-   * @LastEditors: 
+   * @LastEditors:
    * @LastEditTime: 2019-10-18 16:51:39
    */
   function throttle(fn) {
@@ -3079,7 +3086,7 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.5.0';
+  var version = '2.5.1';
   var index = _objectSpread2({
     version: version
   }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {

@@ -1,8 +1,8 @@
-import { extend, isObject } from './core';
-import Alert from './alert';
+import { extend, isObject } from './core'
+import Alert from './alert'
 
 function Confirm (options) {
-  return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : { content: options }));
+  return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : { content: options }))
 }
 
 Confirm.defaultOptions = {
@@ -10,4 +10,4 @@ Confirm.defaultOptions = {
   cancelColor: '#323233'
 }
 
-export default Confirm;
+export default Confirm

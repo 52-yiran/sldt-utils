@@ -1,5 +1,5 @@
-import { extend, isObject } from './core';
-import Toast from './toast';
+import { extend, isObject } from './core'
+import Toast from './toast'
 
 export function showLoading (options) {
   return Toast(extend(true, showLoading.defaultOptions, isObject(options) ? options : { content: options }))
@@ -15,5 +15,5 @@ showLoading.defaultOptions = {
 }
 
 export function hideLoading () {
-  Toast.clear();
+  Toast.clear()
 }

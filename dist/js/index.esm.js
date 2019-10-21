@@ -1,20 +1,20 @@
 /*!
-* sldt-utils v2.5.0
+* sldt-utils v2.5.1
 * author 无痕
-* (c) Mon Oct 21 2019 10:49:24 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 21 2019 14:32:22 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
 function noop () { }
 // 设备环境
 const inBrowser = () => typeof window !== 'undefined';
-const inWeex = () => typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
-const weexPlatform = () => inWeex() && WXEnvironment.platform.toLowerCase();
+const inWeex = () => typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform;
+const weexPlatform = () => inWeex() && window.WXEnvironment.platform.toLowerCase();
 
-const ua = () => inBrowser() && window.navigator.userAgent.toLowerCase() || '';
+const ua = () => inBrowser() ? window.navigator.userAgent.toLowerCase() : '';
 
 const isMobile = () => !!ua().match(/AppleWebKit.*Mobile.*/i);
-const isWeixin = () => ua().match(/MicroMessenger/i) == 'micromessenger';
+const isWeixin = () => ua().match(/MicroMessenger/i) === 'micromessenger';
 const isIE = () => /msie|trident/.test(ua());
 const isIE9 = () => ua().indexOf('msie 9.0') > 0;
 const isEdge = () => ua().indexOf('edge/') > 0;
@@ -23,7 +23,7 @@ const isIOS = () => (/iphone|ipad|ipod|ios/.test(ua())) || (weexPlatform() === '
 const isChrome = () => /chrome\/\d+/.test(ua()) && !isEdge();
 const isIPhone = () => ua().indexOf('iphone') > -1; // 是否为iPhone或者QQHD浏览器
 const isIPad = () => ua().indexOf('ipad') > -1; // 是否iPad
-const isWebApp = () => ua().indexOf('safari') == -1; // 是否web应该程序，没有头部与底部
+const isWebApp = () => ua().indexOf('safari') === -1; // 是否web应该程序，没有头部与底部
 const hasTouch = () => isMobile();
 const mousedown = () => hasTouch() ? 'touchstart' : 'mousedown';
 const mousemove = () => hasTouch() ? 'touchmove' : 'mousemove';
@@ -31,57 +31,57 @@ const mouseup = () => hasTouch() ? 'touchend' : 'mouseup';
 
 // 判断是否是此对象上的实例属性
 function hasOwnProp (obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
+  return Object.prototype.hasOwnProperty.call(obj, prop)
 }
 // 判断数据类型
 function protoType (value) {
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
 }
 // 判断是否为类数组
 function isArrayLike (o) {
-  return o && typeof o === 'object' && isFinite(o.length) && o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296;
+  return o && typeof o === 'object' && isFinite(o.length) && o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296
 }
 // 判断是否为function
 function isFunction (value) {
-  return protoType(value) === 'function';
+  return protoType(value) === 'function'
 }
 // 判断是否为object
 function isObject (value) {
-  return protoType(value) === 'object';
+  return protoType(value) === 'object'
 }
 // 是否为数组
 function isArray (value) {
-  return Array.isArray ? Array.isArray(value) : protoType(value) === 'array';
+  return Array.isArray ? Array.isArray(value) : protoType(value) === 'array'
 }
 // 判断是否为number
 function isNumber (value) {
-  return protoType(value) === 'number';
+  return protoType(value) === 'number'
 }
 // 判断是否为Date对象
 function isDate (value) {
-  return protoType(value) === 'date';
+  return protoType(value) === 'date'
 }
 // 判断是否为promise对象
 function isPromise (value) {
-  return protoType(value) === 'promise';
+  return protoType(value) === 'promise'
 }
 // 去掉字符串2边空格
 function trim (str = '') {
-  return typeof str !== null ? (String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')) : '';
+  return str !== null ? (String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')) : ''
 }
 // 数组和对象循环
 function each (obj, callback) {
-  if (!obj) return;
+  if (!obj) return
   if (isArrayLike(obj)) {
     for (let i = 0, l = obj.length; i < l; i++) {
       if (callback(obj[i], i, obj) === false) {
-        break;
+        break
       }
     }
   } else {
     for (const key of Object.keys(obj)) {
       if (callback(obj[key], key, obj) === false) {
-        break;
+        break
       }
     }
   }
@@ -114,27 +114,27 @@ function extend (...args) {
       merge(result, args[i]);
     }
   }
-  return result;
+  return result
 }
 // 获取window和css媒体查询同步宽高
 function getWindowWidth () {
-  return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
 }
 function getWindowHeight () {
-  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 }
 // repeat
 function repeat (str, num) {
   num = parseInt(num) || 0;
-  return num ? new Array(num + 2).join(String(str)) : '';
+  return num ? new Array(num + 2).join(String(str)) : ''
 }
 // padStart
 function padStart (str, num, padStr) {
-  return new Array(num - String(str).length + 1).join(String(padStr)) + str;
+  return new Array(num - String(str).length + 1).join(String(padStr)) + str
 }
 // padEnd
 function padEnd (str, num, padStr) {
-  return String(str) + new Array(num - String(str).length + 1).join(String(padStr));
+  return String(str) + new Array(num - String(str).length + 1).join(String(padStr))
 }
 
 var core = /*#__PURE__*/Object.freeze({
@@ -182,31 +182,31 @@ var core = /*#__PURE__*/Object.freeze({
  * @Descripttion: 常用正则验证方法
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-17 15:39:57
  */
 // 是否为整数
 function isInteger (val) {
-  return /^[1-9]\d*$/.test(val);
-}//是否为数字
+  return /^[1-9]\d*$/.test(val)
+}// 是否为数字
 function isNumber$1 (val) {
-  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val);
-}//是否为正确的手机号码格式
+  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val)
+}// 是否为正确的手机号码格式
 function isPhone (val) {
-  return /^1[3456789]\d{9}$/g.test(val);
-}//是否为电子邮件
+  return /^1[3456789]\d{9}$/g.test(val)
+}// 是否为电子邮件
 function isEmail (val) {
-  return (/^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val));
-}//是否为带域名的链接地址
+  return (/^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val))
+}// 是否为带域名的链接地址
 function isUrl (val) {
-  return /^(https|http|ftp|rtsp|mms)/.test(val);
+  return /^(https|http|ftp|rtsp|mms)/.test(val)
 }// 是否为合法date
 function isDate$1 (val) {
-  return !/Invalid|NaN/.test(new Date(val).toString());
+  return !/Invalid|NaN/.test(new Date(val).toString())
 }function isDateISO (val) {
-  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/g.test(val);
+  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/g.test(val)
 }function isDigits (val) {
-  return /^\d+$/.test(val);
+  return /^\d+$/.test(val)
 }
 
 var regExp = /*#__PURE__*/Object.freeze({
@@ -226,18 +226,18 @@ var regExp = /*#__PURE__*/Object.freeze({
  * @Descripttion: base64转码
  * @Author: 无痕
  * @Date: 2019-09-23 15:48:15
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-12 15:08:26
  */
 // 下面是64个基本的编码
 const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const base64DecodeChars = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
--1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
--1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
   52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1,
--1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
   15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
--1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+  -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
   41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1];
 
 function utf16to8 (str) {
@@ -387,8 +387,8 @@ var base64 = /*#__PURE__*/Object.freeze({
  * @Descripttion: 浏览器cookie封装
  * @Author: 无痕
  * @Date: 2019-09-23 15:46:54
- * @LastEditors: 
- * @LastEditTime: 2019-10-10 16:02:56
+ * @LastEditors:
+ * @LastEditTime: 2019-10-21 14:09:45
  */
 
 // 设置cookie
@@ -403,24 +403,24 @@ function setCookie (name, value, days, params = {}) {
       encodeURIComponent(name), '=', encodeURIComponent(value),
       expires ? '; expires=' + expires.toUTCString() : '',
       params.path ? '; path=' + params.path : '',
-      params.domain ? '; domain=' + (protoType(params.domain) === "function" ? params.domain(name) : params.domain) : '',
+      params.domain ? '; domain=' + (protoType(params.domain) === 'function' ? params.domain(name) : params.domain) : '',
       params.secure ? '; secure' : ''
-    ].join(''));
+    ].join(''))
   }
 }// 获取cookie
 function getCookie (name) {
-  let result = undefined;
+  let result;
   if (document.cookie) {
     document.cookie.split('; ').some(item => {
       let parts = item.split('=');
       let keyName = parts.shift();
       if (keyName && keyName === encodeURIComponent(name)) {
         result = decodeURIComponent(parts.join('='));
-        return true;
+        return true
       }
     });
   }
-  return result;
+  return result
 }// 删除cookie
 function removeCookie (name, params = {}) {
   setCookie(name, '', -1, params);
@@ -445,94 +445,94 @@ var cookie = /*#__PURE__*/Object.freeze({
  * @Descripttion: 常用格式化方法
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-17 15:44:37
  */
 // 时间格式化
-function formatDate (date, fmt = "YYYY-MM-DD HH:mm") {
-  if (!date) return "";
+function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
+  if (!date) return ''
   const type = protoType(date);
-  if (type !== "date") {
-    if (type === "string") {
+  if (type !== 'date') {
+    if (type === 'string') {
       if (/^\d*$/.test(date)) {
         date = new Date(parseInt(date));
       } else {
         if (!/Invalid|NaN/.test(new Date(date).toString())) {
           date = new Date(date);
         } else {
-          date = new Date(date.replace(/-/g, "/"));
+          date = new Date(date.replace(/-/g, '/'));
         }
       }
-    } else if (type === "number") {
+    } else if (type === 'number') {
       date = new Date(date);
     }
   }
   const o = {
-    "M+": date.getMonth() + 1, //月份           
-    "D+": date.getDate(), //日           
-    "h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, //小时           
-    "H+": date.getHours(), //小时           
-    "m+": date.getMinutes(), //分           
-    "s+": date.getSeconds(), //秒           
-    "q+": Math.floor((date.getMonth() + 3) / 3), //季度           
-    "S+": date.getMilliseconds() //毫秒           
-  },
-    week = {
-      "0": "/u65e5",
-      "1": "/u4e00",
-      "2": "/u4e8c",
-      "3": "/u4e09",
-      "4": "/u56db",
-      "5": "/u4e94",
-      "6": "/u516d"
-    };
+    'M+': date.getMonth() + 1, // 月份
+    'D+': date.getDate(), // 日
+    'h+': date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, // 小时
+    'H+': date.getHours(), // 小时
+    'm+': date.getMinutes(), // 分
+    's+': date.getSeconds(), // 秒
+    'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+    'S+': date.getMilliseconds() // 毫秒
+  };
+  const week = {
+    '0': '/u65e5',
+    '1': '/u4e00',
+    '2': '/u4e8c',
+    '3': '/u4e09',
+    '4': '/u56db',
+    '5': '/u4e94',
+    '6': '/u516d'
+  };
   if (/(Y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
   }
   if (/(E+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[date.getDay() + ""]);
+    fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? '/u661f/u671f' : '/u5468') : '') + week[date.getDay() + '']);
   }
   Object.keys(o).forEach(k => {
-    if (new RegExp("(" + k + ")").test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("0".repeat(RegExp.$1.length) + o[k]).substr(("" + o[k]).length)));
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('0'.repeat(RegExp.$1.length) + o[k]).substr(('' + o[k]).length)));
     }
   });
-  return fmt;
+  return fmt
 }// 时间段
-function formatDateRange (startDateTime, endDateTime, separator = " ~ ", startformat = "YYYY-MM-DD HH:mm", endformat = "YYYY-MM-DD HH:mm") {
-  return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : "";
+function formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 'YYYY-MM-DD HH:mm', endformat = 'YYYY-MM-DD HH:mm') {
+  return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : ''
 }// 格式化秒数为天,小时，分钟，秒 对象
 function formatSeconds (seconds) {
-  //天数
+  // 天数
   const d = Math.floor(seconds / (60 * 60 * 24));
-  //取模（余数）
+  // 取模（余数）
   let modulo = seconds % (60 * 60 * 24);
-  //小时数
+  // 小时数
   const h = Math.floor(modulo / (60 * 60));
   modulo = modulo % (60 * 60);
-  //分钟
+  // 分钟
   const m = Math.floor(modulo / 60);
-  //秒
+  // 秒
   const s = modulo % 60;
 
-  return { d, h, m, s };
+  return { d, h, m, s }
 }// 格式化货币
 function formatMoney (number, places, symbol, thousand, decimal) {
   number = number || 0;
-  //保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
+  // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
   places = !isNaN(places = Math.abs(places)) ? places : 2;
-  //symbol表示前面表示的标志是￥ 可以写成 formatMoney(542986,2,"$")
-  symbol = symbol !== undefined ? symbol : "￥";
-  //thousand表示每几位用,隔开,是货币标识
-  thousand = thousand || ",";
-  //decimal表示小数点
-  decimal = decimal || ".";
-  //negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
-  //i表示处理过的纯数字
-  var negative = number < 0 ? "-" : "",
-    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-    j = (j = i.length) > 3 ? j % 3 : 0;
-  return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "￥1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+  // symbol表示前面表示的标志是￥ 可以写成 formatMoney(542986,2,"$")
+  symbol = symbol !== undefined ? symbol : '￥';
+  // thousand表示每几位用,隔开,是货币标识
+  thousand = thousand || ',';
+  // decimal表示小数点
+  decimal = decimal || '.';
+  // negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
+  // i表示处理过的纯数字
+  var negative = number < 0 ? '-' : '';
+  var i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
+  var j = (j = i.length) > 3 ? j % 3 : 0;
+  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '')
 }
 
 var format = /*#__PURE__*/Object.freeze({
@@ -543,7 +543,7 @@ var format = /*#__PURE__*/Object.freeze({
   formatMoney: formatMoney
 });
 
-/* 
+/*
   小方法收集
 */
 
@@ -553,19 +553,19 @@ function joinPath (...args) {
   return (length > 1 ? args.map((item, index) => {
     let path = String(item);
     if (index === 0) {
-      return path.replace(/\/+$/g, "");
+      return path.replace(/\/+$/g, '')
     } else if (index === length - 1) {
-      return path.replace(/^\/+/g, "");
+      return path.replace(/^\/+/g, '')
     } else {
-      return path.replace(/^\/+|\/+$/g, "");
+      return path.replace(/^\/+|\/+$/g, '')
     }
-  }) : args).join("/");
+  }) : args).join('/')
 }
 // 获取url参数
 function getUrlParam (name, url) {
-  const reg = new RegExp("(\\?|&|^)" + name + "=([^&]*)(&|$)");
+  const reg = new RegExp('(\\?|&|^)' + name + '=([^&]*)(&|$)');
   const r = (url || window.location.search).match(reg);
-  return r ? unescape(r[2]) : undefined;
+  return r ? unescape(r[2]) : undefined
 }
 
 // 获取根节点到匹配节点的链数组
@@ -574,11 +574,11 @@ function getMatcheds (list, childrenKey, validator, matcheds = []) {
     const item = list[i];
     if (validator(item, matcheds)) {
       matcheds.push(item);
-      return matcheds;
+      return matcheds
     } else if (item[childrenKey] && item[childrenKey].length) {
       const matcheds = getMatcheds(item[childrenKey], childrenKey, validator, matcheds.concat(item));
       if (matcheds) {
-        return matcheds;
+        return matcheds
       }
     }
   }
@@ -586,22 +586,22 @@ function getMatcheds (list, childrenKey, validator, matcheds = []) {
 
 // 把手机号4位数字换为*
 function privatePhone (phone) {
-  return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, "$1****$2");
+  return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, '$1****$2')
 }
 
 // 把不规则的数据格式转换为统一的数组[{key:value}]格式
 function toArrayData (data, value = 'value', label = 'label') {
   const listData = [];
-  if (protoType(data) === "object") {
+  if (protoType(data) === 'object') {
     each(data, (item, k) => {
       listData.push({
         [value]: String(k),
         [label]: item
       });
     });
-  } else if (protoType(data) === "array") {
+  } else if (protoType(data) === 'array') {
     each(data, item => {
-      if (protoType(item) === "object") {
+      if (protoType(item) === 'object') {
         listData.push(JSON.parse(JSON.stringify(item)));
       } else {
         listData.push({
@@ -611,22 +611,22 @@ function toArrayData (data, value = 'value', label = 'label') {
       }
     });
   }
-  return listData;
+  return listData
 }
 // 获取随机数
 function getRandom (num) {
-  let str = "";
+  let str = '';
   for (let i = 0; i < num; i++) {
     str += Math.floor(Math.random() * 10);
   }
-  return str;
+  return str
 }
 // 获取浏览器中最大z-index值
 function getMaxZindex (selector, minZindex) {
   let nodes = null;
-  selector = selector || "*";
+  selector = selector || '*';
   minZindex = Math.max(1, parseInt(minZindex) || 1);
-  if (protoType(selector) === "string") {
+  if (protoType(selector) === 'string') {
     nodes = document.querySelectorAll(selector);
   } else if (isArrayLike(selector)) {
     nodes = selector;
@@ -634,8 +634,8 @@ function getMaxZindex (selector, minZindex) {
     nodes = [selector];
   }
   return Math.max.apply(null, [minZindex].concat(Array.prototype.slice.call(nodes || []).map(el => {
-    return parseInt(el.style.zIndex) || 1;
-  })));
+    return parseInt(el.style.zIndex) || 1
+  })))
 }
 // 加载一张图片
 function loadImage (src) {
@@ -648,14 +648,14 @@ function loadImage (src) {
 }
 // 浏览器下载blob文件流
 function downloadBlob (blob, filename) {
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   const href = window.URL.createObjectURL(blob);
-  a.href = href; //创建下载的链接
-  a.download = filename; //下载后文件名
+  a.href = href; // 创建下载的链接
+  a.download = filename; // 下载后文件名
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  window.URL.revokeObjectURL(href); //释放掉blob对象
+  window.URL.revokeObjectURL(href); // 释放掉blob对象
 }
 
 var tools = /*#__PURE__*/Object.freeze({
@@ -688,7 +688,7 @@ function getTimeout (delays, durations) {
 // 最佳动画执行时机
 function nextFrame (fn) {
   const raf = (inBrowser() && window.requestAnimationFrame) ? window.requestAnimationFrame.bind(window) : setTimeout;
-  return raf(() => raf(fn, 5), 5);
+  return raf(() => raf(fn, 5), 5)
 }
 
 // 判断是否支持该css3属性
@@ -698,22 +698,22 @@ function supportCss3 (styleKey) {
   const preStyleArr = [toHumb(styleKey)];
   const htmlStyle = document.documentElement.style;
   preArr.forEach(pre => preStyleArr.push(toHumb(`${pre}-${styleKey}`)));
-  return preStyleArr.some(preStyle => preStyle in htmlStyle);
+  return preStyleArr.some(preStyle => preStyle in htmlStyle)
 }
 // 获取dom动画信息
 function getTransitionInfo (el) {
   if (supportCss3('transition')) {
-    var transition = 'transition',
-      animation = 'animation',
-      styles = window.getComputedStyle(el),
-      transitionDelays = styles[transition + 'Delay'].split(', '),
-      transitionDurations = styles[transition + 'Duration'].split(', '),
-      transitionTimeout = getTimeout(transitionDelays, transitionDurations),
-      animationDelays = styles[animation + 'Delay'].split(', '),
-      animationDurations = styles[animation + 'Duration'].split(', '),
-      animationTimeout = getTimeout(animationDelays, animationDurations),
-      type, timeout = 0,
-      propCount = 0;
+    var transition = 'transition';
+    var animation = 'animation';
+    var styles = window.getComputedStyle(el);
+    var transitionDelays = styles[transition + 'Delay'].split(', ');
+    var transitionDurations = styles[transition + 'Duration'].split(', ');
+    var transitionTimeout = getTimeout(transitionDelays, transitionDurations);
+    var animationDelays = styles[animation + 'Delay'].split(', ');
+    var animationDurations = styles[animation + 'Duration'].split(', ');
+    var animationTimeout = getTimeout(animationDelays, animationDurations);
+    var type; var timeout = 0;
+    var propCount = 0;
     /* istanbul ignore if */
     timeout = Math.max(transitionTimeout, animationTimeout);
     type = timeout > 0 ? transitionTimeout > animationTimeout ? transition : animation : null;
@@ -726,7 +726,7 @@ function getTransitionInfo (el) {
       hasTransform: hasTransform
     }
   } else {
-    return null;
+    return null
   }
 }
 
@@ -749,31 +749,31 @@ function whenTransitionEnds (el, callback = noop) {
       callback();
     }
   };
-  
+
   if (supportCss3('transition')) {
-    var transition = 'transition',
-      transitionEndEvent = 'transitionend',
-      animationEndEvent = 'animationend',
-      ref = getTransitionInfo(el),
-      type = ref.type,
-      timeout = ref.timeout,
-      propCount = ref.propCount;
+    var transition = 'transition';
+    var transitionEndEvent = 'transitionend';
+    var animationEndEvent = 'animationend';
+    var ref = getTransitionInfo(el);
+    var type = ref.type;
+    var timeout = ref.timeout;
+    var propCount = ref.propCount;
     if (!type) {
       trigger();
     } else {
-      var event = type === transition ? transitionEndEvent : animationEndEvent,
-        ended = 0,
-        end = function () {
-          el.removeEventListener(event, onEnd);
-          trigger();
-        },
-        onEnd = function (e) {
-          if (e.target === el) {
-            if (++ended >= propCount) {
-              end();
-            }
+      var event = type === transition ? transitionEndEvent : animationEndEvent;
+      var ended = 0;
+      var end = function () {
+        el.removeEventListener(event, onEnd);
+        trigger();
+      };
+      var onEnd = function (e) {
+        if (e.target === el) {
+          if (++ended >= propCount) {
+            end();
           }
-        };
+        }
+      };
       setTimeout(function () {
         if (ended < propCount) {
           end();
@@ -785,7 +785,7 @@ function whenTransitionEnds (el, callback = noop) {
     nextFrame(trigger);
   }
 
-  return { off, trigger };
+  return { off, trigger }
 }
 
 var transition = /*#__PURE__*/Object.freeze({
@@ -801,7 +801,7 @@ var transition = /*#__PURE__*/Object.freeze({
  * @Descripttion: 一个常用dom操作方法库,Dom7简化版
  * @Author: 无痕
  * @Date: 2019-10-11 09:57:44
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-12 14:51:12
  */
 function unique (arr) {
@@ -809,11 +809,11 @@ function unique (arr) {
   for (let i = 0; i < arr.length; i += 1) {
     if (uniqueArray.indexOf(arr[i]) === -1) uniqueArray.push(arr[i]);
   }
-  return uniqueArray;
+  return uniqueArray
 }
 
 function toCamelCase (string) {
-  return string.toLowerCase().replace(/-(.)/g, (match, group1) => group1.toUpperCase());
+  return string.toLowerCase().replace(/-(.)/g, (match, group1) => group1.toUpperCase())
 }
 
 function $ (selector, context) {
@@ -821,7 +821,7 @@ function $ (selector, context) {
   let i = 0;
   if (selector && !context) {
     if (selector instanceof Sdom7) {
-      return selector;
+      return selector
     }
   }
   if (selector) {
@@ -868,17 +868,17 @@ function $ (selector, context) {
       }
     }
   }
-  return new Sdom7(arr);
+  return new Sdom7(arr)
 }
 
 class Sdom7 {
-  constructor(arr) {
+  constructor (arr) {
     const self = this;
     for (let i = 0; i < arr.length; i += 1) {
       self[i] = arr[i];
     }
     self.length = arr.length;
-    return this;
+    return this
   }
   find (selector) {
     const foundElements = [];
@@ -888,11 +888,11 @@ class Sdom7 {
         foundElements.push(found[j]);
       }
     }
-    return new Sdom7(foundElements);
+    return new Sdom7(foundElements)
   }
   addClass (className) {
     if (typeof className === 'undefined') {
-      return this;
+      return this
     }
     const classes = className.split(' ');
     for (let i = 0; i < classes.length; i += 1) {
@@ -900,7 +900,7 @@ class Sdom7 {
         if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') this[j].classList.add(classes[i]);
       }
     }
-    return this;
+    return this
   }
   removeClass (className) {
     const classes = className.split(' ');
@@ -909,11 +909,11 @@ class Sdom7 {
         if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') this[j].classList.remove(classes[i]);
       }
     }
-    return this;
+    return this
   }
   hasClass (className) {
-    if (!this[0] || className === '') return false;
-    return this[0].classList.contains(className);
+    if (!this[0] || className === '') return false
+    return this[0].classList.contains(className)
   }
   toggleClass (className) {
     const classes = className.split(' ');
@@ -922,13 +922,13 @@ class Sdom7 {
         if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') this[j].classList.toggle(classes[i]);
       }
     }
-    return this;
+    return this
   }
   attr (attrs, value) {
     if (arguments.length === 1 && typeof attrs === 'string') {
       // Get attr
-      if (this[0]) return this[0].getAttribute(attrs);
-      return undefined;
+      if (this[0]) return this[0].getAttribute(attrs)
+      return undefined
     }
 
     // Set attrs
@@ -945,20 +945,20 @@ class Sdom7 {
         }
       }
     }
-    return this;
+    return this
   }
   // eslint-disable-next-line
   removeAttr (attr) {
     for (let i = 0; i < this.length; i += 1) {
       this[i].removeAttribute(attr);
     }
-    return this;
+    return this
   }
   // eslint-disable-next-line
   prop (props, value) {
     if (arguments.length === 1 && typeof props === 'string') {
       // Get prop
-      if (this[0]) return this[0][props];
+      if (this[0]) return this[0][props]
     } else {
       // Set props
       for (let i = 0; i < this.length; i += 1) {
@@ -973,7 +973,7 @@ class Sdom7 {
           }
         }
       }
-      return this;
+      return this
     }
   }
   data (key, value) {
@@ -983,16 +983,16 @@ class Sdom7 {
       // Get value
       if (el) {
         if (el.dom7ElementDataStorage && (key in el.dom7ElementDataStorage)) {
-          return el.dom7ElementDataStorage[key];
+          return el.dom7ElementDataStorage[key]
         }
 
         const dataKey = el.getAttribute(`data-${key}`);
         if (dataKey) {
-          return dataKey;
+          return dataKey
         }
-        return undefined;
+        return undefined
       }
-      return undefined;
+      return undefined
     }
 
     // Set value
@@ -1001,7 +1001,7 @@ class Sdom7 {
       if (!el.dom7ElementDataStorage) el.dom7ElementDataStorage = {};
       el.dom7ElementDataStorage[key] = value;
     }
-    return this;
+    return this
   }
   removeData (key) {
     for (let i = 0; i < this.length; i += 1) {
@@ -1014,7 +1014,7 @@ class Sdom7 {
   }
   dataset () {
     const el = this[0];
-    if (!el) return undefined;
+    if (!el) return undefined
     const dataset = {}; // eslint-disable-line
     if (el.dataset) {
       // eslint-disable-next-line
@@ -1036,7 +1036,7 @@ class Sdom7 {
       else if (dataset[key] === 'true') dataset[key] = true;
       else if (parseFloat(dataset[key]) === dataset[key] * 1) dataset[key] *= 1;
     }
-    return dataset;
+    return dataset
   }
   val (value) {
     const dom = this;
@@ -1047,11 +1047,11 @@ class Sdom7 {
           for (let i = 0; i < dom[0].selectedOptions.length; i += 1) {
             values.push(dom[0].selectedOptions[i].value);
           }
-          return values;
+          return values
         }
-        return dom[0].value;
+        return dom[0].value
       }
-      return undefined;
+      return undefined
     }
 
     for (let i = 0; i < dom.length; i += 1) {
@@ -1064,7 +1064,7 @@ class Sdom7 {
         el.value = value;
       }
     }
-    return dom;
+    return dom
   }
   // Events
   on (...args) {
@@ -1077,7 +1077,7 @@ class Sdom7 {
 
     function handleLiveEvent (e) {
       const target = e.target;
-      if (!target) return;
+      if (!target) return
       const eventData = e.target.dom7EventData || [];
       if (eventData.indexOf(e) < 0) {
         eventData.unshift(e);
@@ -1108,7 +1108,7 @@ class Sdom7 {
           if (!el.dom7Listeners[event]) el.dom7Listeners[event] = [];
           el.dom7Listeners[event].push({
             listener,
-            proxyListener: handleEvent,
+            proxyListener: handleEvent
           });
           el.addEventListener(event, handleEvent, capture);
         }
@@ -1120,13 +1120,13 @@ class Sdom7 {
           if (!el.dom7LiveListeners[event]) el.dom7LiveListeners[event] = [];
           el.dom7LiveListeners[event].push({
             listener,
-            proxyListener: handleLiveEvent,
+            proxyListener: handleLiveEvent
           });
           el.addEventListener(event, handleLiveEvent, capture);
         }
       }
     }
-    return this;
+    return this
   }
   off (...args) {
     let [eventType, targetSelector, listener, capture] = args;
@@ -1164,7 +1164,7 @@ class Sdom7 {
         }
       }
     }
-    return this;
+    return this
   }
   once (...args) {
     const dom = this;
@@ -1181,7 +1181,7 @@ class Sdom7 {
       }
     }
     onceHandler.dom7proxy = listener;
-    return dom.on(eventName, targetSelector, onceHandler, capture);
+    return dom.on(eventName, targetSelector, onceHandler, capture)
   }
   trigger (...args) {
     const events = args[0].split(' ');
@@ -1195,7 +1195,7 @@ class Sdom7 {
           evt = new window.CustomEvent(event, {
             detail: eventData,
             bubbles: true,
-            cancelable: true,
+            cancelable: true
           });
         } catch (e) {
           evt = document.createEvent('Event');
@@ -1209,52 +1209,52 @@ class Sdom7 {
         delete el.dom7EventData;
       }
     }
-    return this;
+    return this
   }
   // Sizing/Styles
   width () {
     if (this[0] === window) {
-      return window.innerWidth;
+      return window.innerWidth
     }
 
     if (this.length > 0) {
-      return parseFloat(this.css('width'));
+      return parseFloat(this.css('width'))
     }
 
-    return null;
+    return null
   }
   outerWidth (includeMargins) {
     if (this.length > 0) {
       if (includeMargins) {
         // eslint-disable-next-line
         const styles = this.styles();
-        return this[0].offsetWidth + parseFloat(styles.getPropertyValue('margin-right')) + parseFloat(styles.getPropertyValue('margin-left'));
+        return this[0].offsetWidth + parseFloat(styles.getPropertyValue('margin-right')) + parseFloat(styles.getPropertyValue('margin-left'))
       }
-      return this[0].offsetWidth;
+      return this[0].offsetWidth
     }
-    return null;
+    return null
   }
   height () {
     if (this[0] === window) {
-      return window.innerHeight;
+      return window.innerHeight
     }
 
     if (this.length > 0) {
-      return parseFloat(this.css('height'));
+      return parseFloat(this.css('height'))
     }
 
-    return null;
+    return null
   }
   outerHeight (includeMargins) {
     if (this.length > 0) {
       if (includeMargins) {
         // eslint-disable-next-line
         const styles = this.styles();
-        return this[0].offsetHeight + parseFloat(styles.getPropertyValue('margin-top')) + parseFloat(styles.getPropertyValue('margin-bottom'));
+        return this[0].offsetHeight + parseFloat(styles.getPropertyValue('margin-top')) + parseFloat(styles.getPropertyValue('margin-bottom'))
       }
-      return this[0].offsetHeight;
+      return this[0].offsetHeight
     }
-    return null;
+    return null
   }
   offset () {
     if (this.length > 0) {
@@ -1267,17 +1267,17 @@ class Sdom7 {
       const scrollLeft = el === window ? window.scrollX : el.scrollLeft;
       return {
         top: (box.top + scrollTop) - clientTop,
-        left: (box.left + scrollLeft) - clientLeft,
-      };
+        left: (box.left + scrollLeft) - clientLeft
+      }
     }
 
-    return null;
+    return null
   }
   hide () {
     for (let i = 0; i < this.length; i += 1) {
       this[i].style.display = 'none';
     }
-    return this;
+    return this
   }
   show () {
     for (let i = 0; i < this.length; i += 1) {
@@ -1290,17 +1290,17 @@ class Sdom7 {
         el.style.display = 'block';
       }
     }
-    return this;
+    return this
   }
   styles () {
-    if (this[0]) return window.getComputedStyle(this[0], null);
-    return {};
+    if (this[0]) return window.getComputedStyle(this[0], null)
+    return {}
   }
   css (props, value) {
     let i;
     if (arguments.length === 1) {
       if (typeof props === 'string') {
-        if (this[0]) return window.getComputedStyle(this[0], null).getPropertyValue(props);
+        if (this[0]) return window.getComputedStyle(this[0], null).getPropertyValue(props)
       } else {
         for (i = 0; i < this.length; i += 1) {
           // eslint-disable-next-line
@@ -1308,16 +1308,16 @@ class Sdom7 {
             this[i].style[prop] = props[prop];
           }
         }
-        return this;
+        return this
       }
     }
     if (arguments.length === 2 && typeof props === 'string') {
       for (i = 0; i < this.length; i += 1) {
         this[i].style[props] = value;
       }
-      return this;
+      return this
     }
-    return this;
+    return this
   }
 
   // Dom manipulation
@@ -1326,22 +1326,22 @@ class Sdom7 {
     for (let i = 0; i < this.length; i += 1) {
       arr.push(this[i]);
     }
-    return arr;
+    return arr
   }
   // Iterate over the collection passing elements to `callback`
   each (callback) {
     // Don't bother continuing without a callback
-    if (!callback) return this;
+    if (!callback) return this
     // Iterate over the current collection
     for (let i = 0; i < this.length; i += 1) {
       // If the callback returns false
       if (callback.call(this[i], i, this[i]) === false) {
         // End the loop early
-        return this;
+        return this
       }
     }
     // Return `this` to allow chained DOM operations
-    return this;
+    return this
   }
   filter (callback) {
     const matchedItems = [];
@@ -1349,7 +1349,7 @@ class Sdom7 {
     for (let i = 0; i < dom.length; i += 1) {
       if (callback.call(dom[i], i, dom[i])) matchedItems.push(dom[i]);
     }
-    return new Sdom7(matchedItems);
+    return new Sdom7(matchedItems)
   }
   map (callback) {
     const modifiedItems = [];
@@ -1357,65 +1357,65 @@ class Sdom7 {
     for (let i = 0; i < dom.length; i += 1) {
       modifiedItems.push(callback.call(dom[i], i, dom[i]));
     }
-    return new Sdom7(modifiedItems);
+    return new Sdom7(modifiedItems)
   }
   // eslint-disable-next-line
   html (html) {
     if (typeof html === 'undefined') {
-      return this[0] ? this[0].innerHTML : undefined;
+      return this[0] ? this[0].innerHTML : undefined
     }
 
     for (let i = 0; i < this.length; i += 1) {
       this[i].innerHTML = html;
     }
-    return this;
+    return this
   }
   // eslint-disable-next-line
   text (text) {
     if (typeof text === 'undefined') {
       if (this[0]) {
-        return this[0].textContent.trim();
+        return this[0].textContent.trim()
       }
-      return null;
+      return null
     }
 
     for (let i = 0; i < this.length; i += 1) {
       this[i].textContent = text;
     }
-    return this;
+    return this
   }
   is (selector) {
     const el = this[0];
     let compareWith;
     let i;
-    if (!el || typeof selector === 'undefined') return false;
+    if (!el || typeof selector === 'undefined') return false
     if (typeof selector === 'string') {
-      if (el.matches) return el.matches(selector);
-      else if (el.webkitMatchesSelector) return el.webkitMatchesSelector(selector);
-      else if (el.msMatchesSelector) return el.msMatchesSelector(selector);
+      if (el.matches) return el.matches(selector)
+      else if (el.webkitMatchesSelector) return el.webkitMatchesSelector(selector)
+      else if (el.msMatchesSelector) return el.msMatchesSelector(selector)
 
       compareWith = $(selector);
       for (i = 0; i < compareWith.length; i += 1) {
-        if (compareWith[i] === el) return true;
+        if (compareWith[i] === el) return true
       }
-      return false;
-    } else if (selector === document) return el === document;
-    else if (selector === window) return el === window;
+      return false
+    } else if (selector === document) return el === document
+    else if (selector === window) return el === window
 
     if (selector.nodeType || selector instanceof Sdom7) {
       compareWith = selector.nodeType ? [selector] : selector;
       for (i = 0; i < compareWith.length; i += 1) {
-        if (compareWith[i] === el) return true;
+        if (compareWith[i] === el) return true
       }
-      return false;
+      return false
     }
-    return false;
+    return false
   }
   indexOf (el) {
     for (let i = 0; i < this.length; i += 1) {
-      if (this[i] === el) return i;
+      if (this[i] === el) return i
     }
-    return -1;
+    return -1
   }
   index () {
     let child = this[0];
@@ -1426,24 +1426,24 @@ class Sdom7 {
       while ((child = child.previousSibling) !== null) {
         if (child.nodeType === 1) i += 1;
       }
-      return i;
+      return i
     }
-    return undefined;
+    return undefined
   }
   // eslint-disable-next-line
   eq (index) {
-    if (typeof index === 'undefined') return this;
+    if (typeof index === 'undefined') return this
     const length = this.length;
     let returnIndex;
     if (index > length - 1) {
-      return new Sdom7([]);
+      return new Sdom7([])
     }
     if (index < 0) {
       returnIndex = length + index;
-      if (returnIndex < 0) return new Sdom7([]);
-      return new Sdom7([this[returnIndex]]);
+      if (returnIndex < 0) return new Sdom7([])
+      return new Sdom7([this[returnIndex]])
     }
-    return new Sdom7([this[index]]);
+    return new Sdom7([this[index]])
   }
   append (...args) {
     let newChild;
@@ -1467,12 +1467,12 @@ class Sdom7 {
       }
     }
 
-    return this;
+    return this
   }
   // eslint-disable-next-line
   appendTo (parent) {
     $(parent).append(this);
-    return this;
+    return this
   }
   prepend (newChild) {
     let i;
@@ -1492,12 +1492,12 @@ class Sdom7 {
         this[i].insertBefore(newChild, this[i].childNodes[0]);
       }
     }
-    return this;
+    return this
   }
   // eslint-disable-next-line
   prependTo (parent) {
     $(parent).prepend(this);
-    return this;
+    return this
   }
   insertBefore (selector) {
     const before = $(selector);
@@ -1527,20 +1527,20 @@ class Sdom7 {
     if (this.length > 0) {
       if (selector) {
         if (this[0].nextElementSibling && $(this[0].nextElementSibling).is(selector)) {
-          return new Sdom7([this[0].nextElementSibling]);
+          return new Sdom7([this[0].nextElementSibling])
         }
-        return new Sdom7([]);
+        return new Sdom7([])
       }
 
-      if (this[0].nextElementSibling) return new Sdom7([this[0].nextElementSibling]);
-      return new Sdom7([]);
+      if (this[0].nextElementSibling) return new Sdom7([this[0].nextElementSibling])
+      return new Sdom7([])
     }
-    return new Sdom7([]);
+    return new Sdom7([])
   }
   nextAll (selector) {
     const nextEls = [];
     let el = this[0];
-    if (!el) return new Sdom7([]);
+    if (!el) return new Sdom7([])
     while (el.nextElementSibling) {
       const next = el.nextElementSibling; // eslint-disable-line
       if (selector) {
@@ -1548,27 +1548,27 @@ class Sdom7 {
       } else nextEls.push(next);
       el = next;
     }
-    return new Sdom7(nextEls);
+    return new Sdom7(nextEls)
   }
   prev (selector) {
     if (this.length > 0) {
       const el = this[0];
       if (selector) {
         if (el.previousElementSibling && $(el.previousElementSibling).is(selector)) {
-          return new Sdom7([el.previousElementSibling]);
+          return new Sdom7([el.previousElementSibling])
         }
-        return new Sdom7([]);
+        return new Sdom7([])
       }
 
-      if (el.previousElementSibling) return new Sdom7([el.previousElementSibling]);
-      return new Sdom7([]);
+      if (el.previousElementSibling) return new Sdom7([el.previousElementSibling])
+      return new Sdom7([])
     }
-    return new Sdom7([]);
+    return new Sdom7([])
   }
   prevAll (selector) {
     const prevEls = [];
     let el = this[0];
-    if (!el) return new Sdom7([]);
+    if (!el) return new Sdom7([])
     while (el.previousElementSibling) {
       const prev = el.previousElementSibling; // eslint-disable-line
       if (selector) {
@@ -1576,10 +1576,10 @@ class Sdom7 {
       } else prevEls.push(prev);
       el = prev;
     }
-    return new Sdom7(prevEls);
+    return new Sdom7(prevEls)
   }
   siblings (selector) {
-    return this.nextAll(selector).add(this.prevAll(selector));
+    return this.nextAll(selector).add(this.prevAll(selector))
   }
   parent (selector) {
     const parents = []; // eslint-disable-line
@@ -1592,7 +1592,7 @@ class Sdom7 {
         }
       }
     }
-    return $(unique(parents));
+    return $(unique(parents))
   }
   parents (selector) {
     const parents = []; // eslint-disable-line
@@ -1607,17 +1607,17 @@ class Sdom7 {
         parent = parent.parentNode;
       }
     }
-    return $(unique(parents));
+    return $(unique(parents))
   }
   closest (selector) {
     let closest = this; // eslint-disable-line
     if (typeof selector === 'undefined') {
-      return new Sdom7([]);
+      return new Sdom7([])
     }
     if (!closest.is(selector)) {
       closest = closest.parents(selector).eq(0);
     }
-    return closest;
+    return closest
   }
   children (selector) {
     const children = []; // eslint-disable-line
@@ -1632,13 +1632,13 @@ class Sdom7 {
         }
       }
     }
-    return new Sdom7(unique(children));
+    return new Sdom7(unique(children))
   }
   remove () {
     for (let i = 0; i < this.length; i += 1) {
       if (this[i].parentNode) this[i].parentNode.removeChild(this[i]);
     }
-    return this;
+    return this
   }
   add (...args) {
     const dom = this;
@@ -1651,7 +1651,7 @@ class Sdom7 {
         dom.length += 1;
       }
     }
-    return dom;
+    return dom
   }
   empty () {
     for (let i = 0; i < this.length; i += 1) {
@@ -1665,7 +1665,7 @@ class Sdom7 {
         el.textContent = '';
       }
     }
-    return this;
+    return this
   }
 }
 
@@ -1680,52 +1680,52 @@ const isDestroy = '[S_DIALOG_IS_DESTROY]';
 const nextId = '[S_DIALOG_NEXT_ID]';
 
 function getPositionEffectClass (visible, { effect, position }) {
-  return effect ? ('s-animate-' + (position || 'fade') + '-' + (visible ? 'enter' : 'leave')) : '';
+  return effect ? ('s-animate-' + (position || 'fade') + '-' + (visible ? 'enter' : 'leave')) : ''
 }
 
 function dialog (options) {
-  return new Dialog(options);
+  return new Dialog(options)
 }
 
 // 默认参数
 dialog.defaultOptions = {
-  el: null, //与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
-  className: '', //弹框class
-  effect: true,//是否使用过渡效果
-  position: 'middle',//弹框显示位置
-  mountElem: 'body', //弹框挂载的容器，为空则不会挂载
-  closeBtn: false,//关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
-  title: '',//标题
-  content: '',//字符串html内容
-  cancelClass: 's-btn s-dialog-btn-cancel', //取消按钮class
-  cancelText: '', //取消按钮文字
-  cancelColor: '',//取消按钮颜色
-  confirmClass: 's-btn s-dialog-btn-confirm', //确认按钮class
-  confirmText: '', //确认按钮文字
-  confirmColor: '',//确认按钮颜色
-  isOnce: false, //是否为一次性弹框，关闭后立即销毁，并删除dom
-  zindexSelector: '.s-dialog.s-dialog-visible', //z-index层级比较选择器
-  zindexStart: 2000, //z-index初始值
-  mask: true, //是否显示遮罩
-  maskOpacity: 0.7, //遮罩透明度
-  maskClose: true, //点击遮罩是否关闭弹框
-  lockScroll: false, //是否阻止外层滚动,
-  duration: 0, //自动关闭时间,number
-  preventTouchmove: false, //是否阻止弹层touchmove滚动，手机上滚动穿透
+  el: null, // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
+  className: '', // 弹框class
+  effect: true, // 是否使用过渡效果
+  position: 'middle', // 弹框显示位置
+  mountElem: 'body', // 弹框挂载的容器，为空则不会挂载
+  closeBtn: false, // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
+  title: '', // 标题
+  content: '', // 字符串html内容
+  cancelClass: 's-btn s-dialog-btn-cancel', // 取消按钮class
+  cancelText: '', // 取消按钮文字
+  cancelColor: '', // 取消按钮颜色
+  confirmClass: 's-btn s-dialog-btn-confirm', // 确认按钮class
+  confirmText: '', // 确认按钮文字
+  confirmColor: '', // 确认按钮颜色
+  isOnce: false, // 是否为一次性弹框，关闭后立即销毁，并删除dom
+  zindexSelector: '.s-dialog.s-dialog-visible', // z-index层级比较选择器
+  zindexStart: 2000, // z-index初始值
+  mask: true, // 是否显示遮罩
+  maskOpacity: 0.7, // 遮罩透明度
+  maskClose: true, // 点击遮罩是否关闭弹框
+  lockScroll: false, // 是否阻止外层滚动,
+  duration: 0, // 自动关闭时间,number
+  preventTouchmove: false, // 是否阻止弹层touchmove滚动，手机上滚动穿透
   // 生命周期
-  onInit: undefined,//初始化
-  onShow: undefined,//显示后
-  onHide: undefined,//关闭后
-  onCancel: undefined,//点击遮罩，取消按钮关闭时
-  onConfirm: undefined,//点击确认按钮关闭时
-  onBeforeShow: undefined,//显示时拦截钩子,参数为next()可异步阻止显示
-  onBeforeHide: undefined,//隐藏时拦截钩子,参数为next()可异步阻止关闭
-  onBeforeDestroy: undefined,//销毁前
-  onDestroy: undefined,//销毁后
+  onInit: undefined, // 初始化
+  onShow: undefined, // 显示后
+  onHide: undefined, // 关闭后
+  onCancel: undefined, // 点击遮罩，取消按钮关闭时
+  onConfirm: undefined, // 点击确认按钮关闭时
+  onBeforeShow: undefined, // 显示时拦截钩子,参数为next()可异步阻止显示
+  onBeforeHide: undefined, // 隐藏时拦截钩子,参数为next()可异步阻止关闭
+  onBeforeDestroy: undefined, // 销毁前
+  onDestroy: undefined // 销毁后
 };
 
 class Dialog {
-  constructor(params) {
+  constructor (params) {
     const self = this;
     const {
       el,
@@ -1785,7 +1785,7 @@ class Dialog {
       const $wrapper = $('<div class="s-dialog-wrapper"></div>');
 
       // 标题
-      if (title !== "") {
+      if (title !== '') {
         $wrapper.append('<div class="s-dialog-header">' + title + '</div>');
       }
       // 内容
@@ -1793,13 +1793,13 @@ class Dialog {
         $wrapper.append('<div class="s-dialog-content">' + content + '</div>');
       }
       // 按钮
-      if (cancelText !== "" || confirmText !== "") {
+      if (cancelText !== '' || confirmText !== '') {
         const $footer = $('<div class="s-dialog-footer"></div>');
-        if (cancelText !== "") {
-          $footer.append($(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`).on("click", cancel));
+        if (cancelText !== '') {
+          $footer.append($(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`).on('click', cancel));
         }
-        if (confirmText !== "") {
-          $footer.append($(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`).on("click", confirm));
+        if (confirmText !== '') {
+          $footer.append($(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`).on('click', confirm));
         }
         $wrapper.append($footer);
       }
@@ -1807,7 +1807,7 @@ class Dialog {
     } else {
       $el = $el.eq(0);
       const instanceDialog = $el.data('s-dialog');
-      if (instanceDialog) return instanceDialog;
+      if (instanceDialog) return instanceDialog
     }
     // 弹框实例添加dom节点记录
     self.el = $el.addClass(position ? ('s-dialog-position-' + position) : '')
@@ -1840,66 +1840,64 @@ class Dialog {
   }
   // 显示
   show (callback) {
-
     const self = this;
     const opt = self.options;
     // 清除弹框显示隐藏记录
     clearTimeout(self[visibleTimeOutId]);
 
     self[visibleTimeOutId] = setTimeout(function () {
+      if (!self[visible]) {
+        // 判断是否有上次未执行完的效果回调，如有，则立即执行
+        self[effectControl] && self[effectControl].trigger();
 
-      //判断是否有上次未执行完的效果回调，如有，则立即执行
-      self[effectControl] && self[effectControl].trigger();
+        const next = function () {
+          // 判断是否是最新的next调用，不是则作废
+          if (next[nextId] === self[visibleTimeOutId]) {
+            self[visible] = true;
 
-      const next = function () {
-        // 判断是否是最新的next调用，不是则作废
-        if (next[nextId] === self[visibleTimeOutId] && !self[visible]) {
+            // 锁定外层滚动
+            opt.lockScroll && $('html,body').addClass('s-overflow-hidden');
+            $(self.el).css({
+              'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
+            }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter');
+            // 添加内置效果
+            $(self.wrapper).addClass(getPositionEffectClass(true, opt));
+            // 弹框效果执行完毕,记录效果执行回掉方法控制器
+            self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+              // 清除执行效果回调函数执行控制对象对象记录
+              self[effectControl] && (self[effectControl] = null);
 
-          self[visible] = true;
+              // 自动关闭
+              const duration = parseInt(opt.duration);
+              if (duration > 0) {
+                clearTimeout(self[autoCloseTimeOutId]);
+                self[autoCloseTimeOutId] = setTimeout(function () {
+                  self[visible] && self.hide();
+                }, duration);
+              }
+              // 移除效果class
+              $(self.el).removeClass('s-dialog-effect-enter');
+              // 移除内置效果
+              $(self.wrapper).removeClass(getPositionEffectClass(true, opt));
+              // 触发参数回掉
+              isFunction(callback) && callback.call(self);
+              // 触发显示后生命周期钩子
+              isFunction(opt.onShow) && opt.onShow.call(self);
+            });
+          }
+        };
+        // 记录本次执行的nextId
+        next[nextId] = self[visibleTimeOutId];
 
-          //锁定外层滚动
-          opt.lockScroll && $("html,body").addClass("s-overflow-hidden");
-          $(self.el).css({
-            'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
-          }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter');
-          // 添加内置效果
-          $(self.wrapper).addClass(getPositionEffectClass(true, opt));
-          // 弹框效果执行完毕,记录效果执行回掉方法控制器
-          self[effectControl] = whenTransitionEnds(self.wrapper, function () {
-
-            // 清除执行效果回调函数执行控制对象对象记录
-            self[effectControl] && (self[effectControl] = null);
-
-            // 自动关闭
-            const duration = parseInt(opt.duration);
-            if (duration > 0) {
-              clearTimeout(self[autoCloseTimeOutId]);
-              self[autoCloseTimeOutId] = setTimeout(function () {
-                self[visible] && self.hide();
-              }, duration);
-            }
-            // 移除效果class
-            $(self.el).removeClass('s-dialog-effect-enter');
-            // 移除内置效果
-            $(self.wrapper).removeClass(getPositionEffectClass(true, opt));
-            // 触发参数回掉
-            isFunction(callback) && callback.call(self);
-            // 触发显示后生命周期钩子
-            isFunction(opt.onShow) && opt.onShow.call(self);
-          });
+        // 触发显示前生命周期钩子
+        if (isFunction(opt.onBeforeShow)) {
+          opt.onBeforeShow.call(self, next);
+        } else {
+          next();
         }
-      };
-      // 记录本次执行的nextId
-      next[nextId] = self[visibleTimeOutId];
-
-      // 触发显示前生命周期钩子
-      if (isFunction(opt.onBeforeShow)) {
-        opt.onBeforeShow.call(self, next);
-      } else {
-        next();
       }
     });
-    return self;
+    return self
   }
   // 隐藏
   hide (callback) {
@@ -1909,66 +1907,65 @@ class Dialog {
     clearTimeout(self[visibleTimeOutId]);
 
     self[visibleTimeOutId] = setTimeout(function () {
+      if (self[visible]) {
+        // 判断是否有上次未执行完的效果回调，如有，则立即执行
+        self[effectControl] && self[effectControl].trigger();
 
-      //判断是否有上次未执行完的效果回调，如有，则立即执行
-      self[effectControl] && self[effectControl].trigger();
+        const next = function () {
+          // 判断是否是最新的next调用，不是则作废
+          if (next[nextId] === self[visibleTimeOutId]) {
+            self[visible] = false;
 
-      const next = function () {
-        // 判断是否是最新的next调用，不是则作废
-        if (next[nextId] === self[visibleTimeOutId] && self[visible]) {
+            // 清除自动关闭定时器
+            clearTimeout(self[autoCloseTimeOutId]);
 
-          self[visible] = false;
+            // 开始执行效果
+            $(self.el).addClass('s-dialog-effect-leave');
+            // 添加内置效果
+            $(self.wrapper).addClass(getPositionEffectClass(false, opt));
 
-          // 清除自动关闭定时器
-          clearTimeout(self[autoCloseTimeOutId]);
+            // 弹框效果执行完毕,记录效果执行回掉方法控制器
+            self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+              // 清除执行效果回调函数执行控制对象对象记录
+              self[effectControl] && (self[effectControl] = null);
+              // 关闭隐藏
+              $(self.el).removeClass('s-dialog-visible').css({
+                'z-index': ''
+              }).removeClass('s-dialog-effect-leave');
+              // 移除内置效果
+              $(self.wrapper).removeClass(getPositionEffectClass(false, opt));
+              // 解除body滚动锁定
+              !$('.s-dialog.s-dialog-visible').length && $('html,body').removeClass('s-overflow-hidden');
+              // 触发参数回掉
+              isFunction(callback) && callback.call(self);
+              // 触发隐藏后生命周期钩子
+              isFunction(opt.onHide) && opt.onHide.call(self);
+              // 是否为一次性弹框，关闭后立即销毁，并删除dom
+              opt.isOnce && self.destroy(true);
+            });
 
-          // 开始执行效果
-          $(self.el).addClass('s-dialog-effect-leave');
-          // 添加内置效果
-          $(self.wrapper).addClass(getPositionEffectClass(false, opt));
-
-          // 弹框效果执行完毕,记录效果执行回掉方法控制器
-          self[effectControl] = whenTransitionEnds(self.wrapper, function () {
-
-            // 清除执行效果回调函数执行控制对象对象记录
-            self[effectControl] && (self[effectControl] = null);
-            // 关闭隐藏
-            $(self.el).removeClass('s-dialog-visible').css({
-              'z-index': ''
-            }).removeClass('s-dialog-effect-leave');
-            // 移除内置效果
-            $(self.wrapper).removeClass(getPositionEffectClass(false, opt));
-            //解除body滚动锁定
-            !$(".s-dialog.s-dialog-visible").length && $("html,body").removeClass("s-overflow-hidden");
-            // 触发参数回掉
-            isFunction(callback) && callback.call(self);
-            // 触发隐藏后生命周期钩子
-            isFunction(opt.onHide) && opt.onHide.call(self);
-            // 是否为一次性弹框，关闭后立即销毁，并删除dom
-            opt.isOnce && self.destroy(true);
-          });
-
-          // 如果是在销毁中则立即触发移除效果关闭处理
-          if (self[inDestroy]) {
-            self[effectControl].trigger();
+            // 如果是在销毁中则立即触发移除效果关闭处理
+            if (self[inDestroy]) {
+              self[effectControl].trigger();
+            }
           }
-        }
-      };
-      // 记录本次执行的nextId
-      next[nextId] = self[visibleTimeOutId];
+        };
+        // 记录本次执行的nextId
+        next[nextId] = self[visibleTimeOutId];
 
-      // 触发隐藏前生命周期钩子
-      if (isFunction(opt.onBeforeHide)) {
-        opt.onBeforeHide.call(self, next);
-      } else {
-        next();
+        // 触发隐藏前生命周期钩子
+        if (isFunction(opt.onBeforeHide)) {
+          opt.onBeforeHide.call(self, next);
+        } else {
+          next();
+        }
       }
     });
-    return self;
+    return self
   }
   // 切换
   toggle (callback) {
-    return this[this[visible] ? "hide" : "show"](callback);
+    return this[this[visible] ? 'hide' : 'show'](callback)
   }
   // 销毁
   destroy (removeElem = false) {
@@ -1983,7 +1980,7 @@ class Dialog {
       const fn = function () {
         clearTimeout(self[visibleTimeOutId]);
         clearTimeout(self[autoCloseTimeOutId]);
-        $(self.el).removeClass(`s-dialog-effect s-dialog-position-${position} ${className}`).removeData("s-dialog");
+        $(self.el).removeClass(`s-dialog-effect s-dialog-position-${position} ${className}`).removeData('s-dialog');
         self.mask && $(self.mask).remove();
         self.closeBtn && $(self.closeBtn).remove();
         $(self.el).find('.s-dialog-icon-close').remove();
@@ -2001,7 +1998,6 @@ class Dialog {
 let instanceToast = null;
 
 function Toast (options) {
-
   Toast.clear();
 
   const params = extend(true, {}, Toast.defaultOptions, isObject(options) ? options : { content: options });
@@ -2024,7 +2020,9 @@ function Toast (options) {
     params.content += `<p class="s-toast-text">${content}</p>`;
   }
 
-  return instanceToast = dialog(params).show();
+  instanceToast = dialog(params).show();
+
+  return instanceToast
 }
 
 Toast.defaultOptions = {
@@ -2087,7 +2085,7 @@ var loading = /*#__PURE__*/Object.freeze({
  * @Descripttion: 使用rem
  * @Author: 无痕
  * @Date: 2019-09-26 11:44:03
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-08 14:54:38
  */
 var useRem = (function () {
@@ -2098,12 +2096,12 @@ var useRem = (function () {
       handler = function () {
         html.style.fontSize = 100 * (html.clientWidth / styleWidth) + 'px';
       };
-      if (!document.addEventListener) return;
+      if (!document.addEventListener) return
       window.addEventListener('orientationchange' in window ? 'orientationchange' : 'resize', handler);
       handler();
       document.addEventListener('DOMContentLoaded', handler);
     }
-  };
+  }
 })();
 
 /*
@@ -2111,7 +2109,7 @@ var useRem = (function () {
  * @Descripttion: 发布订阅
  * @Author: 无痕
  * @Date: 2019-08-30 14:44:25
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-10 14:16:06
  */
 
@@ -2136,7 +2134,7 @@ function addEvent (name, fn) {
 }
 
 class EventEmit {
-  constructor() {
+  constructor () {
     this[isOnce] = false;// 执行一次的绑定判断
     this[events] = {};// 存储函数对象
   }
@@ -2149,14 +2147,14 @@ class EventEmit {
     } else {
       addEvent.call(this, ...args);
     }
-    return this;
+    return this
   }
   // 订阅一次消息
   once (...args) {
     this[isOnce] = true;
     this.on(...args);
     this[isOnce] = false;
-    return this;
+    return this
   }
   // 发布消息
   emit (name, ...args) {
@@ -2166,7 +2164,7 @@ class EventEmit {
         fn.call(this, ...args);
       });
     }
-    return this;
+    return this
   }
   // 取消订阅
   off (name, fn) {
@@ -2186,7 +2184,7 @@ class EventEmit {
     } else {
       this[events] = {};
     }
-    return this;
+    return this
   }
 }
 
@@ -2200,7 +2198,7 @@ class EventEmit {
 
 function countDown (seconds, callback = noop, complete = noop) {
   let interval = 0;
-  
+
   const handler = function () {
     if (seconds > 0) {
       callback(seconds);
@@ -2240,26 +2238,26 @@ function countDown (seconds, callback = noop, complete = noop) {
  * @Descripttion: 函数防抖
  * @Author: 无痕
  * @Date: 2019-09-23 15:56:30
- * @LastEditors: 
- * @LastEditTime: 2019-10-18 16:48:31
+ * @LastEditors:
+ * @LastEditTime: 2019-10-21 14:13:18
  */
 
 function debounce (fn, wait = 300, params) {
-  var lastArgs,
-    lastThis,
-    maxWait,
-    result,
-    timerId,
-    lastCallTime,
-    lastInvokeTime = 0,
-    leading = false,
-    maxing = false,
-    trailing = true;
+  let lastArgs;
+  let lastThis;
+  let maxWait;
+  let result;
+  let timerId;
+  let lastCallTime;
+  let lastInvokeTime = 0;
+  let leading = false;
+  let maxing = false;
+  let trailing = true;
   if (!isFunction(fn)) {
-    throw new TypeError('Expected a function');
+    throw new TypeError('Expected a function')
   }
   if (!isNumber(wait)) {
-    throw new TypeError('wait a number');
+    throw new TypeError('wait a number')
   }
   if (isObject(params)) {
     leading = !!params.leading;
@@ -2268,12 +2266,12 @@ function debounce (fn, wait = 300, params) {
     trailing = 'trailing' in params ? !!params.trailing : trailing;
   }
   function invokeFunc (time) {
-    var args = lastArgs,
-      thisArg = lastThis;
+    var args = lastArgs;
+    var thisArg = lastThis;
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
     result = fn.apply(thisArg, args);
-    return result;
+    return result
   }
 
   function leadingEdge (time) {
@@ -2282,29 +2280,29 @@ function debounce (fn, wait = 300, params) {
     // Start the timer for the trailing edge.
     timerId = setTimeout(timerExpired, wait);
     // Invoke the leading edge.
-    return leading ? invokeFunc(time) : result;
+    return leading ? invokeFunc(time) : result
   }
 
   function remainingWait (time) {
-    var timeSinceLastCall = time - lastCallTime,
-      timeSinceLastInvoke = time - lastInvokeTime,
-      timeWaiting = wait - timeSinceLastCall;
-    return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
+    var timeSinceLastCall = time - lastCallTime;
+    var timeSinceLastInvoke = time - lastInvokeTime;
+    var timeWaiting = wait - timeSinceLastCall;
+    return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting
   }
 
   function shouldInvoke (time) {
-    var timeSinceLastCall = time - lastCallTime,
-      timeSinceLastInvoke = time - lastInvokeTime;
-    //Either this is the first call, activity has stopped and we're at the
+    var timeSinceLastCall = time - lastCallTime;
+    var timeSinceLastInvoke = time - lastInvokeTime;
+    // Either this is the first call, activity has stopped and we're at the
     // trailing edge, the system time has gone backwards and we're treating
     // it as the trailing edge, or we've hit the `maxWait` limit.
-    return (lastCallTime === undefined || (timeSinceLastCall >= wait) || (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) || (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
   }
 
   function timerExpired () {
     var time = new Date();
     if (shouldInvoke(time)) {
-      return trailingEdge(time);
+      return trailingEdge(time)
     }
     // Restart the timer.
     timerId = setTimeout(timerExpired, remainingWait(time));
@@ -2315,10 +2313,10 @@ function debounce (fn, wait = 300, params) {
     // Only invoke if we have `lastArgs` which means `fn` has been
     // debounced at least once.
     if (trailing && lastArgs) {
-      return invokeFunc(time);
+      return invokeFunc(time)
     }
     lastArgs = lastThis = undefined;
-    return result;
+    return result
   }
 
   function cancel () {
@@ -2330,32 +2328,32 @@ function debounce (fn, wait = 300, params) {
   }
 
   function flush () {
-    return timerId === undefined ? result : trailingEdge(new Date());
+    return timerId === undefined ? result : trailingEdge(new Date())
   }
   function debounced (...args) {
-    var time = new Date(),
-      isInvoking = shouldInvoke(time);
+    var time = new Date();
+    var isInvoking = shouldInvoke(time);
     lastArgs = args;
     lastThis = this;
     lastCallTime = time;
     if (isInvoking) {
       if (timerId === undefined) {
-        return leadingEdge(lastCallTime);
+        return leadingEdge(lastCallTime)
       }
       if (maxing) {
         // Handle invocations in a tight loop.
         timerId = setTimeout(timerExpired, wait);
-        return invokeFunc(lastCallTime);
+        return invokeFunc(lastCallTime)
       }
     }
     if (timerId === undefined) {
       timerId = setTimeout(timerExpired, wait);
     }
-    return result;
+    return result
   }
   debounced.cancel = cancel;
   debounced.flush = flush;
-  return debounced;
+  return debounced
 }
 
 /*
@@ -2363,7 +2361,7 @@ function debounce (fn, wait = 300, params) {
  * @Descripttion: 函数节流
  * @Author: 无痕
  * @Date: 2019-09-23 16:00:25
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-18 16:51:39
  */
 
@@ -2371,7 +2369,7 @@ function throttle (fn, wait = 300, params) {
   let leading = true;
   let trailing = true;
   if (!isFunction(fn)) {
-    throw new TypeError('Expected a function');
+    throw new TypeError('Expected a function')
   }
   if (isObject(params)) {
     leading = 'leading' in params ? !!params.leading : leading;
@@ -2381,7 +2379,7 @@ function throttle (fn, wait = 300, params) {
     'leading': leading,
     'maxWait': wait,
     'trailing': trailing
-  });
+  })
 }
 
 function Alert (options) {
@@ -2407,7 +2405,7 @@ Alert.defaultOptions = {
 };
 
 function Confirm (options) {
-  return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : { content: options }));
+  return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : { content: options }))
 }
 
 Confirm.defaultOptions = {
@@ -2420,11 +2418,11 @@ Confirm.defaultOptions = {
  * @Descripttion: 一个常用方法库
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
- * @LastEditors: 
+ * @LastEditors:
  * @LastEditTime: 2019-10-18 10:06:12
  */
 
-const version = '2.5.0';
+const version = '2.5.1';
 
 var index = {
   version,

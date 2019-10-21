@@ -1,15 +1,15 @@
-import { extend, isObject } from './core';
-import Dialog from './dialog';
-import './styles/alert.scss';
+import { extend, isObject } from './core'
+import Dialog from './dialog'
+import './styles/alert.scss'
 
 function Alert (options) {
   return new Promise((resolve, reject) => {
-    const params = extend(true, {}, Alert.defaultOptions, isObject(options) ? options : { content: options });
+    const params = extend(true, {}, Alert.defaultOptions, isObject(options) ? options : { content: options })
 
-    params.onCancel = reject;
-    params.onConfirm = resolve;
+    params.onCancel = reject
+    params.onConfirm = resolve
 
-    Dialog(params).show();
+    Dialog(params).show()
   })
 }
 
@@ -24,4 +24,4 @@ Alert.defaultOptions = {
   preventTouchmove: true
 }
 
-export default Alert;
+export default Alert

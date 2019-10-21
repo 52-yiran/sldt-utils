@@ -5,38 +5,38 @@
  * @param {complete:Function} 倒计时完后回掉
  * @return: {Object:{start:Function(seconds),stop:Function}} 返回一个对象，可暂停和启动
  */
-import { noop } from './core';
+import { noop } from './core'
 
 export default function countDown (seconds, callback = noop, complete = noop) {
-  let interval = 0;
-  
+  let interval = 0
+
   const handler = function () {
     if (seconds > 0) {
-      callback(seconds);
-      seconds--;
+      callback(seconds)
+      seconds--
     } else {
-      stop();
-      complete();
+      stop()
+      complete()
     }
   }
 
   const start = function (newSeconds) {
     if (typeof newSeconds === 'number') {
-      seconds = newSeconds;
+      seconds = newSeconds
     }
-    stop();
-    handler();
-    interval = setInterval(handler, 1000);
+    stop()
+    handler()
+    interval = setInterval(handler, 1000)
   }
 
   const stop = function () {
     if (interval) {
-      clearInterval(interval);
-      interval = 0;
+      clearInterval(interval)
+      interval = 0
     }
   }
 
-  start();
+  start()
 
   return {
     start,

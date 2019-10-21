@@ -1,35 +1,36 @@
-import Dialog from './dialog';
-import './styles/toast.scss';
+import Dialog from './dialog'
+import './styles/toast.scss'
 
-import { extend, isObject } from './core';
+import { extend, isObject } from './core'
 
-let instanceToast = null;
+let instanceToast = null
 
 function Toast (options) {
+  Toast.clear()
 
-  Toast.clear();
+  const params = extend(true, {}, Toast.defaultOptions, isObject(options) ? options : { content: options })
 
-  const params = extend(true, {}, Toast.defaultOptions, isObject(options) ? options : { content: options });
-
-  const { icon, image, content } = params;
+  const { icon, image, content } = params
 
   if (icon || image) {
-    params.className += ' s-toast-middle';
+    params.className += ' s-toast-middle'
   }
 
-  params.content = '';
+  params.content = ''
 
   if (icon) {
-    params.content += `<i class="s-icon s-icon-${icon} s-toast-icon"></i>`;
+    params.content += `<i class="s-icon s-icon-${icon} s-toast-icon"></i>`
   } else if (image) {
-    params.content += `<img class="s-toast-icon" src="${image}"/>`;
+    params.content += `<img class="s-toast-icon" src="${image}"/>`
   }
 
   if (content || content === 0) {
-    params.content += `<p class="s-toast-text">${content}</p>`;
+    params.content += `<p class="s-toast-text">${content}</p>`
   }
 
-  return instanceToast = Dialog(params).show();
+  instanceToast = Dialog(params).show()
+
+  return instanceToast
 }
 
 Toast.defaultOptions = {
@@ -59,9 +60,9 @@ Toast.fail = function (options) {
 
 Toast.clear = function () {
   if (instanceToast) {
-    instanceToast.destroy(true);
-    instanceToast = null;
+    instanceToast.destroy(true)
+    instanceToast = null
   }
 }
 
-export default Toast;
+export default Toast
