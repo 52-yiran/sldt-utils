@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.4.5
+* sldt-utils v2.5.0
 * author 无痕
-* (c) Mon Oct 21 2019 09:31:59 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 21 2019 10:55:10 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.head.appendChild(r) })(window.document);
@@ -3080,7 +3080,7 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.4.5';
+  var version = '2.5.0';
   var index = _objectSpread2({
     version: version
   }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {
