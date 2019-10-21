@@ -320,7 +320,6 @@ class Dialog {
         $(self.el).removeClass(`s-dialog-effect s-dialog-position-${position} ${className}`).removeData('s-dialog')
         self.mask && $(self.mask).remove()
         self.closeBtn && $(self.closeBtn).remove()
-        $(self.el).find('.s-dialog-icon-close').remove()
         removeElem && $(self.el).remove()
         self[inDestroy] = false
         self[isDestroy] = true

@@ -108,7 +108,7 @@ S.downloadBlob (blob, filename)
 
 ## *S.getMaxZindex 获取浏览器中最大z-index值*
 ```
-S.getMaxZindex (selector, minZindex=1) //获取4位随机数
+S.getMaxZindex (selector, minZindex=1)
 ```
 
 ## *S.getRandom 获取随机数*

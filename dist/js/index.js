@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.5.1
+* sldt-utils v2.6.0
 * author 无痕
-* (c) Mon Oct 21 2019 14:32:22 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 21 2019 16:44:11 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -2581,7 +2581,6 @@
             $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData('s-dialog');
             self.mask && $(self.mask).remove();
             self.closeBtn && $(self.closeBtn).remove();
-            $(self.el).find('.s-dialog-icon-close').remove();
             removeElem && $(self.el).remove();
             self[inDestroy] = false;
             self[isDestroy] = true; // 触发销毁后生命周期钩子
@@ -3086,7 +3085,7 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.5.1';
+  var version = '2.6.0';
   var index = _objectSpread2({
     version: version
   }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {
