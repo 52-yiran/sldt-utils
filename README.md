@@ -4,10 +4,14 @@
 #### 1. npm 安装
 ```
 npm i sldt-utils -S
+
+import 'sldt-utils/dist/style/index.min.css'
+import S from 'sldt-utils'
 ```
 #### 2. umd静态引入 全局变量为S
 ```
-引入dist目录下的index.min.js
+dist/style/index.min.css
+dist/js/index.min.js
 ```
 
 ## *环境浏览器判断方法 以下均为Function*
@@ -51,6 +55,11 @@ S.formatSeconds (seconds) //返回{ d, h, m, s }
 ```
 S.formatMoney (number, places, symbol, thousand, decimal)
 S.formatMoney (1000, 2, '$')
+```
+
+## *S.countDown 倒计秒数*
+```
+S.countDown (seconds, callback = noop, complete = noop) //{start:Function(seconds),stop:Function}} 返回一个对象，可暂停和启动
 ```
 
 ## *S.utf16to8*
