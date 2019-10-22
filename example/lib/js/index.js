@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.5.0
+* sldt-utils v2.6.1
 * author 无痕
-* (c) Mon Oct 21 2019 14:27:13 GMT+0800 (GMT+08:00)
+* (c) Tue Oct 22 2019 10:29:19 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.head.appendChild(r) })(window.document);
@@ -102,12 +102,6 @@
   var inBrowser = function inBrowser() {
     return typeof window !== 'undefined';
   };
-  var inWeex = function inWeex() {
-    return typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform;
-  };
-  var weexPlatform = function weexPlatform() {
-    return inWeex() && window.WXEnvironment.platform.toLowerCase();
-  };
 
   var ua = function ua() {
     return inBrowser() ? window.navigator.userAgent.toLowerCase() : '';
@@ -129,10 +123,10 @@
     return ua().indexOf('edge/') > 0;
   };
   var isAndroid = function isAndroid() {
-    return ua().indexOf('android') > 0 || weexPlatform() === 'android';
+    return ua().indexOf('android') > 0;
   };
   var isIOS = function isIOS() {
-    return /iphone|ipad|ipod|ios/.test(ua()) || weexPlatform() === 'ios';
+    return /iphone|ipad|ipod|ios/.test(ua());
   };
   var isChrome = function isChrome() {
     return /chrome\/\d+/.test(ua()) && !isEdge();
@@ -289,8 +283,6 @@
     __proto__: null,
     noop: noop,
     inBrowser: inBrowser,
-    inWeex: inWeex,
-    weexPlatform: weexPlatform,
     isMobile: isMobile,
     isWeixin: isWeixin,
     isIE: isIE,
@@ -2582,7 +2574,6 @@
             $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData('s-dialog');
             self.mask && $(self.mask).remove();
             self.closeBtn && $(self.closeBtn).remove();
-            $(self.el).find('.s-dialog-icon-close').remove();
             removeElem && $(self.el).remove();
             self[inDestroy] = false;
             self[isDestroy] = true; // 触发销毁后生命周期钩子
@@ -3087,7 +3078,7 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.5.0';
+  var version = '2.6.1';
   var index = _objectSpread2({
     version: version
   }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {
@@ -3134,7 +3125,6 @@
   exports.hasTouch = hasTouch;
   exports.hideLoading = hideLoading;
   exports.inBrowser = inBrowser;
-  exports.inWeex = inWeex;
   exports.isAndroid = isAndroid;
   exports.isArray = isArray;
   exports.isArrayLike = isArrayLike;
@@ -3178,7 +3168,6 @@
   exports.utf16to8 = utf16to8;
   exports.utf8to16 = utf8to16;
   exports.version = version;
-  exports.weexPlatform = weexPlatform;
   exports.whenTransitionEnds = whenTransitionEnds;
 
   Object.defineProperty(exports, '__esModule', { value: true });

@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.0
+* sldt-utils v2.6.1
 * author 无痕
-* (c) Mon Oct 21 2019 16:44:11 GMT+0800 (GMT+08:00)
+* (c) Tue Oct 22 2019 10:28:08 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -99,12 +99,6 @@ function noop() {} // 设备环境
 var inBrowser = function inBrowser() {
   return typeof window !== 'undefined';
 };
-var inWeex = function inWeex() {
-  return typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform;
-};
-var weexPlatform = function weexPlatform() {
-  return inWeex() && window.WXEnvironment.platform.toLowerCase();
-};
 
 var ua = function ua() {
   return inBrowser() ? window.navigator.userAgent.toLowerCase() : '';
@@ -126,10 +120,10 @@ var isEdge = function isEdge() {
   return ua().indexOf('edge/') > 0;
 };
 var isAndroid = function isAndroid() {
-  return ua().indexOf('android') > 0 || weexPlatform() === 'android';
+  return ua().indexOf('android') > 0;
 };
 var isIOS = function isIOS() {
-  return /iphone|ipad|ipod|ios/.test(ua()) || weexPlatform() === 'ios';
+  return /iphone|ipad|ipod|ios/.test(ua());
 };
 var isChrome = function isChrome() {
   return /chrome\/\d+/.test(ua()) && !isEdge();
@@ -286,8 +280,6 @@ var core = /*#__PURE__*/Object.freeze({
   __proto__: null,
   noop: noop,
   inBrowser: inBrowser,
-  inWeex: inWeex,
-  weexPlatform: weexPlatform,
   isMobile: isMobile,
   isWeixin: isWeixin,
   isIE: isIE,
@@ -3083,7 +3075,7 @@ Confirm.defaultOptions = {
   cancelColor: '#323233'
 };
 
-var version = '2.6.0';
+var version = '2.6.1';
 var index = _objectSpread2({
   version: version
 }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {
@@ -3130,7 +3122,6 @@ exports.hasOwnProp = hasOwnProp;
 exports.hasTouch = hasTouch;
 exports.hideLoading = hideLoading;
 exports.inBrowser = inBrowser;
-exports.inWeex = inWeex;
 exports.isAndroid = isAndroid;
 exports.isArray = isArray;
 exports.isArrayLike = isArrayLike;
@@ -3174,6 +3165,5 @@ exports.useRem = useRem;
 exports.utf16to8 = utf16to8;
 exports.utf8to16 = utf8to16;
 exports.version = version;
-exports.weexPlatform = weexPlatform;
 exports.whenTransitionEnds = whenTransitionEnds;
 module.exports = exports['default']

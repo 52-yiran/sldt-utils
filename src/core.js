@@ -2,8 +2,6 @@
 export function noop () { }
 // 设备环境
 export const inBrowser = () => typeof window !== 'undefined'
-export const inWeex = () => typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform
-export const weexPlatform = () => inWeex() && window.WXEnvironment.platform.toLowerCase()
 
 const ua = () => inBrowser() ? window.navigator.userAgent.toLowerCase() : ''
 
@@ -12,8 +10,8 @@ export const isWeixin = () => ua().match(/MicroMessenger/i) === 'micromessenger'
 export const isIE = () => /msie|trident/.test(ua())
 export const isIE9 = () => ua().indexOf('msie 9.0') > 0
 export const isEdge = () => ua().indexOf('edge/') > 0
-export const isAndroid = () => (ua().indexOf('android') > 0) || (weexPlatform() === 'android')
-export const isIOS = () => (/iphone|ipad|ipod|ios/.test(ua())) || (weexPlatform() === 'ios')
+export const isAndroid = () => (ua().indexOf('android') > 0)
+export const isIOS = () => (/iphone|ipad|ipod|ios/.test(ua()))
 export const isChrome = () => /chrome\/\d+/.test(ua()) && !isEdge()
 export const isIPhone = () => ua().indexOf('iphone') > -1 // 是否为iPhone或者QQHD浏览器
 export const isIPad = () => ua().indexOf('ipad') > -1 // 是否iPad

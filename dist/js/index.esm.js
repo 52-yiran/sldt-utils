@@ -1,15 +1,13 @@
 /*!
-* sldt-utils v2.6.0
+* sldt-utils v2.6.1
 * author 无痕
-* (c) Mon Oct 21 2019 16:44:11 GMT+0800 (GMT+08:00)
+* (c) Tue Oct 22 2019 10:28:08 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
 function noop () { }
 // 设备环境
 const inBrowser = () => typeof window !== 'undefined';
-const inWeex = () => typeof WXEnvironment !== 'undefined' && !!window.WXEnvironment.platform;
-const weexPlatform = () => inWeex() && window.WXEnvironment.platform.toLowerCase();
 
 const ua = () => inBrowser() ? window.navigator.userAgent.toLowerCase() : '';
 
@@ -18,8 +16,8 @@ const isWeixin = () => ua().match(/MicroMessenger/i) === 'micromessenger';
 const isIE = () => /msie|trident/.test(ua());
 const isIE9 = () => ua().indexOf('msie 9.0') > 0;
 const isEdge = () => ua().indexOf('edge/') > 0;
-const isAndroid = () => (ua().indexOf('android') > 0) || (weexPlatform() === 'android');
-const isIOS = () => (/iphone|ipad|ipod|ios/.test(ua())) || (weexPlatform() === 'ios');
+const isAndroid = () => (ua().indexOf('android') > 0);
+const isIOS = () => (/iphone|ipad|ipod|ios/.test(ua()));
 const isChrome = () => /chrome\/\d+/.test(ua()) && !isEdge();
 const isIPhone = () => ua().indexOf('iphone') > -1; // 是否为iPhone或者QQHD浏览器
 const isIPad = () => ua().indexOf('ipad') > -1; // 是否iPad
@@ -141,8 +139,6 @@ var core = /*#__PURE__*/Object.freeze({
   __proto__: null,
   noop: noop,
   inBrowser: inBrowser,
-  inWeex: inWeex,
-  weexPlatform: weexPlatform,
   isMobile: isMobile,
   isWeixin: isWeixin,
   isIE: isIE,
@@ -2421,7 +2417,7 @@ Confirm.defaultOptions = {
  * @LastEditTime: 2019-10-18 10:06:12
  */
 
-const version = '2.6.0';
+const version = '2.6.1';
 
 var index = {
   version,
@@ -2446,4 +2442,4 @@ var index = {
 };
 
 export default index;
-export { $, Alert as alert, base64Decode, base64Encode, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatMoney, formatSeconds, getCookie, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, getWindowHeight, getWindowWidth, hasOwnProp, hasTouch, hideLoading, inBrowser, inWeex, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeCookie, repeat, setCookie, showLoading, supportCss3, throttle, toArrayData, Toast as toast, trim, useRem, utf16to8, utf8to16, version, weexPlatform, whenTransitionEnds };
+export { $, Alert as alert, base64Decode, base64Encode, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatMoney, formatSeconds, getCookie, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, getWindowHeight, getWindowWidth, hasOwnProp, hasTouch, hideLoading, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeCookie, repeat, setCookie, showLoading, supportCss3, throttle, toArrayData, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };
