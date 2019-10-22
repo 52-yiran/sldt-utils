@@ -84,12 +84,12 @@ S.base64Decode (str)
 
 ## *S.debounce 函数防抖*
 ```
-S.debounce(fn,3000)
+S.debounce(fn,3000) //返回一个新函数
 ```
 
-## *S.debounce 函数节流*
+## *S.throttle 函数节流*
 ```
-S.throttle(fn,300)
+S.throttle(fn,300) //返回一个新函数
 ```
 
 ## *S.regExp 常用正则方法*
@@ -118,7 +118,7 @@ S.getRandom（4) //获取4位随机数
 
 ## *S.getMatcheds 获取根节点到匹配节点的链数组*
 ```
-S.getMatcheds (list, childrenKey, validator, matcheds = [])
+S.getMatcheds (list, childrenKey, validator, matcheds = []) //validator是一个function
 ```
 
 ## *S.getUrlParam 获取url参数*
@@ -198,7 +198,16 @@ S.hideLoading()
 S.toast(1);
 S.toast.success(1);
 S.toast.fail(1)
+S.toast.clear();//清除所有toast
+S.toast({
+  className: 's-toast-dialog',
+  icon: '',
+  image: '',
+  content: '提示内容',
+  duration: 2000
+})
 ```
+
 ## *S.dialog  弹框*
 ```
 // 默认参数
@@ -206,7 +215,7 @@ dialog.defaultOptions = {
   el: null, // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
   className: '', // 弹框class
   effect: true, // 是否使用过渡效果
-  position: 'middle', // 弹框显示位置
+  position: 'middle', // 弹框显示位置,left,right,top,middle,bottom
   mountElem: 'body', // 弹框挂载的容器，为空则不会挂载
   closeBtn: false, // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
   title: '', // 标题
@@ -262,8 +271,15 @@ dialog.defaultOptions = {
       }, 2000);
     }
   })
+  
+  demoDialog.show(callback) //显示
+  demoDialog.hide(callback) //隐藏
+  demoDialog.toggle(callback) //切换
+  demoDialog.destroy(removeElem) //销毁，removeElem是否删除dom节点,默认false
 ```
+
 #### 2.在vue中使用dialog封装弹框组件
+
 ```
 组件
 
@@ -404,6 +420,7 @@ export default {
 </style>
 
 使用
+
 <template>
   <section>
     <button @click="visible=true">显示</button>
