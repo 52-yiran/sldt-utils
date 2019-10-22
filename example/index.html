@@ -14,21 +14,26 @@
     style="width:100%;height: 100vh;" alt="">
   <div>
 
-    <div class="s-dialog demoDialog">
+    <div class="s-dialog demo-dialog">
       <div class="s-dialog-wrapper">
         123
       </div>
     </div>
   </div>
 
+  <style>
+    .demo-dialog .s-dialog-wrapper {
+      width: 200px;
+      height: 200px;
+    }
+  </style>
   <script src="./lib/js/index.js"></script>
 
   <script>
 
     // var d = S.dialog({
-    //   el:'.demoDialog',
-    //   position: 'left',
-    //   closeBtn: true,
+    //   el: '.demo-dialog',
+    //   // closeBtn: true,
     //   // maskClose:false,
     //   // 异步拦截
     //   // onBeforeHide(next){
@@ -37,7 +42,6 @@
     //   //   }, 2000);
     //   // }
     // }).show();
-
 
     S.confirm('确定删除吗？').then(() => {
       S.toast.success('删除成功')

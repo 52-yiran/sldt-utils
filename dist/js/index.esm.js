@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.1
+* sldt-utils v2.6.2
 * author 无痕
-* (c) Tue Oct 22 2019 10:28:08 GMT+0800 (GMT+08:00)
+* (c) Tue Oct 22 2019 11:39:00 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -1675,10 +1675,6 @@ const isDestroy = '[S_DIALOG_IS_DESTROY]';
 
 const nextId = '[S_DIALOG_NEXT_ID]';
 
-function getPositionEffectClass (visible, { effect, position }) {
-  return effect ? ('s-animate-' + (position || 'fade') + '-' + (visible ? 'enter' : 'leave')) : ''
-}
-
 function dialog (options) {
   return new Dialog(options)
 }
@@ -1693,10 +1689,10 @@ dialog.defaultOptions = {
   closeBtn: false, // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
   title: '', // 标题
   content: '', // 字符串html内容
-  cancelClass: 's-btn s-dialog-btn-cancel', // 取消按钮class
+  cancelClass: 's-btn s-dialog-cancel-btn', // 取消按钮class
   cancelText: '', // 取消按钮文字
   cancelColor: '', // 取消按钮颜色
-  confirmClass: 's-btn s-dialog-btn-confirm', // 确认按钮class
+  confirmClass: 's-btn s-dialog-confirm-btn', // 确认按钮class
   confirmText: '', // 确认按钮文字
   confirmColor: '', // 确认按钮颜色
   isOnce: false, // 是否为一次性弹框，关闭后立即销毁，并删除dom
@@ -1721,7 +1717,7 @@ dialog.defaultOptions = {
 };
 
 class Dialog {
-  constructor (params) {
+  constructor(params) {
     const self = this;
     const {
       el,
@@ -1856,10 +1852,9 @@ class Dialog {
             $(self.el).css({
               'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
             }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter');
-            // 添加内置效果
-            $(self.wrapper).addClass(getPositionEffectClass(true, opt));
+
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
-            self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+            self[effectControl] = whenTransitionEnds(self.el, function () {
               // 清除执行效果回调函数执行控制对象对象记录
               self[effectControl] && (self[effectControl] = null);
 
@@ -1873,8 +1868,6 @@ class Dialog {
               }
               // 移除效果class
               $(self.el).removeClass('s-dialog-effect-enter');
-              // 移除内置效果
-              $(self.wrapper).removeClass(getPositionEffectClass(true, opt));
               // 触发参数回掉
               isFunction(callback) && callback.call(self);
               // 触发显示后生命周期钩子
@@ -1917,19 +1910,15 @@ class Dialog {
 
             // 开始执行效果
             $(self.el).addClass('s-dialog-effect-leave');
-            // 添加内置效果
-            $(self.wrapper).addClass(getPositionEffectClass(false, opt));
 
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
-            self[effectControl] = whenTransitionEnds(self.wrapper, function () {
+            self[effectControl] = whenTransitionEnds(self.el, function () {
               // 清除执行效果回调函数执行控制对象对象记录
               self[effectControl] && (self[effectControl] = null);
               // 关闭隐藏
               $(self.el).removeClass('s-dialog-visible').css({
                 'z-index': ''
               }).removeClass('s-dialog-effect-leave');
-              // 移除内置效果
-              $(self.wrapper).removeClass(getPositionEffectClass(false, opt));
               // 解除body滚动锁定
               !$('.s-dialog.s-dialog-visible').length && $('html,body').removeClass('s-overflow-hidden');
               // 触发参数回掉
@@ -2417,7 +2406,7 @@ Confirm.defaultOptions = {
  * @LastEditTime: 2019-10-18 10:06:12
  */
 
-const version = '2.6.1';
+const version = '2.6.2';
 
 var index = {
   version,

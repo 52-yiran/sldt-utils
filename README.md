@@ -220,10 +220,10 @@ dialog.defaultOptions = {
   closeBtn: false, // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
   title: '', // 标题
   content: '', // 字符串html内容
-  cancelClass: 's-btn s-dialog-btn-cancel', // 取消按钮class
+  cancelClass: 's-btn s-dialog-cancel-btn', // 取消按钮class
   cancelText: '', // 取消按钮文字
   cancelColor: '', // 取消按钮颜色
-  confirmClass: 's-btn s-dialog-btn-confirm', // 确认按钮class
+  confirmClass: 's-btn s-dialog-confirm-btn', // 确认按钮class
   confirmText: '', // 确认按钮文字
   confirmColor: '', // 确认按钮颜色
   isOnce: false, // 是否为一次性弹框，关闭后立即销毁，并删除dom

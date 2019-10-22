@@ -1,23 +1,14 @@
 @charset "UTF-8";
-.s-animate-fade-enter {
-  -webkit-animation-name: s-animate-fade-enter;
-          animation-name: s-animate-fade-enter; }
-
 @-webkit-keyframes s-animate-fade-enter {
   0% {
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @keyframes s-animate-fade-enter {
   0% {
     opacity: 0; }
   to {
     opacity: 1; } }
-
-.s-animate-fade-leave {
-  -webkit-animation-name: s-animate-fade-leave;
-          animation-name: s-animate-fade-leave; }
 
 @-webkit-keyframes s-animate-fade-leave {
   0% {
@@ -30,10 +21,6 @@
     opacity: 1; }
   to {
     opacity: 0; } }
-
-.s-animate-rotate {
-  -webkit-animation-name: s-animate-rotate;
-          animation-name: s-animate-rotate; }
 
 @-webkit-keyframes s-animate-rotate {
   0% {
@@ -51,10 +38,6 @@
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
 
-.s-animate-middle-enter {
-  -webkit-animation-name: s-animate-middle-enter;
-          animation-name: s-animate-middle-enter; }
-
 @-webkit-keyframes s-animate-middle-enter {
   0% {
     opacity: 0;
@@ -71,10 +54,6 @@
   to {
     opacity: 1; } }
 
-.s-animate-middle-leave {
-  -webkit-animation-name: s-animate-middle-leave;
-          animation-name: s-animate-middle-leave; }
-
 @-webkit-keyframes s-animate-middle-leave {
   0% {
     opacity: 1; }
@@ -90,10 +69,6 @@
     opacity: 0;
     -webkit-transform: translate3d(-50%, -50%, 0) scale(0.9);
             transform: translate3d(-50%, -50%, 0) scale(0.9); } }
-
-.s-animate-top-enter {
-  -webkit-animation-name: s-animate-top-enter;
-          animation-name: s-animate-top-enter; }
 
 @-webkit-keyframes s-animate-top-enter {
   0% {
@@ -115,10 +90,6 @@
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
-.s-animate-top-leave {
-  -webkit-animation-name: s-animate-top-leave;
-          animation-name: s-animate-top-leave; }
-
 @-webkit-keyframes s-animate-top-leave {
   0% {
     opacity: 1; }
@@ -134,10 +105,6 @@
     opacity: 0;
     -webkit-transform: translate3d(0, -100%, 0);
             transform: translate3d(0, -100%, 0); } }
-
-.s-animate-left-enter {
-  -webkit-animation-name: s-animate-left-enter;
-          animation-name: s-animate-left-enter; }
 
 @-webkit-keyframes s-animate-left-enter {
   0% {
@@ -159,10 +126,6 @@
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
-.s-animate-left-leave {
-  -webkit-animation-name: s-animate-left-leave;
-          animation-name: s-animate-left-leave; }
-
 @-webkit-keyframes s-animate-left-leave {
   0% {
     opacity: 1; }
@@ -178,10 +141,6 @@
     opacity: 0;
     -webkit-transform: translate3d(-100%, 0, 0);
             transform: translate3d(-100%, 0, 0); } }
-
-.s-animate-right-enter {
-  -webkit-animation-name: s-animate-right-enter;
-          animation-name: s-animate-right-enter; }
 
 @-webkit-keyframes s-animate-right-enter {
   0% {
@@ -203,10 +162,6 @@
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
-.s-animate-right-leave {
-  -webkit-animation-name: s-animate-right-leave;
-          animation-name: s-animate-right-leave; }
-
 @-webkit-keyframes s-animate-right-leave {
   0% {
     opacity: 1; }
@@ -222,10 +177,6 @@
     opacity: 0;
     -webkit-transform: translate3d(100%, 0, 0);
             transform: translate3d(100%, 0, 0); } }
-
-.s-animate-bottom-enter {
-  -webkit-animation-name: s-animate-bottom-enter;
-          animation-name: s-animate-bottom-enter; }
 
 @-webkit-keyframes s-animate-bottom-enter {
   0% {
@@ -246,10 +197,6 @@
     opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
-
-.s-animate-bottom-leave {
-  -webkit-animation-name: s-animate-bottom-leave;
-          animation-name: s-animate-bottom-leave; }
 
 @-webkit-keyframes s-animate-bottom-leave {
   0% {
@@ -1184,10 +1131,12 @@ button ::after {
               animation-duration: inherit;
       -webkit-animation-fill-mode: inherit;
               animation-fill-mode: inherit; }
-    .s-dialog.s-dialog-effect-enter .s-dialog-mask {
+    .s-dialog.s-dialog-effect-enter .s-dialog-mask,
+    .s-dialog.s-dialog-effect-enter .s-dialog-wrapper {
       -webkit-animation-name: s-animate-fade-enter;
               animation-name: s-animate-fade-enter; }
-    .s-dialog.s-dialog-effect-leave .s-dialog-mask {
+    .s-dialog.s-dialog-effect-leave .s-dialog-mask,
+    .s-dialog.s-dialog-effect-leave .s-dialog-wrapper {
       -webkit-animation-name: s-animate-fade-leave;
               animation-name: s-animate-fade-leave; }
 
@@ -1198,15 +1147,39 @@ button ::after {
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0); }
 
+.s-dialog-position-middle.s-dialog-effect-enter .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-middle-enter;
+          animation-name: s-animate-middle-enter; }
+
+.s-dialog-position-middle.s-dialog-effect-leave .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-middle-leave;
+          animation-name: s-animate-middle-leave; }
+
 .s-dialog-position-top .s-dialog-wrapper {
   position: absolute;
   top: 0;
   width: 100%; }
 
+.s-dialog-position-top.s-dialog-effect-enter .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-top-enter;
+          animation-name: s-animate-top-enter; }
+
+.s-dialog-position-top.s-dialog-effect-leave .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-top-leave;
+          animation-name: s-animate-top-leave; }
+
 .s-dialog-position-bottom .s-dialog-wrapper {
   position: absolute;
   bottom: 0;
   width: 100%; }
+
+.s-dialog-position-bottom.s-dialog-effect-enter .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-bottom-enter;
+          animation-name: s-animate-bottom-enter; }
+
+.s-dialog-position-bottom.s-dialog-effect-leave .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-bottom-leave;
+          animation-name: s-animate-bottom-leave; }
 
 .s-dialog-position-left .s-dialog-wrapper {
   position: absolute;
@@ -1214,11 +1187,27 @@ button ::after {
   width: 70%;
   height: 100%; }
 
+.s-dialog-position-left.s-dialog-effect-enter .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-left-enter;
+          animation-name: s-animate-left-enter; }
+
+.s-dialog-position-left.s-dialog-effect-leave .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-left-leave;
+          animation-name: s-animate-left-leave; }
+
 .s-dialog-position-right .s-dialog-wrapper {
   position: absolute;
   right: 0;
   width: 70%;
   height: 100%; }
+
+.s-dialog-position-right.s-dialog-effect-enter .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-right-enter;
+          animation-name: s-animate-right-enter; }
+
+.s-dialog-position-right.s-dialog-effect-leave .s-dialog-wrapper {
+  -webkit-animation-name: s-animate-right-leave;
+          animation-name: s-animate-right-leave; }
 
 .s-dialog-effect {
   -webkit-animation-duration: .3s;

@@ -1,7 +1,4 @@
 // fade效果
-.s-animate-fade-enter {
-  animation-name: s-animate-fade-enter;
-}
 @keyframes s-animate-fade-enter {
   0% {
     opacity: 0
@@ -12,9 +9,6 @@
   }
 }
 
-.s-animate-fade-leave {
-  animation-name: s-animate-fade-leave;
-}
 @keyframes s-animate-fade-leave {
   0% {
     opacity: 1
@@ -26,10 +20,6 @@
 }
 
 // 旋转效果
-.s-animate-rotate {
-  animation-name: s-animate-rotate;
-}
-
 @keyframes s-animate-rotate {
   0% {
     transform: rotate(0deg)
@@ -40,11 +30,8 @@
   }
 }
 
-// 弹框效果
-.s-animate-middle-enter {
-  animation-name: s-animate-middle-enter;
-}
 
+// 显示和隐藏效果
 @keyframes s-animate-middle-enter {
   0% {
     opacity: 0;
@@ -56,10 +43,6 @@
   }
 }
 
-.s-animate-middle-leave {
-  animation-name: s-animate-middle-leave;
-}
-
 @keyframes s-animate-middle-leave {
   0% {
     opacity: 1;
@@ -69,10 +52,6 @@
     opacity: 0;
     transform: translate3d(-50%, -50%, 0) scale(0.9);
   }
-}
-
-.s-animate-top-enter {
-  animation-name: s-animate-top-enter;
 }
 
 @keyframes s-animate-top-enter {
@@ -87,10 +66,6 @@
   }
 }
 
-.s-animate-top-leave {
-  animation-name: s-animate-top-leave;
-}
-
 @keyframes s-animate-top-leave {
   0% {
     opacity: 1
@@ -100,10 +75,6 @@
     opacity: 0;
     transform: translate3d(0, -100%, 0)
   }
-}
-
-.s-animate-left-enter {
-  animation-name: s-animate-left-enter;
 }
 
 @keyframes s-animate-left-enter {
@@ -118,10 +89,6 @@
   }
 }
 
-.s-animate-left-leave {
-  animation-name: s-animate-left-leave;
-}
-
 @keyframes s-animate-left-leave {
   0% {
     opacity: 1
@@ -131,10 +98,6 @@
     opacity: 0;
     transform: translate3d(-100%, 0, 0)
   }
-}
-
-.s-animate-right-enter {
-  animation-name: s-animate-right-enter;
 }
 
 @keyframes s-animate-right-enter {
@@ -149,10 +112,6 @@
   }
 }
 
-.s-animate-right-leave {
-  animation-name: s-animate-right-leave;
-}
-
 @keyframes s-animate-right-leave {
   0% {
     opacity: 1
@@ -162,10 +121,6 @@
     opacity: 0;
     transform: translate3d(100%, 0, 0)
   }
-}
-
-.s-animate-bottom-enter {
-  animation-name: s-animate-bottom-enter;
 }
 
 @keyframes s-animate-bottom-enter {
@@ -178,10 +133,6 @@
     opacity: 1;
     transform: translate3d(0, 0, 0)
   }
-}
-
-.s-animate-bottom-leave {
-  animation-name: s-animate-bottom-leave;
 }
 
 @keyframes s-animate-bottom-leave {

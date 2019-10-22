@@ -49,13 +49,17 @@
     }
 
     &.s-dialog-effect-enter {
-      .s-dialog-mask {
+
+      .s-dialog-mask,
+      .s-dialog-wrapper {
         animation-name: s-animate-fade-enter;
       }
     }
 
     &.s-dialog-effect-leave {
-      .s-dialog-mask {
+
+      .s-dialog-mask,
+      .s-dialog-wrapper {
         animation-name: s-animate-fade-leave;
       }
     }
@@ -70,6 +74,18 @@
     top: 45%;
     transform: translate3d(-50%, -50%, 0);
   }
+
+  &.s-dialog-effect-enter {
+    .s-dialog-wrapper {
+      animation-name: s-animate-middle-enter;
+    }
+  }
+
+  &.s-dialog-effect-leave {
+    .s-dialog-wrapper {
+      animation-name: s-animate-middle-leave;
+    }
+  }
 }
 
 // top
@@ -79,6 +95,18 @@
     top: 0;
     width: 100%;
   }
+
+  &.s-dialog-effect-enter {
+    .s-dialog-wrapper {
+      animation-name: s-animate-top-enter;
+    }
+  }
+
+  &.s-dialog-effect-leave {
+    .s-dialog-wrapper {
+      animation-name: s-animate-top-leave;
+    }
+  }
 }
 
 // bottom
@@ -87,6 +115,18 @@
     position: absolute;
     bottom: 0;
     width: 100%;
+  }
+
+  &.s-dialog-effect-enter {
+    .s-dialog-wrapper {
+      animation-name: s-animate-bottom-enter;
+    }
+  }
+
+  &.s-dialog-effect-leave {
+    .s-dialog-wrapper {
+      animation-name: s-animate-bottom-leave;
+    }
   }
 }
 
@@ -98,6 +138,18 @@
     width: 70%;
     height: 100%;
   }
+
+  &.s-dialog-effect-enter {
+    .s-dialog-wrapper {
+      animation-name: s-animate-left-enter;
+    }
+  }
+
+  &.s-dialog-effect-leave {
+    .s-dialog-wrapper {
+      animation-name: s-animate-left-leave;
+    }
+  }
 }
 
 // right
@@ -107,6 +159,18 @@
     right: 0;
     width: 70%;
     height: 100%;
+  }
+
+  &.s-dialog-effect-enter {
+    .s-dialog-wrapper {
+      animation-name: s-animate-right-enter;
+    }
+  }
+
+  &.s-dialog-effect-leave {
+    .s-dialog-wrapper {
+      animation-name: s-animate-right-leave;
+    }
   }
 }
 
