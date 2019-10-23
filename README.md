@@ -72,14 +72,14 @@ S.utf16to8 (str)
 S.utf8to16 (str)
 ```
 
-## *S.base64Encode  base64编码*
+## *S.base64encode  base64编码*
 ```
-S.base64Encode (str)
+S.base64encode (str)
 ```
 
-## *S.base64Decode  base64解码*
+## *S.base64decode  base64解码*
 ```
-S.base64Decode (str)
+S.base64decode (str)
 ```
 
 ## *S.debounce 函数防抖*
