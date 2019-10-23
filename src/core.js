@@ -43,7 +43,7 @@ export function isObject (value) {
 }
 // 是否为数组
 export function isArray (value) {
-  return Array.isArray ? Array.isArray(value) : protoType(value) === 'array'
+  return protoType(value) === 'array'
 }
 // 判断是否为number
 export function isNumber (value) {
@@ -55,11 +55,15 @@ export function isDate (value) {
 }
 // 判断是否为promise对象
 export function isPromise (value) {
-  return protoType(value) === 'promise'
+  return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function'
+}
+// 类数组转数组
+export function toArray (value) {
+  return isArrayLike(value) ? Array.prototype.slice.call(value) : []
 }
 // 去掉字符串2边空格
 export function trim (str = '') {
-  return str !== null ? (String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')) : ''
+  return str !== null ? String(str).trim() : ''
 }
 // 数组和对象循环
 export function each (obj, callback) {
@@ -107,13 +111,6 @@ export function extend (...args) {
     }
   }
   return result
-}
-// 获取window和css媒体查询同步宽高
-export function getWindowWidth () {
-  return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-}
-export function getWindowHeight () {
-  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 }
 // repeat
 export function repeat (str, num) {

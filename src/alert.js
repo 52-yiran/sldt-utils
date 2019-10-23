@@ -4,7 +4,7 @@ import './styles/alert.scss'
 
 function Alert (options) {
   return new Promise((resolve, reject) => {
-    const params = extend(true, {}, Alert.defaultOptions, isObject(options) ? options : { content: options })
+    const params = extend({}, Alert.defaultOptions, isObject(options) ? options : { content: options })
 
     params.onCancel = reject
     params.onConfirm = resolve
@@ -18,7 +18,7 @@ Alert.defaultOptions = {
   title: '',
   content: '',
   confirmText: '确定',
-  confirmColor: '#1989fa',
+  confirmColor: '#007bff',
   maskOpacity: 0.5,
   isOnce: true,
   preventTouchmove: true

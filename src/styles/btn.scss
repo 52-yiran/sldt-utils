@@ -9,7 +9,7 @@
   user-select: none;
   outline: none;
   border-radius: 0;
-  background-color: transparent;
+  background: transparent;
   color: inherit;
   border: 0;
   margin: 0;
@@ -17,6 +17,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  &::after {
+    border: 0;
+  }
 
   &.s-btn-block {
     width: 100%;

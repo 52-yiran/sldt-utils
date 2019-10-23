@@ -10,7 +10,7 @@ import S from 'sldt-utils'
 ```
 #### 2. umd静态引入 全局变量为S
 ```
-dist/style/index.min.css
+dist/css/index.min.css
 dist/js/index.min.js
 ```
 
@@ -84,12 +84,12 @@ S.base64Decode (str)
 
 ## *S.debounce 函数防抖*
 ```
-S.debounce(fn,3000) //返回一个新函数
+S.debounce(fn, wait = 300, immediate = false) //返回一个新函数
 ```
 
 ## *S.throttle 函数节流*
 ```
-S.throttle(fn,300) //返回一个新函数
+S.throttle(fn, wait = 300, immediate = false) //返回一个新函数
 ```
 
 ## *S.regExp 常用正则方法*
@@ -145,13 +145,20 @@ S.useRem(设计稿宽度)
 10px=0.1rem
 ```
 
-## *S.$ 操作dom的方法库，dom7简化版*
+## *S.getElem 获取dom或创建dom对象*
 ```
-const $=S.$;
-
-$('body').addClass('a').on('click',()=>{}).removeClass('a')
+S.getElem(selecter,context) //返回数组格式
 ```
 
+## *S.addClass 添加class*
+```
+S.addClass(selecter,class)
+```
+
+## *S.removeClass 移除class*
+```
+S.removeClass(selecter,class)
+```
 
 ## *S.alert*
 ```
@@ -185,27 +192,43 @@ S.confirm({
 
 ```
 
-
-## *loading*
-```
-S.showLoading('加载中...')
-S.hideLoading()
-```
-
-
 ## *S.toast  提示信息弹框*
 ```
 S.toast(1);
 S.toast.success(1);
-S.toast.fail(1)
+S.toast.error(1)
+S.toast.warning(1)
+S.toast.loading('加载中...');
+
 S.toast.clear();//清除所有toast
+
 S.toast({
-  className: 's-toast-dialog',
+  type: 'success',
   icon: '',
   image: '',
   content: '提示内容',
   duration: 2000
 })
+
+//修改默认配置
+
+S.toast.defaultOptions={
+  type: 'default',
+  icon: '',
+  image: '',
+  content: '提示内容',
+  duration: 2000
+}
+
+//修改type为success的默认配置
+S.toast.success.defaultOptions={
+  type: 'success',
+  icon: '',
+  image: '',
+  content: '提示内容',
+  duration: 2000
+}
+
 ```
 
 ## *S.dialog  弹框*

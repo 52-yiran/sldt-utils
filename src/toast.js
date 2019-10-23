@@ -6,11 +6,16 @@ import { extend, isObject } from './core'
 let instanceToast = null
 
 function Toast (options) {
+
   Toast.clear()
 
-  const params = extend(true, {}, Toast.defaultOptions, isObject(options) ? options : { content: options })
+  let params = isObject(options) ? options : { content: options }
+  let type = options.type || 'default'
+  params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), params)
 
-  const { icon, image, content } = params
+  const { image, icon, content } = params
+
+  params.className += ` s-toast-${type}`
 
   if (icon || image) {
     params.className += ' s-toast-middle'
@@ -18,10 +23,10 @@ function Toast (options) {
 
   params.content = ''
 
-  if (icon) {
-    params.content += `<i class="s-icon s-icon-${icon} s-toast-icon"></i>`
-  } else if (image) {
+  if (image) {
     params.content += `<img class="s-toast-icon" src="${image}"/>`
+  } else if (icon) {
+    params.content += `<i class="${icon} s-toast-icon"></i>`
   }
 
   if (content || content === 0) {
@@ -35,6 +40,7 @@ function Toast (options) {
 
 Toast.defaultOptions = {
   className: 's-toast-dialog',
+  type: 'default',
   icon: '',
   image: '',
   content: '',
@@ -42,21 +48,23 @@ Toast.defaultOptions = {
   position: '',
   mask: false,
   isOnce: true
-}
+};
 
-Toast.success = function (options) {
-  return Toast(extend(true, {
-    className: 's-toast-dialog s-toast-success',
-    icon: 'success'
-  }, isObject(options) ? options : { content: options }))
-}
-
-Toast.fail = function (options) {
-  return Toast(extend(true, {
-    className: 's-toast-dialog s-toast-fail',
-    icon: 'fail'
-  }, isObject(options) ? options : { content: options }))
-}
+['success', 'error', 'warning', 'loading'].forEach(type => {
+  Toast[type] = function (options) {
+    return Toast(extend({ type }, isObject(options) ? options : { content: options }))
+  }
+  Toast[type].defaultOptions = extend({
+    type,
+    icon: '',
+    image: ''
+  }, type === 'loading' ? {
+    effect: false,
+    position: 'middle',
+    duration: 0,
+    preventTouchmove: true
+  } : {})
+})
 
 Toast.clear = function () {
   if (instanceToast) {

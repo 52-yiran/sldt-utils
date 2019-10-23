@@ -1,7 +1,7 @@
 /*
   小方法收集
 */
-import { protoType, each, isArrayLike } from './core'
+import { protoType, each } from './core'
 
 // 路径拼接
 export function joinPath (...args) {
@@ -16,7 +16,7 @@ export function joinPath (...args) {
       return path.replace(/^\/+|\/+$/g, '')
     }
   }) : args).join('/')
-};
+}
 
 // 获取url参数
 export function getUrlParam (name, url) {
@@ -69,7 +69,7 @@ export function toArrayData (data, value = 'value', label = 'label') {
     })
   }
   return listData
-};
+}
 
 // 获取随机数
 export function getRandom (num) {
@@ -78,24 +78,7 @@ export function getRandom (num) {
     str += Math.floor(Math.random() * 10)
   }
   return str
-};
-
-// 获取浏览器中最大z-index值
-export function getMaxZindex (selector, minZindex) {
-  let nodes = null
-  selector = selector || '*'
-  minZindex = Math.max(1, parseInt(minZindex) || 1)
-  if (protoType(selector) === 'string') {
-    nodes = document.querySelectorAll(selector)
-  } else if (isArrayLike(selector)) {
-    nodes = selector
-  } else if (selector instanceof HTMLElement) {
-    nodes = [selector]
-  }
-  return Math.max.apply(null, [minZindex].concat(Array.prototype.slice.call(nodes || []).map(el => {
-    return parseInt(el.style.zIndex) || 1
-  })))
-};
+}
 
 // 加载一张图片
 export function loadImage (src) {
@@ -105,7 +88,7 @@ export function loadImage (src) {
     img.onerror = reject
     img.src = src
   })
-};
+}
 
 // 浏览器下载blob文件流
 export function downloadBlob (blob, filename) {
@@ -117,4 +100,4 @@ export function downloadBlob (blob, filename) {
   a.click()
   document.body.removeChild(a)
   window.URL.revokeObjectURL(href) // 释放掉blob对象
-};
+}

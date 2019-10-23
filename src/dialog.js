@@ -1,11 +1,11 @@
 import './styles/base.scss'
 import './styles/dialog.scss'
 
-import $ from './dom'
 import { extend, isFunction } from './core'
 import { whenTransitionEnds } from './transition'
-import { getMaxZindex } from './tools'
+import { getElem, addClass, removeClass, getMaxZindex } from './dom'
 
+const instance = '[S_DIALOG_INSTANCE]'
 const visible = '[S_DIALOG_VISIBLE]'
 const visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]'
 const autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]'
@@ -82,10 +82,8 @@ class Dialog {
       onInit,
       onCancel,
       onConfirm
-    } = self.options = extend(true, {}, dialog.defaultOptions, params)
+    } = self.options = extend({}, dialog.defaultOptions, params)
 
-    // 添加dom7到实例属性
-    self['$'] = $
     // 弹框显示状态
     self[visible] = false
     // 弹框显示隐藏定时器,防止多次显示，隐藏同步切换
@@ -111,63 +109,79 @@ class Dialog {
       isFunction(onConfirm) && onConfirm.call(self)
       self.hide()
     }
+
     // 根dom节点
-    let $el = $(el)
-    if (!$el.length) {
-      $el = $('<div class="s-dialog"></div>')
-      const $wrapper = $('<div class="s-dialog-wrapper"></div>')
+    let elem = getElem(el)[0]
+    if (!elem) {
+      elem = getElem('<div class="s-dialog"></div>')[0]
+      const wrapper = getElem('<div class="s-dialog-wrapper"></div>')[0]
 
       // 标题
       if (title !== '') {
-        $wrapper.append('<div class="s-dialog-header">' + title + '</div>')
+        wrapper.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0])
       }
       // 内容
       if (content !== '') {
-        $wrapper.append('<div class="s-dialog-content">' + content + '</div>')
+        wrapper.appendChild(getElem('<div class="s-dialog-content">' + content + '</div>')[0])
       }
       // 按钮
       if (cancelText !== '' || confirmText !== '') {
-        const $footer = $('<div class="s-dialog-footer"></div>')
+        const footer = getElem('<div class="s-dialog-footer"></div>')[0]
         if (cancelText !== '') {
-          $footer.append($(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`).on('click', cancel))
+          const cancelBtn = getElem(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`)[0]
+          cancelBtn.addEventListener('click', cancel)
+          footer.appendChild(cancelBtn)
         }
         if (confirmText !== '') {
-          $footer.append($(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`).on('click', confirm))
+          const confirmBtn = getElem(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`)[0]
+          confirmBtn.addEventListener('click', confirm)
+          footer.appendChild(confirmBtn)
         }
-        $wrapper.append($footer)
+        wrapper.appendChild(footer)
       }
-      $el.append($wrapper)
+      elem.appendChild(wrapper)
     } else {
-      $el = $el.eq(0)
-      const instanceDialog = $el.data('s-dialog')
-      if (instanceDialog) return instanceDialog
+      if (elem[instance]) return elem[instance]
     }
-    // 弹框实例添加dom节点记录
-    self.el = $el.addClass(position ? ('s-dialog-position-' + position) : '')
-      .addClass(effect ? 's-dialog-effect' : '')
-      .addClass(className)
-      .data('s-dialog', self)[0]
-    // 是否显示遮罩
-    if (mask) {
-      self.mask = $('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]
-      // 点击遮罩是否关闭
-      maskClose && $(self.mask).on('click', cancel)
-      $el.prepend(self.mask)
-    }
-    self.wrapper = $el.find('.s-dialog-wrapper')[0]
 
-    // 关闭 x
-    if (closeBtn === true) {
-      $(self.wrapper).append(self.closeBtn = $('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>').on('click', cancel)[0])
-    } else if (typeof closeBtn === 'string' && closeBtn) {
-      $(self.wrapper).append(self.closeBtn = $(closeBtn).on('click', cancel)[0])
-    }
-    // 挂载dom
-    $(mountElem).eq(0).append($el)
+    addClass(elem, position ? ('s-dialog-position-' + position) : '')
+    addClass(elem, effect ? 's-dialog-effect' : '')
+    addClass(elem, className)
+    elem[instance] = self
     // 锁定touchmove滚动
-    preventTouchmove && $el.on('touchmove', function (e) {
+    preventTouchmove && elem.addEventListener('touchmove', function (e) {
       e.preventDefault()
     })
+
+    // 弹框实例添加dom节点记录
+    self.el = elem
+    // 是否显示遮罩
+    if (mask) {
+      self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]
+      // 点击遮罩是否关闭
+      maskClose && self.mask.addEventListener('click', cancel)
+      elem.insertBefore(self.mask, elem.firstElementChild)
+    }
+
+    const wrapper = getElem('.s-dialog-wrapper', elem)[0]
+    // 关闭 x
+    if (closeBtn === true) {
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>')[0]
+    } else if (typeof closeBtn === 'string' && closeBtn) {
+      self.closeBtn = getElem(closeBtn)[0]
+    }
+
+    if (wrapper) {
+      self.wrapper = wrapper
+      if (self.closeBtn) {
+        self.closeBtn.addEventListener('click', cancel)
+        wrapper.appendChild(self.closeBtn)
+      }
+    }
+
+    // 挂载dom
+    const mountNode = getElem(mountElem)[0]
+    mountNode && mountNode.appendChild(elem);
     // 触发初始化后生命周期钩子
     isFunction(onInit) && onInit.call(self)
   }
@@ -189,10 +203,11 @@ class Dialog {
             self[visible] = true
 
             // 锁定外层滚动
-            opt.lockScroll && $('html,body').addClass('s-overflow-hidden')
-            $(self.el).css({
-              'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
-            }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter')
+            opt.lockScroll && addClass('html,body', 's-overflow-hidden')
+            // z-index层级设置
+            self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
+            // 显示
+            addClass(self.el, 's-dialog-visible s-dialog-effect-enter')
 
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
             self[effectControl] = whenTransitionEnds(self.el, function () {
@@ -208,7 +223,7 @@ class Dialog {
                 }, duration)
               }
               // 移除效果class
-              $(self.el).removeClass('s-dialog-effect-enter')
+              removeClass(self.el, 's-dialog-effect-enter')
               // 触发参数回掉
               isFunction(callback) && callback.call(self)
               // 触发显示后生命周期钩子
@@ -250,18 +265,18 @@ class Dialog {
             clearTimeout(self[autoCloseTimeOutId])
 
             // 开始执行效果
-            $(self.el).addClass('s-dialog-effect-leave')
+            addClass(self.el, 's-dialog-effect-leave')
 
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
             self[effectControl] = whenTransitionEnds(self.el, function () {
               // 清除执行效果回调函数执行控制对象对象记录
               self[effectControl] && (self[effectControl] = null)
               // 关闭隐藏
-              $(self.el).removeClass('s-dialog-visible').css({
-                'z-index': ''
-              }).removeClass('s-dialog-effect-leave')
+              removeClass(self.el, 's-dialog-visible s-dialog-effect-leave')
+              self.el.style.zIndex = ''
+
               // 解除body滚动锁定
-              !$('.s-dialog.s-dialog-visible').length && $('html,body').removeClass('s-overflow-hidden')
+              !getElem('.s-dialog.s-dialog-visible').length && removeClass('html,body', 's-overflow-hidden')
               // 触发参数回掉
               isFunction(callback) && callback.call(self)
               // 触发隐藏后生命周期钩子
@@ -306,10 +321,11 @@ class Dialog {
       const fn = function () {
         clearTimeout(self[visibleTimeOutId])
         clearTimeout(self[autoCloseTimeOutId])
-        $(self.el).removeClass(`s-dialog-effect s-dialog-position-${position} ${className}`).removeData('s-dialog')
-        self.mask && $(self.mask).remove()
-        self.closeBtn && $(self.closeBtn).remove()
-        removeElem && $(self.el).remove()
+        removeClass(self.el, `s-dialog-effect s-dialog-position-${position} ${className}`)
+        delete self.el[instance]
+        self.mask && self.mask.parentNode.removeChild(self.mask)
+        self.closeBtn && self.closeBtn.parentNode.removeChild(self.closeBtn)
+        removeElem && self.el.parentNode.removeChild(self.el)
         self[inDestroy] = false
         self[isDestroy] = true
         // 触发销毁后生命周期钩子

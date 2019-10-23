@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-10-18 10:06:12
+ * @LastEditTime: 2019-10-23 14:32:44
  */
 import * as core from './core'
 import * as regExp from './regExp'
@@ -12,10 +12,9 @@ import * as base64 from './base64'
 import * as cookie from './cookie'
 import * as format from './format'
 import * as tools from './tools'
+import * as dom from './dom'
 import * as transition from './transition'
-import * as loading from './loading'
 
-import $ from './dom'
 import useRem from './useRem'
 import eventEmit from './eventEmit'
 import countDown from './countDown'
@@ -29,7 +28,6 @@ import confirm from './confirm'
 export const version = '_VERSION_'
 
 export {
-  $,
   useRem,
   eventEmit,
   countDown,
@@ -47,8 +45,8 @@ export * from './base64'
 export * from './cookie'
 export * from './format'
 export * from './tools'
+export * from './dom'
 export * from './transition'
-export * from './loading'
 
 export default {
   version,
@@ -58,8 +56,7 @@ export default {
   ...format,
   ...tools,
   ...transition,
-  ...loading,
-  $,
+  ...dom,
   countDown,
   useRem,
   regExp,

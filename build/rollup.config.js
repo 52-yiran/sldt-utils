@@ -95,7 +95,7 @@ export default function (ENV) {
       plugins: [
         postcss({
           extensions: ['css', 'scss'],
-          extract: resolve(`${outputDir}/style/index${((isProd && suffix == '.min') ? '.min' : '')}.css`),
+          extract: resolve(`${outputDir}/css/index${((isProd && suffix == '.min') ? '.min' : '')}.css`),
           minimize: isProd && suffix == '.min',
           plugins: [
             simplevars(),

@@ -2,7 +2,7 @@ import { extend, isObject } from './core'
 import Alert from './alert'
 
 function Confirm (options) {
-  return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : { content: options }))
+  return Alert(extend({}, Confirm.defaultOptions, isObject(options) ? options : { content: options }))
 }
 
 Confirm.defaultOptions = {

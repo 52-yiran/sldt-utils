@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.2
+* sldt-utils v2.6.3
 * author 无痕
-* (c) Tue Oct 22 2019 11:39:00 GMT+0800 (GMT+08:00)
+* (c) Wed Oct 23 2019 14:50:31 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -176,7 +176,7 @@
   } // 是否为数组
 
   function isArray(value) {
-    return Array.isArray ? Array.isArray(value) : protoType(value) === 'array';
+    return protoType(value) === 'array';
   } // 判断是否为number
 
   function isNumber(value) {
@@ -188,12 +188,16 @@
   } // 判断是否为promise对象
 
   function isPromise(value) {
-    return protoType(value) === 'promise';
+    return !!value && (_typeof(value) === 'object' || typeof value === 'function') && typeof value.then === 'function';
+  } // 类数组转数组
+
+  function toArray(value) {
+    return isArrayLike(value) ? Array.prototype.slice.call(value) : [];
   } // 去掉字符串2边空格
 
   function trim() {
     var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    return str !== null ? String.prototype.trim ? String.prototype.trim.call(String(str)) : String(str).replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') : '';
+    return str !== null ? String(str).trim() : '';
   } // 数组和对象循环
 
   function each(obj, callback) {
@@ -256,13 +260,6 @@
     }
 
     return result;
-  } // 获取window和css媒体查询同步宽高
-
-  function getWindowWidth() {
-    return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-  }
-  function getWindowHeight() {
-    return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
   } // repeat
 
   function repeat(str, num) {
@@ -306,11 +303,10 @@
     isNumber: isNumber,
     isDate: isDate,
     isPromise: isPromise,
+    toArray: toArray,
     trim: trim,
     each: each,
     extend: extend,
-    getWindowWidth: getWindowWidth,
-    getWindowHeight: getWindowHeight,
     repeat: repeat,
     padStart: padStart,
     padEnd: padEnd
@@ -373,7 +369,7 @@
    * @Author: 无痕
    * @Date: 2019-09-23 15:48:15
    * @LastEditors:
-   * @LastEditTime: 2019-10-12 15:08:26
+   * @LastEditTime: 2019-10-22 15:30:26
    */
   // 下面是64个基本的编码
   var base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -439,7 +435,7 @@
     return out;
   } // 编码的方法
 
-  function base64Encode() {
+  function base64encode() {
     var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     str = String(str);
     var out, i, len;
@@ -478,7 +474,7 @@
     return out;
   } // 解码的方法
 
-  function base64Decode() {
+  function base64decode() {
     var str = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var c1, c2, c3, c4;
     var i, len, out;
@@ -545,8 +541,8 @@
     __proto__: null,
     utf16to8: utf16to8,
     utf8to16: utf8to16,
-    base64Encode: base64Encode,
-    base64Decode: base64Decode
+    base64encode: base64encode,
+    base64decode: base64decode
   });
 
   /*
@@ -758,7 +754,7 @@
         return path.replace(/^\/+|\/+$/g, '');
       }
     }) : args).join('/');
-  }
+  } // 获取url参数
 
   function getUrlParam(name, url) {
     var reg = new RegExp('(\\?|&|^)' + name + '=([^&]*)(&|$)');
@@ -813,7 +809,7 @@
     }
 
     return listData;
-  }
+  } // 获取随机数
 
   function getRandom(num) {
     var str = '';
@@ -823,25 +819,7 @@
     }
 
     return str;
-  }
-
-  function getMaxZindex(selector, minZindex) {
-    var nodes = null;
-    selector = selector || '*';
-    minZindex = Math.max(1, parseInt(minZindex) || 1);
-
-    if (protoType(selector) === 'string') {
-      nodes = document.querySelectorAll(selector);
-    } else if (isArrayLike(selector)) {
-      nodes = selector;
-    } else if (selector instanceof HTMLElement) {
-      nodes = [selector];
-    }
-
-    return Math.max.apply(null, [minZindex].concat(Array.prototype.slice.call(nodes || []).map(function (el) {
-      return parseInt(el.style.zIndex) || 1;
-    })));
-  }
+  } // 加载一张图片
 
   function loadImage(src) {
     return new Promise(function (resolve, reject) {
@@ -850,7 +828,7 @@
       img.onerror = reject;
       img.src = src;
     });
-  }
+  } // 浏览器下载blob文件流
 
   function downloadBlob(blob, filename) {
     var a = document.createElement('a');
@@ -873,9 +851,92 @@
     privatePhone: privatePhone,
     toArrayData: toArrayData,
     getRandom: getRandom,
-    getMaxZindex: getMaxZindex,
     loadImage: loadImage,
     downloadBlob: downloadBlob
+  });
+
+  function getElem(selector, context) {
+    var arr = [];
+
+    if (selector) {
+      if (typeof selector === 'string') {
+        selector = selector.trim();
+
+        if (selector.indexOf('<') >= 0 && selector.indexOf('>') >= 0) {
+          var tag = 'div';
+          if (selector.indexOf('<li') === 0) { tag = 'ul'; }
+          if (selector.indexOf('<tr') === 0) { tag = 'tbody'; }
+          if (selector.indexOf('<td') === 0 || selector.indexOf('<th') === 0) { tag = 'tr'; }
+          if (selector.indexOf('<tbody') === 0) { tag = 'table'; }
+          if (selector.indexOf('<option') === 0) { tag = 'select'; }
+          var el = document.createElement(tag);
+          el.innerHTML = selector;
+          arr = toArray(el.children);
+        } else {
+          arr = toArray((context || document).querySelectorAll(selector));
+        }
+      } else if (selector.nodeType) {
+        arr = [selector];
+      } else {
+        arr = toArray(selector).filter(function (el) {
+          return el.nodeType;
+        });
+      }
+    }
+
+    return arr;
+  } // 添加class
+
+  function addClass(selector, value) {
+    if (value = trim(value)) {
+      var classes = value.split(/\s+/g);
+      getElem(selector).forEach(function (el) {
+        var cur = ' ' + (el.getAttribute('class') || '').trim() + ' ';
+        classes.forEach(function (cls) {
+          if (cur.indexOf(' ' + cls + ' ') < 0) {
+            cur += cls + ' ';
+          }
+        });
+        el.setAttribute('class', cur.trim());
+      });
+    }
+  } // 移除class
+
+  function removeClass(selector, value) {
+    if (value = trim(value)) {
+      var classes = value.split(/\s+/g);
+      getElem(selector).forEach(function (el) {
+        var cur = (el.getAttribute('class') || '').trim();
+
+        if (cur && (cur = ' ' + cur + ' ')) {
+          classes.forEach(function (cls) {
+            if (cur.indexOf(' ' + cls + ' ') > -1) {
+              cur = cur.replace(' ' + cls + ' ', ' ');
+            }
+          });
+
+          if (cur && (cur = cur.trim())) {
+            el.setAttribute('class', cur);
+          } else {
+            el.removeAttribute('class');
+          }
+        }
+      });
+    }
+  } // 获取浏览器中最大z-index值
+
+  function getMaxZindex(selector, minZindex) {
+    return Math.max.apply(null, [Math.max(1, parseInt(minZindex) || 1)].concat(getElem(selector).map(function (el) {
+      return parseInt(el.style.zIndex) || 1;
+    })));
+  }
+
+  var dom = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getElem: getElem,
+    addClass: addClass,
+    removeClass: removeClass,
+    getMaxZindex: getMaxZindex
   });
 
   function toMs(s) {
@@ -1022,1646 +1083,6 @@
     supportCss3: supportCss3,
     getTransitionInfo: getTransitionInfo,
     whenTransitionEnds: whenTransitionEnds
-  });
-
-  /*
-   * @Name: Sdom7
-   * @Descripttion: 一个常用dom操作方法库,Dom7简化版
-   * @Author: 无痕
-   * @Date: 2019-10-11 09:57:44
-   * @LastEditors:
-   * @LastEditTime: 2019-10-12 14:51:12
-   */
-  function unique(arr) {
-    var uniqueArray = [];
-
-    for (var i = 0; i < arr.length; i += 1) {
-      if (uniqueArray.indexOf(arr[i]) === -1) { uniqueArray.push(arr[i]); }
-    }
-
-    return uniqueArray;
-  }
-
-  function toCamelCase(string) {
-    return string.toLowerCase().replace(/-(.)/g, function (match, group1) {
-      return group1.toUpperCase();
-    });
-  }
-
-  function $(selector, context) {
-    var arr = [];
-    var i = 0;
-
-    if (selector && !context) {
-      if (selector instanceof Sdom7) {
-        return selector;
-      }
-    }
-
-    if (selector) {
-      // String
-      if (typeof selector === 'string') {
-        var els;
-        var tempParent;
-        var html = selector.trim();
-
-        if (html.indexOf('<') >= 0 && html.indexOf('>') >= 0) {
-          var toCreate = 'div';
-          if (html.indexOf('<li') === 0) { toCreate = 'ul'; }
-          if (html.indexOf('<tr') === 0) { toCreate = 'tbody'; }
-          if (html.indexOf('<td') === 0 || html.indexOf('<th') === 0) { toCreate = 'tr'; }
-          if (html.indexOf('<tbody') === 0) { toCreate = 'table'; }
-          if (html.indexOf('<option') === 0) { toCreate = 'select'; }
-          tempParent = document.createElement(toCreate);
-          tempParent.innerHTML = html;
-
-          for (i = 0; i < tempParent.childNodes.length; i += 1) {
-            arr.push(tempParent.childNodes[i]);
-          }
-        } else {
-          if (!context && selector[0] === '#' && !selector.match(/[ .<>:~]/)) {
-            // Pure ID selector
-            els = [document.getElementById(selector.trim().split('#')[1])];
-          } else {
-            // Other selectors
-            if (context) {
-              els = $(context).find(selector.trim());
-            } else {
-              els = document.querySelectorAll(selector.trim());
-            }
-          }
-
-          for (i = 0; i < els.length; i += 1) {
-            if (els[i]) { arr.push(els[i]); }
-          }
-        }
-      } else if (selector.nodeType || selector === window || selector === document) {
-        // Node/element
-        arr.push(selector);
-      } else if (selector.length > 0 && selector[0].nodeType) {
-        // Array of elements or instance of Dom
-        for (i = 0; i < selector.length; i += 1) {
-          arr.push(selector[i]);
-        }
-      }
-    }
-
-    return new Sdom7(arr);
-  }
-
-  var Sdom7 =
-  /*#__PURE__*/
-  function () {
-    function Sdom7(arr) {
-      _classCallCheck(this, Sdom7);
-
-      var self = this;
-
-      for (var i = 0; i < arr.length; i += 1) {
-        self[i] = arr[i];
-      }
-
-      self.length = arr.length;
-      return this;
-    }
-
-    _createClass(Sdom7, [{
-      key: "find",
-      value: function find(selector) {
-        var foundElements = [];
-
-        for (var i = 0; i < this.length; i += 1) {
-          var found = this[i].querySelectorAll(selector);
-
-          for (var j = 0; j < found.length; j += 1) {
-            foundElements.push(found[j]);
-          }
-        }
-
-        return new Sdom7(foundElements);
-      }
-    }, {
-      key: "addClass",
-      value: function addClass(className) {
-        if (typeof className === 'undefined') {
-          return this;
-        }
-
-        var classes = className.split(' ');
-
-        for (var i = 0; i < classes.length; i += 1) {
-          for (var j = 0; j < this.length; j += 1) {
-            if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.add(classes[i]); }
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "removeClass",
-      value: function removeClass(className) {
-        var classes = className.split(' ');
-
-        for (var i = 0; i < classes.length; i += 1) {
-          for (var j = 0; j < this.length; j += 1) {
-            if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.remove(classes[i]); }
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "hasClass",
-      value: function hasClass(className) {
-        if (!this[0] || className === '') { return false; }
-        return this[0].classList.contains(className);
-      }
-    }, {
-      key: "toggleClass",
-      value: function toggleClass(className) {
-        var classes = className.split(' ');
-
-        for (var i = 0; i < classes.length; i += 1) {
-          for (var j = 0; j < this.length; j += 1) {
-            if (classes[i] !== '' && typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.toggle(classes[i]); }
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "attr",
-      value: function attr(attrs, value) {
-        var arguments$1 = arguments;
-
-        if (arguments.length === 1 && typeof attrs === 'string') {
-          // Get attr
-          if (this[0]) { return this[0].getAttribute(attrs); }
-          return undefined;
-        } // Set attrs
-
-
-        for (var i = 0; i < this.length; i += 1) {
-          if (arguments$1.length === 2) {
-            // String
-            this[i].setAttribute(attrs, value);
-          } else {
-            // Object
-            // eslint-disable-next-line
-            for (var attrName in attrs) {
-              this[i][attrName] = attrs[attrName];
-              this[i].setAttribute(attrName, attrs[attrName]);
-            }
-          }
-        }
-
-        return this;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "removeAttr",
-      value: function removeAttr(attr) {
-        for (var i = 0; i < this.length; i += 1) {
-          this[i].removeAttribute(attr);
-        }
-
-        return this;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "prop",
-      value: function prop(props, value) {
-        var arguments$1 = arguments;
-
-        if (arguments.length === 1 && typeof props === 'string') {
-          // Get prop
-          if (this[0]) { return this[0][props]; }
-        } else {
-          // Set props
-          for (var i = 0; i < this.length; i += 1) {
-            if (arguments$1.length === 2) {
-              // String
-              this[i][props] = value;
-            } else {
-              // Object
-              // eslint-disable-next-line
-              for (var propName in props) {
-                this[i][propName] = props[propName];
-              }
-            }
-          }
-
-          return this;
-        }
-      }
-    }, {
-      key: "data",
-      value: function data(key, value) {
-        var el;
-
-        if (typeof value === 'undefined') {
-          el = this[0]; // Get value
-
-          if (el) {
-            if (el.dom7ElementDataStorage && key in el.dom7ElementDataStorage) {
-              return el.dom7ElementDataStorage[key];
-            }
-
-            var dataKey = el.getAttribute("data-".concat(key));
-
-            if (dataKey) {
-              return dataKey;
-            }
-
-            return undefined;
-          }
-
-          return undefined;
-        } // Set value
-
-
-        for (var i = 0; i < this.length; i += 1) {
-          el = this[i];
-          if (!el.dom7ElementDataStorage) { el.dom7ElementDataStorage = {}; }
-          el.dom7ElementDataStorage[key] = value;
-        }
-
-        return this;
-      }
-    }, {
-      key: "removeData",
-      value: function removeData(key) {
-        for (var i = 0; i < this.length; i += 1) {
-          var el = this[i];
-
-          if (el.dom7ElementDataStorage && el.dom7ElementDataStorage[key]) {
-            el.dom7ElementDataStorage[key] = null;
-            delete el.dom7ElementDataStorage[key];
-          }
-        }
-      }
-    }, {
-      key: "dataset",
-      value: function dataset() {
-        var el = this[0];
-        if (!el) { return undefined; }
-        var dataset = {}; // eslint-disable-line
-
-        if (el.dataset) {
-          // eslint-disable-next-line
-          for (var dataKey in el.dataset) {
-            dataset[dataKey] = el.dataset[dataKey];
-          }
-        } else {
-          for (var i = 0; i < el.attributes.length; i += 1) {
-            // eslint-disable-next-line
-            var attr = el.attributes[i];
-
-            if (attr.name.indexOf('data-') >= 0) {
-              dataset[toCamelCase(attr.name.split('data-')[1])] = attr.value;
-            }
-          }
-        } // eslint-disable-next-line
-
-
-        for (var key in dataset) {
-          if (dataset[key] === 'false') { dataset[key] = false; }else if (dataset[key] === 'true') { dataset[key] = true; }else if (parseFloat(dataset[key]) === dataset[key] * 1) { dataset[key] *= 1; }
-        }
-
-        return dataset;
-      }
-    }, {
-      key: "val",
-      value: function val(value) {
-        var dom = this;
-
-        if (typeof value === 'undefined') {
-          if (dom[0]) {
-            if (dom[0].multiple && dom[0].nodeName.toLowerCase() === 'select') {
-              var values = [];
-
-              for (var i = 0; i < dom[0].selectedOptions.length; i += 1) {
-                values.push(dom[0].selectedOptions[i].value);
-              }
-
-              return values;
-            }
-
-            return dom[0].value;
-          }
-
-          return undefined;
-        }
-
-        for (var _i = 0; _i < dom.length; _i += 1) {
-          var el = dom[_i];
-
-          if (Array.isArray(value) && el.multiple && el.nodeName.toLowerCase() === 'select') {
-            for (var j = 0; j < el.options.length; j += 1) {
-              el.options[j].selected = value.indexOf(el.options[j].value) >= 0;
-            }
-          } else {
-            el.value = value;
-          }
-        }
-
-        return dom;
-      } // Events
-
-    }, {
-      key: "on",
-      value: function on() {
-        var arguments$1 = arguments;
-
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments$1[_key];
-        }
-
-        var eventType = args[0],
-            targetSelector = args[1],
-            listener = args[2],
-            capture = args[3];
-
-        if (typeof args[1] === 'function') {
-          eventType = args[0];
-          listener = args[1];
-          capture = args[2];
-          targetSelector = undefined;
-        }
-
-        if (!capture) { capture = false; }
-
-        function handleLiveEvent(e) {
-          var target = e.target;
-          if (!target) { return; }
-          var eventData = e.target.dom7EventData || [];
-
-          if (eventData.indexOf(e) < 0) {
-            eventData.unshift(e);
-          }
-
-          if ($(target).is(targetSelector)) { listener.apply(target, eventData); }else {
-            var parents = $(target).parents(); // eslint-disable-line
-
-            for (var k = 0; k < parents.length; k += 1) {
-              if ($(parents[k]).is(targetSelector)) { listener.apply(parents[k], eventData); }
-            }
-          }
-        }
-
-        function handleEvent(e) {
-          var eventData = e && e.target ? e.target.dom7EventData || [] : [];
-
-          if (eventData.indexOf(e) < 0) {
-            eventData.unshift(e);
-          }
-
-          listener.apply(this, eventData);
-        }
-
-        var events = eventType.split(' ');
-        var j;
-
-        for (var i = 0; i < this.length; i += 1) {
-          var el = this[i];
-
-          if (!targetSelector) {
-            for (j = 0; j < events.length; j += 1) {
-              var event = events[j];
-              if (!el.dom7Listeners) { el.dom7Listeners = {}; }
-              if (!el.dom7Listeners[event]) { el.dom7Listeners[event] = []; }
-              el.dom7Listeners[event].push({
-                listener: listener,
-                proxyListener: handleEvent
-              });
-              el.addEventListener(event, handleEvent, capture);
-            }
-          } else {
-            // Live events
-            for (j = 0; j < events.length; j += 1) {
-              var _event = events[j];
-              if (!el.dom7LiveListeners) { el.dom7LiveListeners = {}; }
-              if (!el.dom7LiveListeners[_event]) { el.dom7LiveListeners[_event] = []; }
-
-              el.dom7LiveListeners[_event].push({
-                listener: listener,
-                proxyListener: handleLiveEvent
-              });
-
-              el.addEventListener(_event, handleLiveEvent, capture);
-            }
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "off",
-      value: function off() {
-        var arguments$1 = arguments;
-
-        for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          args[_key2] = arguments$1[_key2];
-        }
-
-        var eventType = args[0],
-            targetSelector = args[1],
-            listener = args[2],
-            capture = args[3];
-
-        if (typeof args[1] === 'function') {
-          eventType = args[0];
-          listener = args[1];
-          capture = args[2];
-          targetSelector = undefined;
-        }
-
-        if (!capture) { capture = false; }
-        var events = eventType.split(' ');
-
-        for (var i = 0; i < events.length; i += 1) {
-          var event = events[i];
-
-          for (var j = 0; j < this.length; j += 1) {
-            var el = this[j];
-            var handlers = void 0;
-
-            if (!targetSelector && el.dom7Listeners) {
-              handlers = el.dom7Listeners[event];
-            } else if (targetSelector && el.dom7LiveListeners) {
-              handlers = el.dom7LiveListeners[event];
-            }
-
-            if (handlers && handlers.length) {
-              for (var k = handlers.length - 1; k >= 0; k -= 1) {
-                var handler = handlers[k];
-
-                if (listener && handler.listener === listener) {
-                  el.removeEventListener(event, handler.proxyListener, capture);
-                  handlers.splice(k, 1);
-                } else if (listener && handler.listener && handler.listener.dom7proxy && handler.listener.dom7proxy === listener) {
-                  el.removeEventListener(event, handler.proxyListener, capture);
-                  handlers.splice(k, 1);
-                } else if (!listener) {
-                  el.removeEventListener(event, handler.proxyListener, capture);
-                  handlers.splice(k, 1);
-                }
-              }
-            }
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "once",
-      value: function once() {
-        var arguments$1 = arguments;
-
-        var dom = this;
-
-        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-          args[_key3] = arguments$1[_key3];
-        }
-
-        var eventName = args[0],
-            targetSelector = args[1],
-            listener = args[2],
-            capture = args[3];
-
-        if (typeof args[1] === 'function') {
-          eventName = args[0];
-          listener = args[1];
-          capture = args[2];
-          targetSelector = undefined;
-        }
-
-        function onceHandler() {
-          var arguments$1 = arguments;
-
-          for (var _len4 = arguments.length, eventArgs = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-            eventArgs[_key4] = arguments$1[_key4];
-          }
-
-          listener.apply(this, eventArgs);
-          dom.off(eventName, targetSelector, onceHandler, capture);
-
-          if (onceHandler.dom7proxy) {
-            delete onceHandler.dom7proxy;
-          }
-        }
-
-        onceHandler.dom7proxy = listener;
-        return dom.on(eventName, targetSelector, onceHandler, capture);
-      }
-    }, {
-      key: "trigger",
-      value: function trigger() {
-        var arguments$1 = arguments;
-
-        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-          args[_key5] = arguments$1[_key5];
-        }
-
-        var events = args[0].split(' ');
-        var eventData = args[1];
-
-        for (var i = 0; i < events.length; i += 1) {
-          var event = events[i];
-
-          for (var j = 0; j < this.length; j += 1) {
-            var el = this[j];
-            var evt = void 0;
-
-            try {
-              evt = new window.CustomEvent(event, {
-                detail: eventData,
-                bubbles: true,
-                cancelable: true
-              });
-            } catch (e) {
-              evt = document.createEvent('Event');
-              evt.initEvent(event, true, true);
-              evt.detail = eventData;
-            } // eslint-disable-next-line
-
-
-            el.dom7EventData = args.filter(function (data, dataIndex) {
-              return dataIndex > 0;
-            });
-            el.dispatchEvent(evt);
-            el.dom7EventData = [];
-            delete el.dom7EventData;
-          }
-        }
-
-        return this;
-      } // Sizing/Styles
-
-    }, {
-      key: "width",
-      value: function width() {
-        if (this[0] === window) {
-          return window.innerWidth;
-        }
-
-        if (this.length > 0) {
-          return parseFloat(this.css('width'));
-        }
-
-        return null;
-      }
-    }, {
-      key: "outerWidth",
-      value: function outerWidth(includeMargins) {
-        if (this.length > 0) {
-          if (includeMargins) {
-            // eslint-disable-next-line
-            var styles = this.styles();
-            return this[0].offsetWidth + parseFloat(styles.getPropertyValue('margin-right')) + parseFloat(styles.getPropertyValue('margin-left'));
-          }
-
-          return this[0].offsetWidth;
-        }
-
-        return null;
-      }
-    }, {
-      key: "height",
-      value: function height() {
-        if (this[0] === window) {
-          return window.innerHeight;
-        }
-
-        if (this.length > 0) {
-          return parseFloat(this.css('height'));
-        }
-
-        return null;
-      }
-    }, {
-      key: "outerHeight",
-      value: function outerHeight(includeMargins) {
-        if (this.length > 0) {
-          if (includeMargins) {
-            // eslint-disable-next-line
-            var styles = this.styles();
-            return this[0].offsetHeight + parseFloat(styles.getPropertyValue('margin-top')) + parseFloat(styles.getPropertyValue('margin-bottom'));
-          }
-
-          return this[0].offsetHeight;
-        }
-
-        return null;
-      }
-    }, {
-      key: "offset",
-      value: function offset() {
-        if (this.length > 0) {
-          var el = this[0];
-          var box = el.getBoundingClientRect();
-          var body = document.body;
-          var clientTop = el.clientTop || body.clientTop || 0;
-          var clientLeft = el.clientLeft || body.clientLeft || 0;
-          var scrollTop = el === window ? window.scrollY : el.scrollTop;
-          var scrollLeft = el === window ? window.scrollX : el.scrollLeft;
-          return {
-            top: box.top + scrollTop - clientTop,
-            left: box.left + scrollLeft - clientLeft
-          };
-        }
-
-        return null;
-      }
-    }, {
-      key: "hide",
-      value: function hide() {
-        for (var i = 0; i < this.length; i += 1) {
-          this[i].style.display = 'none';
-        }
-
-        return this;
-      }
-    }, {
-      key: "show",
-      value: function show() {
-        for (var i = 0; i < this.length; i += 1) {
-          var el = this[i];
-
-          if (el.style.display === 'none') {
-            el.style.display = '';
-          }
-
-          if (window.getComputedStyle(el, null).getPropertyValue('display') === 'none') {
-            // Still not visible
-            el.style.display = 'block';
-          }
-        }
-
-        return this;
-      }
-    }, {
-      key: "styles",
-      value: function styles() {
-        if (this[0]) { return window.getComputedStyle(this[0], null); }
-        return {};
-      }
-    }, {
-      key: "css",
-      value: function css(props, value) {
-        var i;
-
-        if (arguments.length === 1) {
-          if (typeof props === 'string') {
-            if (this[0]) { return window.getComputedStyle(this[0], null).getPropertyValue(props); }
-          } else {
-            for (i = 0; i < this.length; i += 1) {
-              // eslint-disable-next-line
-              for (var prop in props) {
-                this[i].style[prop] = props[prop];
-              }
-            }
-
-            return this;
-          }
-        }
-
-        if (arguments.length === 2 && typeof props === 'string') {
-          for (i = 0; i < this.length; i += 1) {
-            this[i].style[props] = value;
-          }
-
-          return this;
-        }
-
-        return this;
-      } // Dom manipulation
-
-    }, {
-      key: "toArray",
-      value: function toArray() {
-        var arr = [];
-
-        for (var i = 0; i < this.length; i += 1) {
-          arr.push(this[i]);
-        }
-
-        return arr;
-      } // Iterate over the collection passing elements to `callback`
-
-    }, {
-      key: "each",
-      value: function each(callback) {
-        // Don't bother continuing without a callback
-        if (!callback) { return this; } // Iterate over the current collection
-
-        for (var i = 0; i < this.length; i += 1) {
-          // If the callback returns false
-          if (callback.call(this[i], i, this[i]) === false) {
-            // End the loop early
-            return this;
-          }
-        } // Return `this` to allow chained DOM operations
-
-
-        return this;
-      }
-    }, {
-      key: "filter",
-      value: function filter(callback) {
-        var matchedItems = [];
-        var dom = this;
-
-        for (var i = 0; i < dom.length; i += 1) {
-          if (callback.call(dom[i], i, dom[i])) { matchedItems.push(dom[i]); }
-        }
-
-        return new Sdom7(matchedItems);
-      }
-    }, {
-      key: "map",
-      value: function map(callback) {
-        var modifiedItems = [];
-        var dom = this;
-
-        for (var i = 0; i < dom.length; i += 1) {
-          modifiedItems.push(callback.call(dom[i], i, dom[i]));
-        }
-
-        return new Sdom7(modifiedItems);
-      } // eslint-disable-next-line
-
-    }, {
-      key: "html",
-      value: function html(_html) {
-        if (typeof _html === 'undefined') {
-          return this[0] ? this[0].innerHTML : undefined;
-        }
-
-        for (var i = 0; i < this.length; i += 1) {
-          this[i].innerHTML = _html;
-        }
-
-        return this;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "text",
-      value: function text(_text) {
-        if (typeof _text === 'undefined') {
-          if (this[0]) {
-            return this[0].textContent.trim();
-          }
-
-          return null;
-        }
-
-        for (var i = 0; i < this.length; i += 1) {
-          this[i].textContent = _text;
-        }
-
-        return this;
-      }
-    }, {
-      key: "is",
-      value: function is(selector) {
-        var el = this[0];
-        var compareWith;
-        var i;
-        if (!el || typeof selector === 'undefined') { return false; }
-
-        if (typeof selector === 'string') {
-          if (el.matches) { return el.matches(selector); }else if (el.webkitMatchesSelector) { return el.webkitMatchesSelector(selector); }else if (el.msMatchesSelector) { return el.msMatchesSelector(selector); }
-          compareWith = $(selector);
-
-          for (i = 0; i < compareWith.length; i += 1) {
-            if (compareWith[i] === el) { return true; }
-          }
-
-          return false;
-        } else if (selector === document) { return el === document; }else if (selector === window) { return el === window; }
-
-        if (selector.nodeType || selector instanceof Sdom7) {
-          compareWith = selector.nodeType ? [selector] : selector;
-
-          for (i = 0; i < compareWith.length; i += 1) {
-            if (compareWith[i] === el) { return true; }
-          }
-
-          return false;
-        }
-
-        return false;
-      }
-    }, {
-      key: "indexOf",
-      value: function indexOf(el) {
-        for (var i = 0; i < this.length; i += 1) {
-          if (this[i] === el) { return i; }
-        }
-
-        return -1;
-      }
-    }, {
-      key: "index",
-      value: function index() {
-        var child = this[0];
-        var i;
-
-        if (child) {
-          i = 0; // eslint-disable-next-line
-
-          while ((child = child.previousSibling) !== null) {
-            if (child.nodeType === 1) { i += 1; }
-          }
-
-          return i;
-        }
-
-        return undefined;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "eq",
-      value: function eq(index) {
-        if (typeof index === 'undefined') { return this; }
-        var length = this.length;
-        var returnIndex;
-
-        if (index > length - 1) {
-          return new Sdom7([]);
-        }
-
-        if (index < 0) {
-          returnIndex = length + index;
-          if (returnIndex < 0) { return new Sdom7([]); }
-          return new Sdom7([this[returnIndex]]);
-        }
-
-        return new Sdom7([this[index]]);
-      }
-    }, {
-      key: "append",
-      value: function append() {
-        var arguments$1 = arguments;
-
-        var newChild;
-
-        for (var k = 0; k < arguments.length; k += 1) {
-          newChild = k < 0 || arguments$1.length <= k ? undefined : arguments$1[k];
-
-          for (var i = 0; i < this.length; i += 1) {
-            if (typeof newChild === 'string') {
-              var tempDiv = document.createElement('div');
-              tempDiv.innerHTML = newChild;
-
-              while (tempDiv.firstChild) {
-                this[i].appendChild(tempDiv.firstChild);
-              }
-            } else if (newChild instanceof Sdom7) {
-              for (var j = 0; j < newChild.length; j += 1) {
-                this[i].appendChild(newChild[j]);
-              }
-            } else {
-              this[i].appendChild(newChild);
-            }
-          }
-        }
-
-        return this;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "appendTo",
-      value: function appendTo(parent) {
-        $(parent).append(this);
-        return this;
-      }
-    }, {
-      key: "prepend",
-      value: function prepend(newChild) {
-        var i;
-        var j;
-
-        for (i = 0; i < this.length; i += 1) {
-          if (typeof newChild === 'string') {
-            var tempDiv = document.createElement('div');
-            tempDiv.innerHTML = newChild;
-
-            for (j = tempDiv.childNodes.length - 1; j >= 0; j -= 1) {
-              this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
-            }
-          } else if (newChild instanceof Sdom7) {
-            for (j = 0; j < newChild.length; j += 1) {
-              this[i].insertBefore(newChild[j], this[i].childNodes[0]);
-            }
-          } else {
-            this[i].insertBefore(newChild, this[i].childNodes[0]);
-          }
-        }
-
-        return this;
-      } // eslint-disable-next-line
-
-    }, {
-      key: "prependTo",
-      value: function prependTo(parent) {
-        $(parent).prepend(this);
-        return this;
-      }
-    }, {
-      key: "insertBefore",
-      value: function insertBefore(selector) {
-        var before = $(selector);
-
-        for (var i = 0; i < this.length; i += 1) {
-          if (before.length === 1) {
-            before[0].parentNode.insertBefore(this[i], before[0]);
-          } else if (before.length > 1) {
-            for (var j = 0; j < before.length; j += 1) {
-              before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
-            }
-          }
-        }
-      }
-    }, {
-      key: "insertAfter",
-      value: function insertAfter(selector) {
-        var after = $(selector);
-
-        for (var i = 0; i < this.length; i += 1) {
-          if (after.length === 1) {
-            after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
-          } else if (after.length > 1) {
-            for (var j = 0; j < after.length; j += 1) {
-              after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
-            }
-          }
-        }
-      }
-    }, {
-      key: "next",
-      value: function next(selector) {
-        if (this.length > 0) {
-          if (selector) {
-            if (this[0].nextElementSibling && $(this[0].nextElementSibling).is(selector)) {
-              return new Sdom7([this[0].nextElementSibling]);
-            }
-
-            return new Sdom7([]);
-          }
-
-          if (this[0].nextElementSibling) { return new Sdom7([this[0].nextElementSibling]); }
-          return new Sdom7([]);
-        }
-
-        return new Sdom7([]);
-      }
-    }, {
-      key: "nextAll",
-      value: function nextAll(selector) {
-        var nextEls = [];
-        var el = this[0];
-        if (!el) { return new Sdom7([]); }
-
-        while (el.nextElementSibling) {
-          var next = el.nextElementSibling; // eslint-disable-line
-
-          if (selector) {
-            if ($(next).is(selector)) { nextEls.push(next); }
-          } else { nextEls.push(next); }
-
-          el = next;
-        }
-
-        return new Sdom7(nextEls);
-      }
-    }, {
-      key: "prev",
-      value: function prev(selector) {
-        if (this.length > 0) {
-          var el = this[0];
-
-          if (selector) {
-            if (el.previousElementSibling && $(el.previousElementSibling).is(selector)) {
-              return new Sdom7([el.previousElementSibling]);
-            }
-
-            return new Sdom7([]);
-          }
-
-          if (el.previousElementSibling) { return new Sdom7([el.previousElementSibling]); }
-          return new Sdom7([]);
-        }
-
-        return new Sdom7([]);
-      }
-    }, {
-      key: "prevAll",
-      value: function prevAll(selector) {
-        var prevEls = [];
-        var el = this[0];
-        if (!el) { return new Sdom7([]); }
-
-        while (el.previousElementSibling) {
-          var prev = el.previousElementSibling; // eslint-disable-line
-
-          if (selector) {
-            if ($(prev).is(selector)) { prevEls.push(prev); }
-          } else { prevEls.push(prev); }
-
-          el = prev;
-        }
-
-        return new Sdom7(prevEls);
-      }
-    }, {
-      key: "siblings",
-      value: function siblings(selector) {
-        return this.nextAll(selector).add(this.prevAll(selector));
-      }
-    }, {
-      key: "parent",
-      value: function parent(selector) {
-        var parents = []; // eslint-disable-line
-
-        for (var i = 0; i < this.length; i += 1) {
-          if (this[i].parentNode !== null) {
-            if (selector) {
-              if ($(this[i].parentNode).is(selector)) { parents.push(this[i].parentNode); }
-            } else {
-              parents.push(this[i].parentNode);
-            }
-          }
-        }
-
-        return $(unique(parents));
-      }
-    }, {
-      key: "parents",
-      value: function parents(selector) {
-        var parents = []; // eslint-disable-line
-
-        for (var i = 0; i < this.length; i += 1) {
-          var parent = this[i].parentNode; // eslint-disable-line
-
-          while (parent) {
-            if (selector) {
-              if ($(parent).is(selector)) { parents.push(parent); }
-            } else {
-              parents.push(parent);
-            }
-
-            parent = parent.parentNode;
-          }
-        }
-
-        return $(unique(parents));
-      }
-    }, {
-      key: "closest",
-      value: function closest(selector) {
-        var closest = this; // eslint-disable-line
-
-        if (typeof selector === 'undefined') {
-          return new Sdom7([]);
-        }
-
-        if (!closest.is(selector)) {
-          closest = closest.parents(selector).eq(0);
-        }
-
-        return closest;
-      }
-    }, {
-      key: "children",
-      value: function children(selector) {
-        var children = []; // eslint-disable-line
-
-        for (var i = 0; i < this.length; i += 1) {
-          var childNodes = this[i].childNodes;
-
-          for (var j = 0; j < childNodes.length; j += 1) {
-            if (!selector) {
-              if (childNodes[j].nodeType === 1) { children.push(childNodes[j]); }
-            } else if (childNodes[j].nodeType === 1 && $(childNodes[j]).is(selector)) {
-              children.push(childNodes[j]);
-            }
-          }
-        }
-
-        return new Sdom7(unique(children));
-      }
-    }, {
-      key: "remove",
-      value: function remove() {
-        for (var i = 0; i < this.length; i += 1) {
-          if (this[i].parentNode) { this[i].parentNode.removeChild(this[i]); }
-        }
-
-        return this;
-      }
-    }, {
-      key: "add",
-      value: function add() {
-        var arguments$1 = arguments;
-
-        var dom = this;
-        var i;
-        var j;
-
-        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-          args[_key6] = arguments$1[_key6];
-        }
-
-        for (i = 0; i < args.length; i += 1) {
-          var toAdd = $(args[i]);
-
-          for (j = 0; j < toAdd.length; j += 1) {
-            dom[dom.length] = toAdd[j];
-            dom.length += 1;
-          }
-        }
-
-        return dom;
-      }
-    }, {
-      key: "empty",
-      value: function empty() {
-        for (var i = 0; i < this.length; i += 1) {
-          var el = this[i];
-
-          if (el.nodeType === 1) {
-            for (var j = 0; j < el.childNodes.length; j += 1) {
-              if (el.childNodes[j].parentNode) {
-                el.childNodes[j].parentNode.removeChild(el.childNodes[j]);
-              }
-            }
-
-            el.textContent = '';
-          }
-        }
-
-        return this;
-      }
-    }]);
-
-    return Sdom7;
-  }();
-
-  var visible = '[S_DIALOG_VISIBLE]';
-  var visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]';
-  var autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]';
-  var effectControl = '[S_DIALOG_EFFECT_CONTROL]';
-  var inDestroy = '[S_DIALOG_IN_DESTROY]';
-  var isDestroy = '[S_DIALOG_IS_DESTROY]';
-  var nextId = '[S_DIALOG_NEXT_ID]';
-
-  function dialog(options) {
-    return new Dialog(options);
-  } // 默认参数
-
-
-  dialog.defaultOptions = {
-    el: null,
-    // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
-    className: '',
-    // 弹框class
-    effect: true,
-    // 是否使用过渡效果
-    position: 'middle',
-    // 弹框显示位置
-    mountElem: 'body',
-    // 弹框挂载的容器，为空则不会挂载
-    closeBtn: false,
-    // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
-    title: '',
-    // 标题
-    content: '',
-    // 字符串html内容
-    cancelClass: 's-btn s-dialog-cancel-btn',
-    // 取消按钮class
-    cancelText: '',
-    // 取消按钮文字
-    cancelColor: '',
-    // 取消按钮颜色
-    confirmClass: 's-btn s-dialog-confirm-btn',
-    // 确认按钮class
-    confirmText: '',
-    // 确认按钮文字
-    confirmColor: '',
-    // 确认按钮颜色
-    isOnce: false,
-    // 是否为一次性弹框，关闭后立即销毁，并删除dom
-    zindexSelector: '.s-dialog.s-dialog-visible',
-    // z-index层级比较选择器
-    zindexStart: 2000,
-    // z-index初始值
-    mask: true,
-    // 是否显示遮罩
-    maskOpacity: 0.7,
-    // 遮罩透明度
-    maskClose: true,
-    // 点击遮罩是否关闭弹框
-    lockScroll: false,
-    // 是否阻止外层滚动,
-    duration: 0,
-    // 自动关闭时间,number
-    preventTouchmove: false,
-    // 是否阻止弹层touchmove滚动，手机上滚动穿透
-    // 生命周期
-    onInit: undefined,
-    // 初始化
-    onShow: undefined,
-    // 显示后
-    onHide: undefined,
-    // 关闭后
-    onCancel: undefined,
-    // 点击遮罩，取消按钮关闭时
-    onConfirm: undefined,
-    // 点击确认按钮关闭时
-    onBeforeShow: undefined,
-    // 显示时拦截钩子,参数为next()可异步阻止显示
-    onBeforeHide: undefined,
-    // 隐藏时拦截钩子,参数为next()可异步阻止关闭
-    onBeforeDestroy: undefined,
-    // 销毁前
-    onDestroy: undefined // 销毁后
-
-  };
-
-  var Dialog =
-  /*#__PURE__*/
-  function () {
-    function Dialog(params) {
-      _classCallCheck(this, Dialog);
-
-      var self = this;
-
-      var _self$options = self.options = extend(true, {}, dialog.defaultOptions, params),
-          el = _self$options.el,
-          className = _self$options.className,
-          effect = _self$options.effect,
-          position = _self$options.position,
-          mountElem = _self$options.mountElem,
-          closeBtn = _self$options.closeBtn,
-          title = _self$options.title,
-          content = _self$options.content,
-          cancelText = _self$options.cancelText,
-          cancelClass = _self$options.cancelClass,
-          cancelColor = _self$options.cancelColor,
-          confirmText = _self$options.confirmText,
-          confirmClass = _self$options.confirmClass,
-          confirmColor = _self$options.confirmColor,
-          mask = _self$options.mask,
-          maskOpacity = _self$options.maskOpacity,
-          maskClose = _self$options.maskClose,
-          preventTouchmove = _self$options.preventTouchmove,
-          onInit = _self$options.onInit,
-          onCancel = _self$options.onCancel,
-          onConfirm = _self$options.onConfirm; // 添加dom7到实例属性
-
-
-      self['$'] = $; // 弹框显示状态
-
-      self[visible] = false; // 弹框显示隐藏定时器,防止多次显示，隐藏同步切换
-
-      self[visibleTimeOutId] = 0; // 弹框自动关闭定时器
-
-      self[autoCloseTimeOutId] = 0; // 记录动画效果执行完毕回调处理函数执行与否的操作对象
-
-      self[effectControl] = null; // 判断是否在执行销毁中
-
-      self[inDestroy] = false; // 判断是否执行过销毁
-
-      self[isDestroy] = false; // 内部cancel关闭
-
-      function cancel() {
-        // 触发取消后生命周期钩子
-        isFunction(onCancel) && onCancel.call(self);
-        self.hide();
-      } // 内部confirm关闭
-
-
-      function confirm() {
-        // 触发确认后生命周期钩子
-        isFunction(onConfirm) && onConfirm.call(self);
-        self.hide();
-      } // 根dom节点
-
-
-      var $el = $(el);
-
-      if (!$el.length) {
-        $el = $('<div class="s-dialog"></div>');
-        var $wrapper = $('<div class="s-dialog-wrapper"></div>'); // 标题
-
-        if (title !== '') {
-          $wrapper.append('<div class="s-dialog-header">' + title + '</div>');
-        } // 内容
-
-
-        if (content !== '') {
-          $wrapper.append('<div class="s-dialog-content">' + content + '</div>');
-        } // 按钮
-
-
-        if (cancelText !== '' || confirmText !== '') {
-          var $footer = $('<div class="s-dialog-footer"></div>');
-
-          if (cancelText !== '') {
-            $footer.append($("<button class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</button>")).on('click', cancel));
-          }
-
-          if (confirmText !== '') {
-            $footer.append($("<button class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</button>")).on('click', confirm));
-          }
-
-          $wrapper.append($footer);
-        }
-
-        $el.append($wrapper);
-      } else {
-        $el = $el.eq(0);
-        var instanceDialog = $el.data('s-dialog');
-        if (instanceDialog) { return instanceDialog; }
-      } // 弹框实例添加dom节点记录
-
-
-      self.el = $el.addClass(position ? 's-dialog-position-' + position : '').addClass(effect ? 's-dialog-effect' : '').addClass(className).data('s-dialog', self)[0]; // 是否显示遮罩
-
-      if (mask) {
-        self.mask = $('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
-
-        maskClose && $(self.mask).on('click', cancel);
-        $el.prepend(self.mask);
-      }
-
-      self.wrapper = $el.find('.s-dialog-wrapper')[0]; // 关闭 x
-
-      if (closeBtn === true) {
-        $(self.wrapper).append(self.closeBtn = $('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>').on('click', cancel)[0]);
-      } else if (typeof closeBtn === 'string' && closeBtn) {
-        $(self.wrapper).append(self.closeBtn = $(closeBtn).on('click', cancel)[0]);
-      } // 挂载dom
-
-
-      $(mountElem).eq(0).append($el); // 锁定touchmove滚动
-
-      preventTouchmove && $el.on('touchmove', function (e) {
-        e.preventDefault();
-      }); // 触发初始化后生命周期钩子
-
-      isFunction(onInit) && onInit.call(self);
-    } // 显示
-
-
-    _createClass(Dialog, [{
-      key: "show",
-      value: function show(callback) {
-        var self = this;
-        var opt = self.options; // 清除弹框显示隐藏记录
-
-        clearTimeout(self[visibleTimeOutId]);
-        self[visibleTimeOutId] = setTimeout(function () {
-          if (!self[visible]) {
-            // 判断是否有上次未执行完的效果回调，如有，则立即执行
-            self[effectControl] && self[effectControl].trigger();
-
-            var next = function next() {
-              // 判断是否是最新的next调用，不是则作废
-              if (next[nextId] === self[visibleTimeOutId]) {
-                self[visible] = true; // 锁定外层滚动
-
-                opt.lockScroll && $('html,body').addClass('s-overflow-hidden');
-                $(self.el).css({
-                  'z-index': getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
-                }).addClass('s-dialog-visible').addClass('s-dialog-effect-enter'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
-
-                self[effectControl] = whenTransitionEnds(self.el, function () {
-                  // 清除执行效果回调函数执行控制对象对象记录
-                  self[effectControl] && (self[effectControl] = null); // 自动关闭
-
-                  var duration = parseInt(opt.duration);
-
-                  if (duration > 0) {
-                    clearTimeout(self[autoCloseTimeOutId]);
-                    self[autoCloseTimeOutId] = setTimeout(function () {
-                      self[visible] && self.hide();
-                    }, duration);
-                  } // 移除效果class
-
-
-                  $(self.el).removeClass('s-dialog-effect-enter'); // 触发参数回掉
-
-                  isFunction(callback) && callback.call(self); // 触发显示后生命周期钩子
-
-                  isFunction(opt.onShow) && opt.onShow.call(self);
-                });
-              }
-            }; // 记录本次执行的nextId
-
-
-            next[nextId] = self[visibleTimeOutId]; // 触发显示前生命周期钩子
-
-            if (isFunction(opt.onBeforeShow)) {
-              opt.onBeforeShow.call(self, next);
-            } else {
-              next();
-            }
-          }
-        });
-        return self;
-      } // 隐藏
-
-    }, {
-      key: "hide",
-      value: function hide(callback) {
-        var self = this;
-        var opt = self.options; // 清除弹框显示隐藏记录
-
-        clearTimeout(self[visibleTimeOutId]);
-        self[visibleTimeOutId] = setTimeout(function () {
-          if (self[visible]) {
-            // 判断是否有上次未执行完的效果回调，如有，则立即执行
-            self[effectControl] && self[effectControl].trigger();
-
-            var next = function next() {
-              // 判断是否是最新的next调用，不是则作废
-              if (next[nextId] === self[visibleTimeOutId]) {
-                self[visible] = false; // 清除自动关闭定时器
-
-                clearTimeout(self[autoCloseTimeOutId]); // 开始执行效果
-
-                $(self.el).addClass('s-dialog-effect-leave'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
-
-                self[effectControl] = whenTransitionEnds(self.el, function () {
-                  // 清除执行效果回调函数执行控制对象对象记录
-                  self[effectControl] && (self[effectControl] = null); // 关闭隐藏
-
-                  $(self.el).removeClass('s-dialog-visible').css({
-                    'z-index': ''
-                  }).removeClass('s-dialog-effect-leave'); // 解除body滚动锁定
-
-                  !$('.s-dialog.s-dialog-visible').length && $('html,body').removeClass('s-overflow-hidden'); // 触发参数回掉
-
-                  isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
-
-                  isFunction(opt.onHide) && opt.onHide.call(self); // 是否为一次性弹框，关闭后立即销毁，并删除dom
-
-                  opt.isOnce && self.destroy(true);
-                }); // 如果是在销毁中则立即触发移除效果关闭处理
-
-                if (self[inDestroy]) {
-                  self[effectControl].trigger();
-                }
-              }
-            }; // 记录本次执行的nextId
-
-
-            next[nextId] = self[visibleTimeOutId]; // 触发隐藏前生命周期钩子
-
-            if (isFunction(opt.onBeforeHide)) {
-              opt.onBeforeHide.call(self, next);
-            } else {
-              next();
-            }
-          }
-        });
-        return self;
-      } // 切换
-
-    }, {
-      key: "toggle",
-      value: function toggle(callback) {
-        return this[this[visible] ? 'hide' : 'show'](callback);
-      } // 销毁
-
-    }, {
-      key: "destroy",
-      value: function destroy() {
-        var removeElem = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-        var self = this;
-        var _self$options2 = self.options,
-            className = _self$options2.className,
-            position = _self$options2.position,
-            onBeforeDestroy = _self$options2.onBeforeDestroy,
-            onDestroy = _self$options2.onDestroy;
-
-        if (!self[inDestroy] && !self[isDestroy]) {
-          self[inDestroy] = true; // 触发销毁前生命周期钩子
-
-          isFunction(onBeforeDestroy) && onBeforeDestroy.call(self);
-
-          var fn = function fn() {
-            clearTimeout(self[visibleTimeOutId]);
-            clearTimeout(self[autoCloseTimeOutId]);
-            $(self.el).removeClass("s-dialog-effect s-dialog-position-".concat(position, " ").concat(className)).removeData('s-dialog');
-            self.mask && $(self.mask).remove();
-            self.closeBtn && $(self.closeBtn).remove();
-            removeElem && $(self.el).remove();
-            self[inDestroy] = false;
-            self[isDestroy] = true; // 触发销毁后生命周期钩子
-
-            isFunction(onDestroy) && onDestroy.call(self);
-          };
-
-          self[visible] ? self.hide(fn) : fn();
-        }
-      }
-    }]);
-
-    return Dialog;
-  }();
-
-  var instanceToast = null;
-
-  function Toast(options) {
-    Toast.clear();
-    var params = extend(true, {}, Toast.defaultOptions, isObject(options) ? options : {
-      content: options
-    });
-    var icon = params.icon,
-        image = params.image,
-        content = params.content;
-
-    if (icon || image) {
-      params.className += ' s-toast-middle';
-    }
-
-    params.content = '';
-
-    if (icon) {
-      params.content += "<i class=\"s-icon s-icon-".concat(icon, " s-toast-icon\"></i>");
-    } else if (image) {
-      params.content += "<img class=\"s-toast-icon\" src=\"".concat(image, "\"/>");
-    }
-
-    if (content || content === 0) {
-      params.content += "<p class=\"s-toast-text\">".concat(content, "</p>");
-    }
-
-    instanceToast = dialog(params).show();
-    return instanceToast;
-  }
-
-  Toast.defaultOptions = {
-    className: 's-toast-dialog',
-    icon: '',
-    image: '',
-    content: '',
-    duration: 2000,
-    position: '',
-    mask: false,
-    isOnce: true
-  };
-
-  Toast.success = function (options) {
-    return Toast(extend(true, {
-      className: 's-toast-dialog s-toast-success',
-      icon: 'success'
-    }, isObject(options) ? options : {
-      content: options
-    }));
-  };
-
-  Toast.fail = function (options) {
-    return Toast(extend(true, {
-      className: 's-toast-dialog s-toast-fail',
-      icon: 'fail'
-    }, isObject(options) ? options : {
-      content: options
-    }));
-  };
-
-  Toast.clear = function () {
-    if (instanceToast) {
-      instanceToast.destroy(true);
-      instanceToast = null;
-    }
-  };
-
-  function showLoading(options) {
-    return Toast(extend(true, showLoading.defaultOptions, isObject(options) ? options : {
-      content: options
-    }));
-  }
-  showLoading.defaultOptions = {
-    className: 's-toast-dialog s-toast-loading',
-    icon: 'loading',
-    effect: false,
-    position: 'middle',
-    duration: 0,
-    preventTouchmove: true
-  };
-  function hideLoading() {
-    Toast.clear();
-  }
-
-  var loading = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    showLoading: showLoading,
-    hideLoading: hideLoading
   });
 
   /*
@@ -2855,184 +1276,544 @@
     };
   }
 
-  /*
-   * @Name: debounce
-   * @Descripttion: 函数防抖
-   * @Author: 无痕
-   * @Date: 2019-09-23 15:56:30
-   * @LastEditors:
-   * @LastEditTime: 2019-10-21 14:13:18
+  /**
+   * @name: 函数防抖
+   * @param {fn:Function} 
+   * @param {wait:Number} // 等待时间
+   * @param {immediate:Boolean} //首次触发是否立即执行
+   * @return: Function
    */
-  function debounce(fn) {
+  function debounce (fn) {
     var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 300;
-    var params = arguments.length > 2 ? arguments[2] : undefined;
-    var lastArgs;
-    var lastThis;
-    var maxWait;
-    var result;
-    var timerId;
-    var lastCallTime;
-    var lastInvokeTime = 0;
-    var leading = false;
-    var maxing = false;
-    var trailing = true;
-
-    if (!isFunction(fn)) {
-      throw new TypeError('Expected a function');
-    }
-
-    if (!isNumber(wait)) {
-      throw new TypeError('wait a number');
-    }
-
-    if (isObject(params)) {
-      leading = !!params.leading;
-      maxing = 'maxWait' in params;
-      maxWait = maxing ? Math.max(Number(params.maxWait) || 0, wait) : maxWait;
-      trailing = 'trailing' in params ? !!params.trailing : trailing;
-    }
-
-    function invokeFunc(time) {
-      var args = lastArgs;
-      var thisArg = lastThis;
-      lastArgs = lastThis = undefined;
-      lastInvokeTime = time;
-      result = fn.apply(thisArg, args);
-      return result;
-    }
-
-    function leadingEdge(time) {
-      // Reset any `maxWait` timer.
-      lastInvokeTime = time; // Start the timer for the trailing edge.
-
-      timerId = setTimeout(timerExpired, wait); // Invoke the leading edge.
-
-      return leading ? invokeFunc(time) : result;
-    }
-
-    function remainingWait(time) {
-      var timeSinceLastCall = time - lastCallTime;
-      var timeSinceLastInvoke = time - lastInvokeTime;
-      var timeWaiting = wait - timeSinceLastCall;
-      return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
-    }
-
-    function shouldInvoke(time) {
-      var timeSinceLastCall = time - lastCallTime;
-      var timeSinceLastInvoke = time - lastInvokeTime; // Either this is the first call, activity has stopped and we're at the
-      // trailing edge, the system time has gone backwards and we're treating
-      // it as the trailing edge, or we've hit the `maxWait` limit.
-
-      return lastCallTime === undefined || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
-    }
-
-    function timerExpired() {
-      var time = new Date();
-
-      if (shouldInvoke(time)) {
-        return trailingEdge(time);
-      } // Restart the timer.
-
-
-      timerId = setTimeout(timerExpired, remainingWait(time));
-    }
-
-    function trailingEdge(time) {
-      timerId = undefined; // Only invoke if we have `lastArgs` which means `fn` has been
-      // debounced at least once.
-
-      if (trailing && lastArgs) {
-        return invokeFunc(time);
-      }
-
-      lastArgs = lastThis = undefined;
-      return result;
-    }
-
-    function cancel() {
-      if (timerId !== undefined) {
-        clearTimeout(timerId);
-      }
-
-      lastInvokeTime = 0;
-      lastArgs = lastCallTime = lastThis = timerId = undefined;
-    }
-
-    function flush() {
-      return timerId === undefined ? result : trailingEdge(new Date());
-    }
-
-    function debounced() {
+    var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    var timer = null;
+    return function () {
       var arguments$1 = arguments;
 
-      var time = new Date();
-      var isInvoking = shouldInvoke(time);
+      var _this = this;
 
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments$1[_key];
       }
 
-      lastArgs = args;
-      lastThis = this;
-      lastCallTime = time;
+      if (timer) { clearTimeout(timer); } // immediate 为 true 表示第一次触发后执行
+      // timer 为空表示首次触发
 
-      if (isInvoking) {
-        if (timerId === undefined) {
-          return leadingEdge(lastCallTime);
-        }
-
-        if (maxing) {
-          // Handle invocations in a tight loop.
-          timerId = setTimeout(timerExpired, wait);
-          return invokeFunc(lastCallTime);
-        }
+      if (immediate && !timer) {
+        fn.apply(this, args);
       }
 
-      if (timerId === undefined) {
-        timerId = setTimeout(timerExpired, wait);
-      }
-
-      return result;
-    }
-
-    debounced.cancel = cancel;
-    debounced.flush = flush;
-    return debounced;
+      timer = setTimeout(function () {
+        fn.apply(_this, args);
+      }, wait);
+    };
   }
 
-  /*
-   * @Name: throttle
-   * @Descripttion: 函数节流
-   * @Author: 无痕
-   * @Date: 2019-09-23 16:00:25
-   * @LastEditors:
-   * @LastEditTime: 2019-10-18 16:51:39
+  /**
+   * @name: 函数节流
+   * @param {fn:Function} 
+   * @param {wait:Number} //多少时间内必定执行一次
+   * @param {immediate:Boolean} //首次触发是否立即执行
+   * @return: Function
    */
-  function throttle(fn) {
+  function throttle (fn) {
     var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 300;
-    var params = arguments.length > 2 ? arguments[2] : undefined;
-    var leading = true;
-    var trailing = true;
+    var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    // previous 是上一次执行 fn 的时间
+    // timer 是定时器
+    var previous = 0,
+        timer = null; // 将 throttle 处理结果当作函数返回
 
-    if (!isFunction(fn)) {
-      throw new TypeError('Expected a function');
-    }
+    return function () {
+      var arguments$1 = arguments;
 
-    if (isObject(params)) {
-      leading = 'leading' in params ? !!params.leading : leading;
-      trailing = 'trailing' in params ? !!params.trailing : trailing;
-    }
+      var _this = this;
 
-    return debounce(fn, wait, {
-      'leading': leading,
-      'maxWait': wait,
-      'trailing': trailing
-    });
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments$1[_key];
+      }
+
+      // 获取当前时间，转换成时间戳，单位毫秒
+      var now = +new Date(); // 判断上次触发的时间和本次触发的时间差是否小于时间间隔
+
+      if (now - previous < wait) {
+        // 如果小于，则为本次触发操作设立一个新的定时器
+        // 定时器时间结束后执行函数 fn 
+        if (timer) { clearTimeout(timer); }
+        timer = setTimeout(function () {
+          previous = now;
+          fn.apply(_this, args);
+        }, wait);
+      } else {
+        // 时间间隔超出了设定的时间间隔，执行函数 fn
+        // previous为0则表示第一次执行，immediate为true则表示第一次立即执行，
+        if (previous || immediate) {
+          fn.apply(this, args);
+        }
+
+        previous = now;
+      }
+    };
   }
+
+  var instance = '[S_DIALOG_INSTANCE]';
+  var visible = '[S_DIALOG_VISIBLE]';
+  var visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]';
+  var autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]';
+  var effectControl = '[S_DIALOG_EFFECT_CONTROL]';
+  var inDestroy = '[S_DIALOG_IN_DESTROY]';
+  var isDestroy = '[S_DIALOG_IS_DESTROY]';
+  var nextId = '[S_DIALOG_NEXT_ID]';
+
+  function dialog(options) {
+    return new Dialog(options);
+  } // 默认参数
+
+
+  dialog.defaultOptions = {
+    el: null,
+    // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
+    className: '',
+    // 弹框class
+    effect: true,
+    // 是否使用过渡效果
+    position: 'middle',
+    // 弹框显示位置
+    mountElem: 'body',
+    // 弹框挂载的容器，为空则不会挂载
+    closeBtn: false,
+    // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
+    title: '',
+    // 标题
+    content: '',
+    // 字符串html内容
+    cancelClass: 's-btn s-dialog-cancel-btn',
+    // 取消按钮class
+    cancelText: '',
+    // 取消按钮文字
+    cancelColor: '',
+    // 取消按钮颜色
+    confirmClass: 's-btn s-dialog-confirm-btn',
+    // 确认按钮class
+    confirmText: '',
+    // 确认按钮文字
+    confirmColor: '',
+    // 确认按钮颜色
+    isOnce: false,
+    // 是否为一次性弹框，关闭后立即销毁，并删除dom
+    zindexSelector: '.s-dialog.s-dialog-visible',
+    // z-index层级比较选择器
+    zindexStart: 2000,
+    // z-index初始值
+    mask: true,
+    // 是否显示遮罩
+    maskOpacity: 0.7,
+    // 遮罩透明度
+    maskClose: true,
+    // 点击遮罩是否关闭弹框
+    lockScroll: false,
+    // 是否阻止外层滚动,
+    duration: 0,
+    // 自动关闭时间,number
+    preventTouchmove: false,
+    // 是否阻止弹层touchmove滚动，手机上滚动穿透
+    // 生命周期
+    onInit: undefined,
+    // 初始化
+    onShow: undefined,
+    // 显示后
+    onHide: undefined,
+    // 关闭后
+    onCancel: undefined,
+    // 点击遮罩，取消按钮关闭时
+    onConfirm: undefined,
+    // 点击确认按钮关闭时
+    onBeforeShow: undefined,
+    // 显示时拦截钩子,参数为next()可异步阻止显示
+    onBeforeHide: undefined,
+    // 隐藏时拦截钩子,参数为next()可异步阻止关闭
+    onBeforeDestroy: undefined,
+    // 销毁前
+    onDestroy: undefined // 销毁后
+
+  };
+
+  var Dialog =
+  /*#__PURE__*/
+  function () {
+    function Dialog(params) {
+      _classCallCheck(this, Dialog);
+
+      var self = this;
+
+      var _self$options = self.options = extend({}, dialog.defaultOptions, params),
+          el = _self$options.el,
+          className = _self$options.className,
+          effect = _self$options.effect,
+          position = _self$options.position,
+          mountElem = _self$options.mountElem,
+          closeBtn = _self$options.closeBtn,
+          title = _self$options.title,
+          content = _self$options.content,
+          cancelText = _self$options.cancelText,
+          cancelClass = _self$options.cancelClass,
+          cancelColor = _self$options.cancelColor,
+          confirmText = _self$options.confirmText,
+          confirmClass = _self$options.confirmClass,
+          confirmColor = _self$options.confirmColor,
+          mask = _self$options.mask,
+          maskOpacity = _self$options.maskOpacity,
+          maskClose = _self$options.maskClose,
+          preventTouchmove = _self$options.preventTouchmove,
+          onInit = _self$options.onInit,
+          onCancel = _self$options.onCancel,
+          onConfirm = _self$options.onConfirm; // 弹框显示状态
+
+
+      self[visible] = false; // 弹框显示隐藏定时器,防止多次显示，隐藏同步切换
+
+      self[visibleTimeOutId] = 0; // 弹框自动关闭定时器
+
+      self[autoCloseTimeOutId] = 0; // 记录动画效果执行完毕回调处理函数执行与否的操作对象
+
+      self[effectControl] = null; // 判断是否在执行销毁中
+
+      self[inDestroy] = false; // 判断是否执行过销毁
+
+      self[isDestroy] = false; // 内部cancel关闭
+
+      function cancel() {
+        // 触发取消后生命周期钩子
+        isFunction(onCancel) && onCancel.call(self);
+        self.hide();
+      } // 内部confirm关闭
+
+
+      function confirm() {
+        // 触发确认后生命周期钩子
+        isFunction(onConfirm) && onConfirm.call(self);
+        self.hide();
+      } // 根dom节点
+
+
+      var elem = getElem(el)[0];
+
+      if (!elem) {
+        elem = getElem('<div class="s-dialog"></div>')[0];
+        var _wrapper = getElem('<div class="s-dialog-wrapper"></div>')[0]; // 标题
+
+        if (title !== '') {
+          _wrapper.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0]);
+        } // 内容
+
+
+        if (content !== '') {
+          _wrapper.appendChild(getElem('<div class="s-dialog-content">' + content + '</div>')[0]);
+        } // 按钮
+
+
+        if (cancelText !== '' || confirmText !== '') {
+          var footer = getElem('<div class="s-dialog-footer"></div>')[0];
+
+          if (cancelText !== '') {
+            var cancelBtn = getElem("<button class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</button>"))[0];
+            cancelBtn.addEventListener('click', cancel);
+            footer.appendChild(cancelBtn);
+          }
+
+          if (confirmText !== '') {
+            var confirmBtn = getElem("<button class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</button>"))[0];
+            confirmBtn.addEventListener('click', confirm);
+            footer.appendChild(confirmBtn);
+          }
+
+          _wrapper.appendChild(footer);
+        }
+
+        elem.appendChild(_wrapper);
+      } else {
+        if (elem[instance]) { return elem[instance]; }
+      }
+
+      addClass(elem, position ? 's-dialog-position-' + position : '');
+      addClass(elem, effect ? 's-dialog-effect' : '');
+      addClass(elem, className);
+      elem[instance] = self; // 锁定touchmove滚动
+
+      preventTouchmove && elem.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+      }); // 弹框实例添加dom节点记录
+
+      self.el = elem; // 是否显示遮罩
+
+      if (mask) {
+        self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
+
+        maskClose && self.mask.addEventListener('click', cancel);
+        elem.insertBefore(self.mask, elem.firstElementChild);
+      }
+
+      var wrapper = getElem('.s-dialog-wrapper', elem)[0]; // 关闭 x
+
+      if (closeBtn === true) {
+        self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>')[0];
+      } else if (typeof closeBtn === 'string' && closeBtn) {
+        self.closeBtn = getElem(closeBtn)[0];
+      }
+
+      if (wrapper) {
+        self.wrapper = wrapper;
+
+        if (self.closeBtn) {
+          self.closeBtn.addEventListener('click', cancel);
+          wrapper.appendChild(self.closeBtn);
+        }
+      } // 挂载dom
+
+
+      var mountNode = getElem(mountElem)[0];
+      mountNode && mountNode.appendChild(elem); // 触发初始化后生命周期钩子
+
+      isFunction(onInit) && onInit.call(self);
+    } // 显示
+
+
+    _createClass(Dialog, [{
+      key: "show",
+      value: function show(callback) {
+        var self = this;
+        var opt = self.options; // 清除弹框显示隐藏记录
+
+        clearTimeout(self[visibleTimeOutId]);
+        self[visibleTimeOutId] = setTimeout(function () {
+          if (!self[visible]) {
+            // 判断是否有上次未执行完的效果回调，如有，则立即执行
+            self[effectControl] && self[effectControl].trigger();
+
+            var next = function next() {
+              // 判断是否是最新的next调用，不是则作废
+              if (next[nextId] === self[visibleTimeOutId]) {
+                self[visible] = true; // 锁定外层滚动
+
+                opt.lockScroll && addClass('html,body', 's-overflow-hidden'); // z-index层级设置
+
+                self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1; // 显示
+
+                addClass(self.el, 's-dialog-visible s-dialog-effect-enter'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+
+                self[effectControl] = whenTransitionEnds(self.el, function () {
+                  // 清除执行效果回调函数执行控制对象对象记录
+                  self[effectControl] && (self[effectControl] = null); // 自动关闭
+
+                  var duration = parseInt(opt.duration);
+
+                  if (duration > 0) {
+                    clearTimeout(self[autoCloseTimeOutId]);
+                    self[autoCloseTimeOutId] = setTimeout(function () {
+                      self[visible] && self.hide();
+                    }, duration);
+                  } // 移除效果class
+
+
+                  removeClass(self.el, 's-dialog-effect-enter'); // 触发参数回掉
+
+                  isFunction(callback) && callback.call(self); // 触发显示后生命周期钩子
+
+                  isFunction(opt.onShow) && opt.onShow.call(self);
+                });
+              }
+            }; // 记录本次执行的nextId
+
+
+            next[nextId] = self[visibleTimeOutId]; // 触发显示前生命周期钩子
+
+            if (isFunction(opt.onBeforeShow)) {
+              opt.onBeforeShow.call(self, next);
+            } else {
+              next();
+            }
+          }
+        });
+        return self;
+      } // 隐藏
+
+    }, {
+      key: "hide",
+      value: function hide(callback) {
+        var self = this;
+        var opt = self.options; // 清除弹框显示隐藏记录
+
+        clearTimeout(self[visibleTimeOutId]);
+        self[visibleTimeOutId] = setTimeout(function () {
+          if (self[visible]) {
+            // 判断是否有上次未执行完的效果回调，如有，则立即执行
+            self[effectControl] && self[effectControl].trigger();
+
+            var next = function next() {
+              // 判断是否是最新的next调用，不是则作废
+              if (next[nextId] === self[visibleTimeOutId]) {
+                self[visible] = false; // 清除自动关闭定时器
+
+                clearTimeout(self[autoCloseTimeOutId]); // 开始执行效果
+
+                addClass(self.el, 's-dialog-effect-leave'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+
+                self[effectControl] = whenTransitionEnds(self.el, function () {
+                  // 清除执行效果回调函数执行控制对象对象记录
+                  self[effectControl] && (self[effectControl] = null); // 关闭隐藏
+
+                  removeClass(self.el, 's-dialog-visible s-dialog-effect-leave');
+                  self.el.style.zIndex = ''; // 解除body滚动锁定
+
+                  !getElem('.s-dialog.s-dialog-visible').length && removeClass('html,body', 's-overflow-hidden'); // 触发参数回掉
+
+                  isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
+
+                  isFunction(opt.onHide) && opt.onHide.call(self); // 是否为一次性弹框，关闭后立即销毁，并删除dom
+
+                  opt.isOnce && self.destroy(true);
+                }); // 如果是在销毁中则立即触发移除效果关闭处理
+
+                if (self[inDestroy]) {
+                  self[effectControl].trigger();
+                }
+              }
+            }; // 记录本次执行的nextId
+
+
+            next[nextId] = self[visibleTimeOutId]; // 触发隐藏前生命周期钩子
+
+            if (isFunction(opt.onBeforeHide)) {
+              opt.onBeforeHide.call(self, next);
+            } else {
+              next();
+            }
+          }
+        });
+        return self;
+      } // 切换
+
+    }, {
+      key: "toggle",
+      value: function toggle(callback) {
+        return this[this[visible] ? 'hide' : 'show'](callback);
+      } // 销毁
+
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        var removeElem = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        var self = this;
+        var _self$options2 = self.options,
+            className = _self$options2.className,
+            position = _self$options2.position,
+            onBeforeDestroy = _self$options2.onBeforeDestroy,
+            onDestroy = _self$options2.onDestroy;
+
+        if (!self[inDestroy] && !self[isDestroy]) {
+          self[inDestroy] = true; // 触发销毁前生命周期钩子
+
+          isFunction(onBeforeDestroy) && onBeforeDestroy.call(self);
+
+          var fn = function fn() {
+            clearTimeout(self[visibleTimeOutId]);
+            clearTimeout(self[autoCloseTimeOutId]);
+            removeClass(self.el, "s-dialog-effect s-dialog-position-".concat(position, " ").concat(className));
+            delete self.el[instance];
+            self.mask && self.mask.parentNode.removeChild(self.mask);
+            self.closeBtn && self.closeBtn.parentNode.removeChild(self.closeBtn);
+            removeElem && self.el.parentNode.removeChild(self.el);
+            self[inDestroy] = false;
+            self[isDestroy] = true; // 触发销毁后生命周期钩子
+
+            isFunction(onDestroy) && onDestroy.call(self);
+          };
+
+          self[visible] ? self.hide(fn) : fn();
+        }
+      }
+    }]);
+
+    return Dialog;
+  }();
+
+  var instanceToast = null;
+
+  function Toast(options) {
+    Toast.clear();
+    var params = isObject(options) ? options : {
+      content: options
+    };
+    var type = options.type || 'default';
+    params = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, params);
+    var _params = params,
+        image = _params.image,
+        icon = _params.icon,
+        content = _params.content;
+    params.className += " s-toast-".concat(type);
+
+    if (icon || image) {
+      params.className += ' s-toast-middle';
+    }
+
+    params.content = '';
+
+    if (image) {
+      params.content += "<img class=\"s-toast-icon\" src=\"".concat(image, "\"/>");
+    } else if (icon) {
+      params.content += "<i class=\"".concat(icon, " s-toast-icon\"></i>");
+    }
+
+    if (content || content === 0) {
+      params.content += "<p class=\"s-toast-text\">".concat(content, "</p>");
+    }
+
+    instanceToast = dialog(params).show();
+    return instanceToast;
+  }
+
+  Toast.defaultOptions = {
+    className: 's-toast-dialog',
+    type: 'default',
+    icon: '',
+    image: '',
+    content: '',
+    duration: 2000,
+    position: '',
+    mask: false,
+    isOnce: true
+  };
+  ['success', 'error', 'warning', 'loading'].forEach(function (type) {
+    Toast[type] = function (options) {
+      return Toast(extend({
+        type: type
+      }, isObject(options) ? options : {
+        content: options
+      }));
+    };
+
+    Toast[type].defaultOptions = extend({
+      type: type,
+      icon: '',
+      image: ''
+    }, type === 'loading' ? {
+      effect: false,
+      position: 'middle',
+      duration: 0,
+      preventTouchmove: true
+    } : {});
+  });
+
+  Toast.clear = function () {
+    if (instanceToast) {
+      instanceToast.destroy(true);
+      instanceToast = null;
+    }
+  };
 
   function Alert(options) {
     return new Promise(function (resolve, reject) {
-      var params = extend(true, {}, Alert.defaultOptions, isObject(options) ? options : {
+      var params = extend({}, Alert.defaultOptions, isObject(options) ? options : {
         content: options
       });
       params.onCancel = reject;
@@ -3046,14 +1827,14 @@
     title: '',
     content: '',
     confirmText: '确定',
-    confirmColor: '#1989fa',
+    confirmColor: '#007bff',
     maskOpacity: 0.5,
     isOnce: true,
     preventTouchmove: true
   };
 
   function Confirm(options) {
-    return Alert(extend(true, {}, Confirm.defaultOptions, isObject(options) ? options : {
+    return Alert(extend({}, Confirm.defaultOptions, isObject(options) ? options : {
       content: options
     }));
   }
@@ -3063,11 +1844,10 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.6.2';
+  var version = '2.6.3';
   var index = _objectSpread2({
     version: version
-  }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, loading, {
-    $: $,
+  }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, dom, {
     countDown: countDown,
     useRem: useRem,
     regExp: regExp,
@@ -3080,10 +1860,10 @@
     confirm: Confirm
   });
 
-  exports.$ = $;
+  exports.addClass = addClass;
   exports.alert = Alert;
-  exports.base64Decode = base64Decode;
-  exports.base64Encode = base64Encode;
+  exports.base64decode = base64decode;
+  exports.base64encode = base64encode;
   exports.cleanCookie = cleanCookie;
   exports.confirm = Confirm;
   exports.countDown = countDown;
@@ -3099,16 +1879,14 @@
   exports.formatMoney = formatMoney;
   exports.formatSeconds = formatSeconds;
   exports.getCookie = getCookie;
+  exports.getElem = getElem;
   exports.getMatcheds = getMatcheds;
   exports.getMaxZindex = getMaxZindex;
   exports.getRandom = getRandom;
   exports.getTransitionInfo = getTransitionInfo;
   exports.getUrlParam = getUrlParam;
-  exports.getWindowHeight = getWindowHeight;
-  exports.getWindowWidth = getWindowWidth;
   exports.hasOwnProp = hasOwnProp;
   exports.hasTouch = hasTouch;
-  exports.hideLoading = hideLoading;
   exports.inBrowser = inBrowser;
   exports.isAndroid = isAndroid;
   exports.isArray = isArray;
@@ -3140,12 +1918,13 @@
   exports.privatePhone = privatePhone;
   exports.protoType = protoType;
   exports.regExp = regExp;
+  exports.removeClass = removeClass;
   exports.removeCookie = removeCookie;
   exports.repeat = repeat;
   exports.setCookie = setCookie;
-  exports.showLoading = showLoading;
   exports.supportCss3 = supportCss3;
   exports.throttle = throttle;
+  exports.toArray = toArray;
   exports.toArrayData = toArrayData;
   exports.toast = Toast;
   exports.trim = trim;
