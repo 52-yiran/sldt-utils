@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.3
+* sldt-utils v2.6.4
 * author 无痕
-* (c) Wed Oct 23 2019 14:50:31 GMT+0800 (GMT+08:00)
+* (c) Wed Oct 23 2019 15:04:17 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -1226,7 +1226,7 @@ class Dialog {
     const wrapper = getElem('.s-dialog-wrapper', elem)[0];
     // 关闭 x
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon s-icon-cross"></i></button>')[0];
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0];
     }
@@ -1506,7 +1506,7 @@ Confirm.defaultOptions = {
  * @LastEditTime: 2019-10-23 14:32:44
  */
 
-const version = '2.6.3';
+const version = '2.6.4';
 
 var index = {
   version,
