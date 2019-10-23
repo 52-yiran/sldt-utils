@@ -5,7 +5,7 @@
 ```
 npm i sldt-utils -S
 
-import 'sldt-utils/dist/style/index.min.css'
+import 'sldt-utils/dist/css/index.min.css'
 import S from 'sldt-utils'
 ```
 #### 2. umd静态引入 全局变量为S
