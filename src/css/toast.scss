@@ -1,6 +1,6 @@
 .s-toast-dialog {
   max-width: 80%;
-  top: 45%;
+  top: 50%;
   left: 50%;
   right: auto;
   bottom: auto;
@@ -11,17 +11,14 @@
     text-align: center;
     background-color: rgba(50, 50, 51, 0.88);
     border-radius: 4px;
-    padding: 12px;
-    min-width: 120px;
+    padding: 13px 16px;
+    min-width: 100px;
 
     .s-toast-icon {
       font-size: 40px;
-      line-height: 1;
-    }
-
-    img.s-toast-icon {
       width: 1em;
       height: 1em;
+      line-height: 1;
     }
 
     .s-toast-text {
@@ -34,8 +31,8 @@
   &.s-toast-middle {
     .s-dialog-wrapper {
       padding: 16px;
-      min-width: 120px;
-      min-height: 120px;
+      width: 120px;
+      height: 120px;
       justify-content: center;
       display: flex;
       align-items: center;

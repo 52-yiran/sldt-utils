@@ -30,10 +30,10 @@ S.isArray(value)//判断是否为数组
 S.isPromise(value)//判断是否为Promise
 ```
 
-## *S.extend*
+## *S.extend 深拷贝*
 ```
-S.extend(true,{},{})//深拷贝
-S.extend({},{})//浅拷贝
+S.extend(obj,{})//深拷贝,return obj;
+S.extend(true,obj,{})//深度拷贝合并,return obj;
 ```
 
 ## *S.formatDate 时间格式化*
@@ -46,9 +46,9 @@ S.formatDate (date, fmt = 'YYYY-MM-DD HH:mm')
 S.formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 'YYYY-MM-DD HH:mm', endformat = 'YYYY-MM-DD HH:mm')
 ```
 
-## *S.formatSeconds 格式化秒数为天,小时，分钟，秒 对象*
+## *S.formatSeconds 格式化倒计时秒数为周,天,小时，分钟，秒 对象*
 ```
-S.formatSeconds (seconds) //返回{ d, h, m, s }
+S.formatSeconds (seconds,fmt='d,h,m,s') //fmt全部参数'w,d,h,m,s',返回fmt{ d, h, m, s }
 ```
 
 ## *S.formatMoney 格式化货币*
@@ -196,17 +196,15 @@ S.confirm({
 ```
 S.toast(1);
 S.toast.success(1);
-S.toast.error(1)
-S.toast.warning(1)
+S.toast.fail(1)
 S.toast.loading('加载中...');
 
 S.toast.clear();//清除所有toast
 
 S.toast({
   type: 'success',
-  icon: '',
-  image: '',
-  content: '提示内容',
+  icon: '',//icon图标的class或image的src
+  message: '提示内容',
   duration: 2000
 })
 
@@ -215,7 +213,6 @@ S.toast({
 S.toast.defaultOptions={
   type: 'default',
   icon: '',
-  image: '',
   content: '提示内容',
   duration: 2000
 }
@@ -224,7 +221,6 @@ S.toast.defaultOptions={
 S.toast.success.defaultOptions={
   type: 'success',
   icon: '',
-  image: '',
   content: '提示内容',
   duration: 2000
 }

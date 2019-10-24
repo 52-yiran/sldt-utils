@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
  * @LastEditors:
- * @LastEditTime: 2019-10-17 15:44:37
+ * @LastEditTime: 2019-10-24 15:11:37
  */
 import { protoType } from './core'
 // 时间格式化
@@ -63,20 +63,21 @@ export function formatDateRange (startDateTime, endDateTime, separator = ' ~ ', 
   return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : ''
 };
 // 格式化秒数为天,小时，分钟，秒 对象
-export function formatSeconds (seconds) {
-  // 天数
-  const d = Math.floor(seconds / (60 * 60 * 24))
-  // 取模（余数）
-  let modulo = seconds % (60 * 60 * 24)
-  // 小时数
-  const h = Math.floor(modulo / (60 * 60))
-  modulo = modulo % (60 * 60)
-  // 分钟
-  const m = Math.floor(modulo / 60)
-  // 秒
-  const s = modulo % 60
-
-  return { d, h, m, s }
+export function formatSeconds (seconds, fmt = 'd,h,m,s') {
+  const result = {};
+  [
+    { attr: 'w', modulo: 60 * 60 * 24 * 7 },
+    { attr: 'd', modulo: 60 * 60 * 24 },
+    { attr: 'h', modulo: 60 * 60 },
+    { attr: 'm', modulo: 60 },
+    { attr: 's', modulo: 1 }
+  ].forEach(({ attr, modulo }) => {
+    if (fmt.indexOf(attr) > -1) {
+      result[attr] = Math.floor(seconds / modulo)
+      seconds -= result[attr] * modulo
+    }
+  })
+  return result;
 };
 // 格式化货币
 export function formatMoney (number, places, symbol, thousand, decimal) {

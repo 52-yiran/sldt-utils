@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.4
+* sldt-utils v2.6.5
 * author 无痕
-* (c) Wed Oct 23 2019 15:05:34 GMT+0800 (GMT+08:00)
+* (c) Thu Oct 24 2019 17:07:20 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -222,7 +222,7 @@ function extend() {
   var arguments$1 = arguments;
 
   var allowMerge = function allowMerge(param) {
-    return ['object', 'array'].includes(protoType(param));
+    return 'object,array'.indexOf(protoType(param)) > -1;
   };
 
   for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -612,7 +612,7 @@ var cookie = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
  * @LastEditors:
- * @LastEditTime: 2019-10-17 15:44:37
+ * @LastEditTime: 2019-10-24 15:11:37
  */
 
 function formatDate(date) {
@@ -688,23 +688,33 @@ function formatDateRange(startDateTime, endDateTime) {
 }
 
 function formatSeconds(seconds) {
-  // 天数
-  var d = Math.floor(seconds / (60 * 60 * 24)); // 取模（余数）
+  var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'd,h,m,s';
+  var result = {};
+  [{
+    attr: 'w',
+    modulo: 60 * 60 * 24 * 7
+  }, {
+    attr: 'd',
+    modulo: 60 * 60 * 24
+  }, {
+    attr: 'h',
+    modulo: 60 * 60
+  }, {
+    attr: 'm',
+    modulo: 60
+  }, {
+    attr: 's',
+    modulo: 1
+  }].forEach(function (_ref) {
+    var attr = _ref.attr,
+        modulo = _ref.modulo;
 
-  var modulo = seconds % (60 * 60 * 24); // 小时数
-
-  var h = Math.floor(modulo / (60 * 60));
-  modulo = modulo % (60 * 60); // 分钟
-
-  var m = Math.floor(modulo / 60); // 秒
-
-  var s = modulo % 60;
-  return {
-    d: d,
-    h: h,
-    m: m,
-    s: s
-  };
+    if (fmt.indexOf(attr) > -1) {
+      result[attr] = Math.floor(seconds / modulo);
+      seconds -= result[attr] * modulo;
+    }
+  });
+  return result;
 }
 
 function formatMoney(number, places, symbol, thousand, decimal) {
@@ -1409,7 +1419,7 @@ dialog.defaultOptions = {
   // 遮罩透明度
   maskClose: true,
   // 点击遮罩是否关闭弹框
-  lockScroll: false,
+  lockScroll: true,
   // 是否阻止外层滚动,
   duration: 0,
   // 自动关闭时间,number
@@ -1554,7 +1564,7 @@ function () {
     var wrapper = getElem('.s-dialog-wrapper', elem)[0]; // 关闭 x
 
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i></i></button>')[0];
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0];
     }
@@ -1739,31 +1749,28 @@ var instanceToast = null;
 
 function Toast(options) {
   Toast.clear();
-  var params = isObject(options) ? options : {
-    content: options
+  options = isObject(options) ? options : {
+    message: options
   };
   var type = options.type || 'default';
-  params = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, params);
-  var _params = params,
-      image = _params.image,
-      icon = _params.icon,
-      content = _params.content;
+  var params = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, options);
+  var icon = params.icon,
+      message = params.message;
   params.className += " s-toast-".concat(type);
-
-  if (icon || image) {
-    params.className += ' s-toast-middle';
-  }
-
   params.content = '';
 
-  if (image) {
-    params.content += "<img class=\"s-toast-icon\" src=\"".concat(image, "\"/>");
-  } else if (icon) {
-    params.content += "<i class=\"".concat(icon, " s-toast-icon\"></i>");
+  if (typeof icon === 'string' && (icon = icon.trim())) {
+    params.className += ' s-toast-middle';
+
+    if (/\.(png|jpe?g|gif|svg)(\?.*)?$/i.test(icon) || icon.indexOf('data:image/') > -1) {
+      params.content += "<img class=\"s-toast-icon\" src=\"".concat(icon, "\"/>");
+    } else {
+      params.content += "<i class=\"".concat(icon, " s-toast-icon\"></i>");
+    }
   }
 
-  if (content || content === 0) {
-    params.content += "<p class=\"s-toast-text\">".concat(content, "</p>");
+  if (message || message === 0) {
+    params.content += "<p class=\"s-toast-text\">".concat(message, "</p>");
   }
 
   instanceToast = dialog(params).show();
@@ -1774,32 +1781,44 @@ Toast.defaultOptions = {
   className: 's-toast-dialog',
   type: 'default',
   icon: '',
-  image: '',
-  content: '',
+  message: '',
   duration: 2000,
   position: '',
   mask: false,
   isOnce: true
 };
-['success', 'error', 'warning', 'loading'].forEach(function (type) {
-  Toast[type] = function (options) {
-    return Toast(extend({
-      type: type
-    }, isObject(options) ? options : {
-      content: options
-    }));
-  };
-
-  Toast[type].defaultOptions = extend({
-    type: type,
-    icon: '',
-    image: ''
-  }, type === 'loading' ? {
+[{
+  type: 'success',
+  options: {
+    icon: 's-icon-success'
+  }
+}, {
+  type: 'fail',
+  options: {
+    icon: 's-icon-fail'
+  }
+}, {
+  type: 'loading',
+  options: {
+    icon: 's-icon-loading-circular',
     effect: false,
     position: 'middle',
     duration: 0,
     preventTouchmove: true
-  } : {});
+  }
+}].forEach(function (_ref) {
+  var type = _ref.type,
+      options = _ref.options;
+
+  Toast[type] = function (options) {
+    return Toast(extend({
+      type: type
+    }, isObject(options) ? options : {
+      message: options
+    }));
+  };
+
+  Toast[type].defaultOptions = options;
 });
 
 Toast.clear = function () {
@@ -1825,7 +1844,7 @@ Alert.defaultOptions = {
   title: '',
   content: '',
   confirmText: '确定',
-  confirmColor: '#007bff',
+  confirmColor: '#1989fa',
   maskOpacity: 0.5,
   isOnce: true,
   preventTouchmove: true
@@ -1842,7 +1861,7 @@ Confirm.defaultOptions = {
   cancelColor: '#323233'
 };
 
-var version = '2.6.4';
+var version = '2.6.5';
 var index = _objectSpread2({
   version: version
 }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, dom, {

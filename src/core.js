@@ -84,7 +84,7 @@ export function each (obj, callback) {
 }
 // 对象拷贝克隆，覆盖传值
 export function extend (...args) {
-  const allowMerge = param => ['object', 'array'].includes(protoType(param))
+  const allowMerge = param => 'object,array'.indexOf(protoType(param)) > -1
   const deep = args[0] === true
   let i = deep ? 1 : 0
   let result = null

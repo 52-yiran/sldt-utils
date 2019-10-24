@@ -1,5 +1,5 @@
-import './styles/base.scss'
-import './styles/dialog.scss'
+import './css/base.scss'
+import './css/dialog.scss'
 
 import { extend, isFunction } from './core'
 import { whenTransitionEnds } from './transition'
@@ -42,7 +42,7 @@ dialog.defaultOptions = {
   mask: true, // 是否显示遮罩
   maskOpacity: 0.7, // 遮罩透明度
   maskClose: true, // 点击遮罩是否关闭弹框
-  lockScroll: false, // 是否阻止外层滚动,
+  lockScroll: true, // 是否阻止外层滚动,
   duration: 0, // 自动关闭时间,number
   preventTouchmove: false, // 是否阻止弹层touchmove滚动，手机上滚动穿透
   // 生命周期
@@ -166,7 +166,7 @@ class Dialog {
     const wrapper = getElem('.s-dialog-wrapper', elem)[0]
     // 关闭 x
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i></i></button>')[0]
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0]
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0]
     }

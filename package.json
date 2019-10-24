@@ -1,6 +1,6 @@
 {
   "name": "sldt-utils",
-  "version": "2.6.4",
+  "version": "2.6.5",
   "description": "一个js常用方法库",
   "author": "无痕",
   "license": "MIT",
@@ -43,6 +43,7 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-buble": "^0.19.8",
     "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-copy": "^3.1.0",
     "rollup-plugin-flow-no-whitespace": "^1.0.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-livereload": "^1.0.4",

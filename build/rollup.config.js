@@ -9,10 +9,10 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import buble from 'rollup-plugin-buble';
+import copy from 'rollup-plugin-copy';
 
 // web服务打开浏览器
 import serve from 'rollup-plugin-serve';
-import livereload from 'rollup-plugin-livereload'
 // 压缩代码
 import { terser } from 'rollup-plugin-terser';
 // 新增 rollup-plugin-postcss 插件
@@ -121,6 +121,13 @@ export default function (ENV) {
             pure_funcs: ['console.log'] // 去掉console.log函数
           }
         }),
+        suffix === '' && copy({
+          verbose: true,
+          hook: 'writeBundle',
+          targets: [
+            { src: 'src/fonts', dest: `${outputDir}` }
+          ]
+        }),
         // dev时
         !isProd && serve({
           open: true, // 是否打开浏览器
@@ -128,8 +135,7 @@ export default function (ENV) {
           historyApiFallback: true, // Set to true to return index.html instead of 404
           host: getIPAdress(),
           port: 10001,
-        }),
-        !isProd && livereload()
+        })
       ],
       watch: {
         include: 'src/**'

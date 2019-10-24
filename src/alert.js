@@ -1,6 +1,6 @@
 import { extend, isObject } from './core'
 import Dialog from './dialog'
-import './styles/alert.scss'
+import './css/alert.scss'
 
 function Alert (options) {
   return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ Alert.defaultOptions = {
   title: '',
   content: '',
   confirmText: '确定',
-  confirmColor: '#007bff',
+  confirmColor: '#1989fa',
   maskOpacity: 0.5,
   isOnce: true,
   preventTouchmove: true

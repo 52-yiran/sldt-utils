@@ -1,0 +1,48 @@
+@font-face {
+  font-family: "s-icon";
+  src: url('../fonts/s-icon.eot');
+  /* IE9 */
+  src: url('../fonts/s-icon.eot#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */
+    url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAARYAAsAAAAACTAAAAQMAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDKAqFNIQ2ATYCJAMYCw4ABCAFhG0HZRvZBxFVnFfJfhw456cg50L90osk6qJW0CT95xCitczs7kGJHChA4Vmiqvqq2gpZ4cvC1plqYAVkxO//XB7yJEaYojw78uj/pUnL+TR6fk5PqQk5IXfoVk2wg2TFgHft3AxObKVK4FT5RtWqr/njXtWMbQGbz77Fac5NuQDlwgEK2Fydm6wFKWlFuMPYxWVcT6DXtBWxNWTUJGgV2rJAHC9fOh/amE4poYZWWefsLRBnUGlTFncbek7dn49/SEMGSZVBW7u/ZPAiWPsqfcW84Ro6Ngr4/VnAHCJjBYXo5NoOIPuxFVmvFCuWmNe04Au7Ll+SzZvtvzxCkhUVUYMm64f47XjFl2QiBF9JCIkvGSHzpSAUvrBOBVV1j40DuIVeJIhfsYd0Y8omA0odr5cQ44/DpOnGpXa0tjCyaDErqMnWliyi2Y6pL11imfui6k7TJiTKoGPQCLYsNDn7rHkuesY4PdPK09vb1epkVq1vtCtVleVENtGj2s5sCq5Z1NaRac2KqFdYVGrUHcjXFgdfssG0MKbUYCqJ2msxzclViW2b1qpJNLdSn2rnVS2NOpJI4rydFs6uMWoJefJk8uPHk54+nYJMh14oAndfJj/7NvXpV/FievrrlqfEN+la9I14quVrT/wbUVrdId1p9YTfcH40SXHkNbKj+I/LJ+eNWVerdP/XOLeP/tkwt5qp70hs32g9S6St29Lttm1kvsmUc+fP+7vuL0CeR1zyBP/V/uInxMWHY2iCJhu7td6quupWZjnPdjsTJ2aQ6m0Wc67tclp3rIPej96fmzv75P2PH+9VTXx/Vcuuaw4q2v1sZj2yNXqv0/cALmc3EXyoHvJw+4UfP/gD/P4f3/cLBwT7Ivx+5A3WRx4k3vR4bwk3Ba/X2nhd9sAJQLc2v+Gnuhdz0gh+GSB/cC+h1y3O7/l5AF2imPuT/I6bBxu9c/29/rdEAHh61rcS+rrFBdrrW3fJHvwS/Jo9RRZq+rqI3c25ArVDaLnXzXr1ogvYNeq9L8VEbSqhmAghaUxB1ppBF/wKVPo4OoFE1hew9h4OE2HWECo9ANr5BoAE/ADH5xzwAn7RAv4PRJp/kASCB2xKnJ1JtIrlixtLylMGpy8oUTo2jH7hFT9S/tYoGxW6tFeyrgxCEsbJ5AN1ZPvY4N7z1HsGttLCPbgZNY2AtlIR+rDwXh+jiPO+KERpewsDWUTxSAacfAElJDpsD/cWqe9/RHJvGoot6SqxvyKWU44PEqG4BvpB1tXqOpfJzrtcyvMYL2KWaIF7aCGNHhNA58+qEOSFihYR7ShC/biuLBxf0V7lEQAw7V2lSJGjRBV1NMSjRhyNWJXN1L0hknPbRlRWdnngtM05EOUu7sXS4klqez0=') format('woff2'),
+    url('../fonts/s-icon.woff') format('woff'),
+    url('../fonts/s-icon.ttf') format('truetype'),
+    /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url('../fonts/s-icon.svg#s-icon') format('svg');
+  /* iOS 4.1- */
+}
+
+[class^="s-icon"] {
+  font-family: "s-icon";
+  font-size: inherit;
+  font-style: normal;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &:before {
+    display: inline-block;
+  }
+}
+
+.s-icon-close:before {
+  content: "\e606";
+}
+
+.s-icon-fail:before {
+  content: "\e607";
+}
+
+.s-icon-success:before {
+  content: "\e608";
+}
+
+.s-icon-loading-spinner:before {
+  content: "\e609";
+  animation: s-animate-rotate 1.2s linear infinite;
+}
+
+.s-icon-loading-circular:before {
+  content: "\e60a";
+  animation: s-animate-rotate 1s linear infinite;
+}
