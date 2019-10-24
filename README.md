@@ -213,7 +213,7 @@ S.toast({
 S.toast.defaultOptions={
   type: 'default',
   icon: '',
-  content: '提示内容',
+  message: '提示内容',
   duration: 2000
 }
 
@@ -221,7 +221,7 @@ S.toast.defaultOptions={
 S.toast.success.defaultOptions={
   type: 'success',
   icon: '',
-  content: '提示内容',
+  message: '提示内容',
   duration: 2000
 }
 
