@@ -311,7 +311,7 @@ dialog.defaultOptions = {
 </template>
 
 <script>
-// import 'sldt-utils/dist/style/index.min.css'//全局引入
+// import 'sldt-utils/dist/css/index.min.css'//全局引入
 
 import { dialog as Dialog } from 'sldt-utils'
 
