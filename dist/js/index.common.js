@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.5
 * author 无痕
-* (c) Thu Oct 24 2019 17:07:20 GMT+0800 (GMT+08:00)
+* (c) Fri Oct 25 2019 16:41:03 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -316,7 +316,7 @@ var core = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-10-17 15:39:57
+ * @LastEditTime: 2019-10-25 15:41:44
  */
 // 是否为整数
 function isInteger(val) {
@@ -1558,6 +1558,9 @@ function () {
       self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
 
       maskClose && self.mask.addEventListener('click', cancel);
+      self.mask.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+      });
       elem.insertBefore(self.mask, elem.firstElementChild);
     }
 
@@ -1603,7 +1606,7 @@ function () {
             if (next[nextId] === self[visibleTimeOutId]) {
               self[visible] = true; // 锁定外层滚动
 
-              opt.lockScroll && addClass('html,body', 's-overflow-hidden'); // z-index层级设置
+              opt.lockScroll && addClass('body', 's-overflow-hidden'); // z-index层级设置
 
               self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1; // 显示
 
@@ -1673,7 +1676,7 @@ function () {
                 removeClass(self.el, 's-dialog-visible s-dialog-effect-leave');
                 self.el.style.zIndex = ''; // 解除body滚动锁定
 
-                !getElem('.s-dialog.s-dialog-visible').length && removeClass('html,body', 's-overflow-hidden'); // 触发参数回掉
+                !getElem('.s-dialog.s-dialog-visible').length && removeClass('body', 's-overflow-hidden'); // 触发参数回掉
 
                 isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
 

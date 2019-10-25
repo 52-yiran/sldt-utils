@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-10-17 15:39:57
+ * @LastEditTime: 2019-10-25 15:41:44
  */
 // 是否为整数
 export function isInteger (val) {
@@ -20,7 +20,7 @@ export function isPhone (val) {
 };
 // 是否为电子邮件
 export function isEmail (val) {
-  return (/^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val))
+  return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val)
 };
 // 是否为带域名的链接地址
 export function isUrl (val) {

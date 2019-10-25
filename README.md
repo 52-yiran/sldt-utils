@@ -97,7 +97,7 @@ S.throttle(fn, wait = 300, immediate = false) //返回一个新函数
 S.regExp.isInteger(val) //判断是否为正整数
 S.regExp.isNumber(val) //判断是否为数字
 S.regExp.isPhone(val) //判断是否为正确的手机号码格式
-S.regExp.isEmail(val) //判断是否为是否为电子邮件
+S.regExp.isEmail(val) //判断是否为邮箱格式
 S.regExp.isUrl(val) //判断是否为带域名的绝对路径
 S.regExp.isDate(val) //判断是否为合法date
 ```

@@ -32,11 +32,12 @@
 
       .s-btn {
         flex: 1;
-        height: 58px;
+        height: 54px;
         font-size: 16px;
+        border-left: 1px solid #e7e7e7;
 
-        &:nth-child(2) {
-          border-left: 1px solid #e7e7e7;
+        &:first-child {
+          border-left: 0;
         }
       }
     }

@@ -72,145 +72,105 @@
 
 @-webkit-keyframes s-animate-top-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(0, -100%, 0);
             transform: translate3d(0, -100%, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @keyframes s-animate-top-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(0, -100%, 0);
             transform: translate3d(0, -100%, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @-webkit-keyframes s-animate-top-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(0, -100%, 0);
             transform: translate3d(0, -100%, 0); } }
 
 @keyframes s-animate-top-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(0, -100%, 0);
             transform: translate3d(0, -100%, 0); } }
 
 @-webkit-keyframes s-animate-left-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(-100%, 0, 0);
             transform: translate3d(-100%, 0, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @keyframes s-animate-left-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(-100%, 0, 0);
             transform: translate3d(-100%, 0, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @-webkit-keyframes s-animate-left-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(-100%, 0, 0);
             transform: translate3d(-100%, 0, 0); } }
 
 @keyframes s-animate-left-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(-100%, 0, 0);
             transform: translate3d(-100%, 0, 0); } }
 
 @-webkit-keyframes s-animate-right-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(100%, 0, 0);
             transform: translate3d(100%, 0, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @keyframes s-animate-right-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(100%, 0, 0);
             transform: translate3d(100%, 0, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @-webkit-keyframes s-animate-right-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(100%, 0, 0);
             transform: translate3d(100%, 0, 0); } }
 
 @keyframes s-animate-right-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(100%, 0, 0);
             transform: translate3d(100%, 0, 0); } }
 
 @-webkit-keyframes s-animate-bottom-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(0, 100%, 0);
             transform: translate3d(0, 100%, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @keyframes s-animate-bottom-enter {
   0% {
-    opacity: 0;
     -webkit-transform: translate3d(0, 100%, 0);
             transform: translate3d(0, 100%, 0); }
   to {
-    opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0); } }
 
 @-webkit-keyframes s-animate-bottom-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(0, 100%, 0);
             transform: translate3d(0, 100%, 0); } }
 
 @keyframes s-animate-bottom-leave {
-  0% {
-    opacity: 1; }
   to {
-    opacity: 0;
     -webkit-transform: translate3d(0, 100%, 0);
             transform: translate3d(0, 100%, 0); } }
 
@@ -444,7 +404,7 @@ button {
   bottom: 0;
   margin: 0;
   padding: 0;
-  font-size: 0; }
+  -webkit-overflow-scrolling: touch; }
   .s-dialog.s-dialog-visible {
     display: block; }
   .s-dialog .s-dialog-mask {
@@ -474,7 +434,9 @@ button {
       -webkit-animation-duration: inherit;
               animation-duration: inherit;
       -webkit-animation-fill-mode: inherit;
-              animation-fill-mode: inherit; }
+              animation-fill-mode: inherit;
+      -webkit-animation-timing-function: inherit;
+              animation-timing-function: inherit; }
     .s-dialog.s-dialog-effect-enter .s-dialog-mask,
     .s-dialog.s-dialog-effect-enter .s-dialog-wrapper {
       -webkit-animation-name: s-animate-fade-enter;
@@ -488,6 +450,8 @@ button {
   position: absolute;
   left: 50%;
   top: 50%;
+  max-height: 100%;
+  overflow-y: auto;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0); }
 
@@ -528,7 +492,7 @@ button {
 .s-dialog-position-left .s-dialog-wrapper {
   position: absolute;
   left: 0;
-  width: 70%;
+  width: 60%;
   height: 100%; }
 
 .s-dialog-position-left.s-dialog-effect-enter .s-dialog-wrapper {
@@ -542,7 +506,7 @@ button {
 .s-dialog-position-right .s-dialog-wrapper {
   position: absolute;
   right: 0;
-  width: 70%;
+  width: 60%;
   height: 100%; }
 
 .s-dialog-position-right.s-dialog-effect-enter .s-dialog-wrapper {
@@ -635,7 +599,8 @@ button {
       -webkit-box-flex: 1;
           -ms-flex: 1;
               flex: 1;
-      height: 58px;
-      font-size: 16px; }
-      .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:nth-child(2) {
-        border-left: 1px solid #e7e7e7; }
+      height: 54px;
+      font-size: 16px;
+      border-left: 1px solid #e7e7e7; }
+      .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:first-child {
+        border-left: 0; }

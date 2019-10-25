@@ -56,92 +56,64 @@
 
 @keyframes s-animate-top-enter {
   0% {
-    opacity: 0;
     transform: translate3d(0, -100%, 0)
   }
 
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0)
   }
 }
 
 @keyframes s-animate-top-leave {
-  0% {
-    opacity: 1
-  }
-
   to {
-    opacity: 0;
     transform: translate3d(0, -100%, 0)
   }
 }
 
 @keyframes s-animate-left-enter {
   0% {
-    opacity: 0;
     transform: translate3d(-100%, 0, 0)
   }
 
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0)
   }
 }
 
 @keyframes s-animate-left-leave {
-  0% {
-    opacity: 1
-  }
-
   to {
-    opacity: 0;
     transform: translate3d(-100%, 0, 0)
   }
 }
 
 @keyframes s-animate-right-enter {
   0% {
-    opacity: 0;
     transform: translate3d(100%, 0, 0)
   }
 
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0)
   }
 }
 
 @keyframes s-animate-right-leave {
-  0% {
-    opacity: 1
-  }
-
   to {
-    opacity: 0;
     transform: translate3d(100%, 0, 0)
   }
 }
 
 @keyframes s-animate-bottom-enter {
   0% {
-    opacity: 0;
     transform: translate3d(0, 100%, 0)
   }
 
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0)
   }
 }
 
 @keyframes s-animate-bottom-leave {
-  0% {
-    opacity: 1
-  }
-
   to {
-    opacity: 0;
     transform: translate3d(0, 100%, 0)
   }
 }
