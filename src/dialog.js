@@ -1,23 +1,23 @@
-import './css/base.scss'
-import './css/dialog.scss'
+import './css/base.scss';
+import './css/dialog.scss';
 
-import { extend, isFunction } from './core'
-import { whenTransitionEnds } from './transition'
-import { getElem, addClass, removeClass, getMaxZindex } from './dom'
+import { extend, isFunction } from './core';
+import { whenTransitionEnds } from './transition';
+import { getElem, addClass, removeClass, getMaxZindex } from './dom';
 
-const instance = '[S_DIALOG_INSTANCE]'
-const visible = '[S_DIALOG_VISIBLE]'
-const visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]'
-const autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]'
-const effectControl = '[S_DIALOG_EFFECT_CONTROL]'
+const instance = '[S_DIALOG_INSTANCE]';
+const visible = '[S_DIALOG_VISIBLE]';
+const visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]';
+const autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]';
+const effectControl = '[S_DIALOG_EFFECT_CONTROL]';
 
-const inDestroy = '[S_DIALOG_IN_DESTROY]'
-const isDestroy = '[S_DIALOG_IS_DESTROY]'
+const inDestroy = '[S_DIALOG_IN_DESTROY]';
+const isDestroy = '[S_DIALOG_IS_DESTROY]';
 
-const nextId = '[S_DIALOG_NEXT_ID]'
+const nextId = '[S_DIALOG_NEXT_ID]';
 
 function dialog (options) {
-  return new Dialog(options)
+  return new Dialog(options);
 }
 
 // 默认参数
@@ -55,11 +55,11 @@ dialog.defaultOptions = {
   onBeforeHide: undefined, // 隐藏时拦截钩子,参数为next()可异步阻止关闭
   onBeforeDestroy: undefined, // 销毁前
   onDestroy: undefined // 销毁后
-}
+};
 
 class Dialog {
   constructor(params) {
-    const self = this
+    const self = this;
     const {
       el,
       className,
@@ -82,261 +82,261 @@ class Dialog {
       onInit,
       onCancel,
       onConfirm
-    } = self.options = extend({}, dialog.defaultOptions, params)
+    } = self.options = extend({}, dialog.defaultOptions, params);
 
     // 弹框显示状态
-    self[visible] = false
+    self[visible] = false;
     // 弹框显示隐藏定时器,防止多次显示，隐藏同步切换
-    self[visibleTimeOutId] = 0
+    self[visibleTimeOutId] = 0;
     // 弹框自动关闭定时器
-    self[autoCloseTimeOutId] = 0
+    self[autoCloseTimeOutId] = 0;
     // 记录动画效果执行完毕回调处理函数执行与否的操作对象
-    self[effectControl] = null
+    self[effectControl] = null;
     // 判断是否在执行销毁中
-    self[inDestroy] = false
+    self[inDestroy] = false;
     // 判断是否执行过销毁
-    self[isDestroy] = false
+    self[isDestroy] = false;
 
     // 内部cancel关闭
     function cancel () {
       // 触发取消后生命周期钩子
-      isFunction(onCancel) && onCancel.call(self)
-      self.hide()
+      isFunction(onCancel) && onCancel.call(self);
+      self.hide();
     }
     // 内部confirm关闭
     function confirm () {
       // 触发确认后生命周期钩子
-      isFunction(onConfirm) && onConfirm.call(self)
-      self.hide()
+      isFunction(onConfirm) && onConfirm.call(self);
+      self.hide();
     }
 
     // 根dom节点
-    let elem = getElem(el)[0]
+    let elem = getElem(el)[0];
     if (!elem) {
-      elem = getElem('<div class="s-dialog"></div>')[0]
-      const wrapper = getElem('<div class="s-dialog-wrapper"></div>')[0]
+      elem = getElem('<div class="s-dialog"></div>')[0];
+      const wrapper = getElem('<div class="s-dialog-wrapper"></div>')[0];
 
       // 标题
       if (title !== '') {
-        wrapper.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0])
+        wrapper.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0]);
       }
       // 内容
       if (content !== '') {
-        wrapper.appendChild(getElem('<div class="s-dialog-content">' + content + '</div>')[0])
+        wrapper.appendChild(getElem('<div class="s-dialog-content">' + content + '</div>')[0]);
       }
       // 按钮
       if (cancelText !== '' || confirmText !== '') {
-        const footer = getElem('<div class="s-dialog-footer"></div>')[0]
+        const footer = getElem('<div class="s-dialog-footer"></div>')[0];
         if (cancelText !== '') {
-          const cancelBtn = getElem(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`)[0]
-          cancelBtn.addEventListener('click', cancel)
-          footer.appendChild(cancelBtn)
+          const cancelBtn = getElem(`<button class="${cancelClass}" style="${cancelColor ? `color:${cancelColor}` : ''}">${cancelText}</button>`)[0];
+          cancelBtn.addEventListener('click', cancel);
+          footer.appendChild(cancelBtn);
         }
         if (confirmText !== '') {
-          const confirmBtn = getElem(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`)[0]
-          confirmBtn.addEventListener('click', confirm)
-          footer.appendChild(confirmBtn)
+          const confirmBtn = getElem(`<button class="${confirmClass}" style="${confirmColor ? `color:${confirmColor}` : ''}">${confirmText}</button>`)[0];
+          confirmBtn.addEventListener('click', confirm);
+          footer.appendChild(confirmBtn);
         }
-        wrapper.appendChild(footer)
+        wrapper.appendChild(footer);
       }
-      elem.appendChild(wrapper)
+      elem.appendChild(wrapper);
     } else {
-      if (elem[instance]) return elem[instance]
+      if (elem[instance]) return elem[instance];
     }
 
-    addClass(elem, position ? ('s-dialog-position-' + position) : '')
-    addClass(elem, effect ? 's-dialog-effect' : '')
-    addClass(elem, className)
-    elem[instance] = self
+    addClass(elem, position ? ('s-dialog-position-' + position) : '');
+    addClass(elem, effect ? 's-dialog-effect' : '');
+    addClass(elem, className);
+    elem[instance] = self;
     // 锁定touchmove滚动
     preventTouchmove && elem.addEventListener('touchmove', function (e) {
-      e.preventDefault()
-    })
+      e.preventDefault();
+    });
 
     // 弹框实例添加dom节点记录
-    self.el = elem
+    self.el = elem;
     // 是否显示遮罩
     if (mask) {
-      self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]
+      self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0];
       // 点击遮罩是否关闭
-      maskClose && self.mask.addEventListener('click', cancel)
+      maskClose && self.mask.addEventListener('click', cancel);
       self.mask.addEventListener('touchmove', function (e) {
-        e.preventDefault()
-      })
-      elem.insertBefore(self.mask, elem.firstElementChild)
+        e.preventDefault();
+      });
+      elem.insertBefore(self.mask, elem.firstElementChild);
     }
 
-    const wrapper = getElem('.s-dialog-wrapper', elem)[0]
+    const wrapper = getElem('.s-dialog-wrapper', elem)[0];
     // 关闭 x
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0]
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
-      self.closeBtn = getElem(closeBtn)[0]
+      self.closeBtn = getElem(closeBtn)[0];
     }
 
     if (wrapper) {
-      self.wrapper = wrapper
+      self.wrapper = wrapper;
       if (self.closeBtn) {
-        self.closeBtn.addEventListener('click', cancel)
-        wrapper.appendChild(self.closeBtn)
+        self.closeBtn.addEventListener('click', cancel);
+        wrapper.appendChild(self.closeBtn);
       }
     }
 
     // 挂载dom
-    const mountNode = getElem(mountElem)[0]
+    const mountNode = getElem(mountElem)[0];
     mountNode && mountNode.appendChild(elem);
     // 触发初始化后生命周期钩子
-    isFunction(onInit) && onInit.call(self)
+    isFunction(onInit) && onInit.call(self);
   }
   // 显示
   show (callback) {
-    const self = this
-    const opt = self.options
+    const self = this;
+    const opt = self.options;
     // 清除弹框显示隐藏记录
-    clearTimeout(self[visibleTimeOutId])
+    clearTimeout(self[visibleTimeOutId]);
 
     self[visibleTimeOutId] = setTimeout(function () {
       if (!self[visible]) {
         // 判断是否有上次未执行完的效果回调，如有，则立即执行
-        self[effectControl] && self[effectControl].trigger()
+        self[effectControl] && self[effectControl].trigger();
 
         const next = function () {
           // 判断是否是最新的next调用，不是则作废
           if (next[nextId] === self[visibleTimeOutId]) {
-            self[visible] = true
+            self[visible] = true;
 
             // 锁定外层滚动
-            opt.lockScroll && addClass('body', 's-overflow-hidden')
+            opt.lockScroll && addClass('body', 's-overflow-hidden');
             // z-index层级设置
-            self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1
+            self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1;
             // 显示
-            addClass(self.el, 's-dialog-visible s-dialog-effect-enter')
+            addClass(self.el, 's-dialog-visible s-dialog-effect-enter');
 
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
             self[effectControl] = whenTransitionEnds(self.el, function () {
               // 清除执行效果回调函数执行控制对象对象记录
-              self[effectControl] && (self[effectControl] = null)
+              self[effectControl] && (self[effectControl] = null);
 
               // 自动关闭
-              const duration = parseInt(opt.duration)
+              const duration = parseInt(opt.duration);
               if (duration > 0) {
-                clearTimeout(self[autoCloseTimeOutId])
+                clearTimeout(self[autoCloseTimeOutId]);
                 self[autoCloseTimeOutId] = setTimeout(function () {
-                  self[visible] && self.hide()
-                }, duration)
+                  self[visible] && self.hide();
+                }, duration);
               }
               // 移除效果class
-              removeClass(self.el, 's-dialog-effect-enter')
+              removeClass(self.el, 's-dialog-effect-enter');
               // 触发参数回掉
-              isFunction(callback) && callback.call(self)
+              isFunction(callback) && callback.call(self);
               // 触发显示后生命周期钩子
-              isFunction(opt.onShow) && opt.onShow.call(self)
-            })
+              isFunction(opt.onShow) && opt.onShow.call(self);
+            });
           }
-        }
+        };
         // 记录本次执行的nextId
-        next[nextId] = self[visibleTimeOutId]
+        next[nextId] = self[visibleTimeOutId];
 
         // 触发显示前生命周期钩子
         if (isFunction(opt.onBeforeShow)) {
-          opt.onBeforeShow.call(self, next)
+          opt.onBeforeShow.call(self, next);
         } else {
-          next()
+          next();
         }
       }
-    })
-    return self
+    });
+    return self;
   }
   // 隐藏
   hide (callback) {
-    const self = this
-    const opt = self.options
+    const self = this;
+    const opt = self.options;
     // 清除弹框显示隐藏记录
-    clearTimeout(self[visibleTimeOutId])
+    clearTimeout(self[visibleTimeOutId]);
 
     self[visibleTimeOutId] = setTimeout(function () {
       if (self[visible]) {
         // 判断是否有上次未执行完的效果回调，如有，则立即执行
-        self[effectControl] && self[effectControl].trigger()
+        self[effectControl] && self[effectControl].trigger();
 
         const next = function () {
           // 判断是否是最新的next调用，不是则作废
           if (next[nextId] === self[visibleTimeOutId]) {
-            self[visible] = false
+            self[visible] = false;
 
             // 清除自动关闭定时器
-            clearTimeout(self[autoCloseTimeOutId])
+            clearTimeout(self[autoCloseTimeOutId]);
 
             // 开始执行效果
-            addClass(self.el, 's-dialog-effect-leave')
+            addClass(self.el, 's-dialog-effect-leave');
 
             // 弹框效果执行完毕,记录效果执行回掉方法控制器
             self[effectControl] = whenTransitionEnds(self.el, function () {
               // 清除执行效果回调函数执行控制对象对象记录
-              self[effectControl] && (self[effectControl] = null)
+              self[effectControl] && (self[effectControl] = null);
               // 关闭隐藏
-              removeClass(self.el, 's-dialog-visible s-dialog-effect-leave')
-              self.el.style.zIndex = ''
+              removeClass(self.el, 's-dialog-visible s-dialog-effect-leave');
+              self.el.style.zIndex = '';
 
               // 解除body滚动锁定
-              !getElem('.s-dialog.s-dialog-visible').length && removeClass('body', 's-overflow-hidden')
+              !getElem('.s-dialog.s-dialog-visible').length && removeClass('body', 's-overflow-hidden');
               // 触发参数回掉
-              isFunction(callback) && callback.call(self)
+              isFunction(callback) && callback.call(self);
               // 触发隐藏后生命周期钩子
-              isFunction(opt.onHide) && opt.onHide.call(self)
+              isFunction(opt.onHide) && opt.onHide.call(self);
               // 是否为一次性弹框，关闭后立即销毁，并删除dom
-              opt.isOnce && self.destroy(true)
-            })
+              opt.isOnce && self.destroy(true);
+            });
 
             // 如果是在销毁中则立即触发移除效果关闭处理
             if (self[inDestroy]) {
-              self[effectControl].trigger()
+              self[effectControl].trigger();
             }
           }
-        }
+        };
         // 记录本次执行的nextId
-        next[nextId] = self[visibleTimeOutId]
+        next[nextId] = self[visibleTimeOutId];
 
         // 触发隐藏前生命周期钩子
         if (isFunction(opt.onBeforeHide)) {
-          opt.onBeforeHide.call(self, next)
+          opt.onBeforeHide.call(self, next);
         } else {
-          next()
+          next();
         }
       }
-    })
-    return self
+    });
+    return self;
   }
   // 切换
   toggle (callback) {
-    return this[this[visible] ? 'hide' : 'show'](callback)
+    return this[this[visible] ? 'hide' : 'show'](callback);
   }
   // 销毁
   destroy (removeElem = false) {
-    const self = this
-    const { className, position, onBeforeDestroy, onDestroy } = self.options
+    const self = this;
+    const { className, position, onBeforeDestroy, onDestroy } = self.options;
 
     if (!self[inDestroy] && !self[isDestroy]) {
-      self[inDestroy] = true
+      self[inDestroy] = true;
       // 触发销毁前生命周期钩子
-      isFunction(onBeforeDestroy) && onBeforeDestroy.call(self)
+      isFunction(onBeforeDestroy) && onBeforeDestroy.call(self);
 
       const fn = function () {
-        clearTimeout(self[visibleTimeOutId])
-        clearTimeout(self[autoCloseTimeOutId])
-        removeClass(self.el, `s-dialog-effect s-dialog-position-${position} ${className}`)
-        delete self.el[instance]
-        self.mask && self.mask.parentNode.removeChild(self.mask)
-        self.closeBtn && self.closeBtn.parentNode.removeChild(self.closeBtn)
-        removeElem && self.el.parentNode.removeChild(self.el)
-        self[inDestroy] = false
-        self[isDestroy] = true
+        clearTimeout(self[visibleTimeOutId]);
+        clearTimeout(self[autoCloseTimeOutId]);
+        removeClass(self.el, `s-dialog-effect s-dialog-position-${position} ${className}`);
+        delete self.el[instance];
+        self.mask && self.mask.parentNode.removeChild(self.mask);
+        self.closeBtn && self.closeBtn.parentNode.removeChild(self.closeBtn);
+        removeElem && self.el.parentNode.removeChild(self.el);
+        self[inDestroy] = false;
+        self[isDestroy] = true;
         // 触发销毁后生命周期钩子
-        isFunction(onDestroy) && onDestroy.call(self)
-      }
-      self[visible] ? self.hide(fn) : fn()
+        isFunction(onDestroy) && onDestroy.call(self);
+      };
+      self[visible] ? self.hide(fn) : fn();
     }
   }
 }
 
-export default dialog
+export default dialog;

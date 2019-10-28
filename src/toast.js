@@ -1,46 +1,46 @@
-import Dialog from './dialog'
-import './css/toast.scss'
+import Dialog from './dialog';
+import './css/toast.scss';
 
-import { extend, isObject, trim } from './core'
+import { extend, isObject, trim } from './core';
 
-let instanceToast = null
+let instanceToast = null;
 
 function Toast (options) {
 
-  Toast.clear()
+  Toast.clear();
 
-  options = isObject(options) ? options : { message: options }
+  options = isObject(options) ? options : { message: options };
 
-  const type = trim(options.type)
-  const params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options)
+  const type = trim(options.type);
+  const params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options);
 
-  let { icon, message } = params
+  let { icon, message } = params;
 
   if (type) {
-    params.className += ` s-toast-${type}`
+    params.className += ` s-toast-${type}`;
   }
 
-  params.content = ''
+  params.content = '';
 
   if (typeof icon === 'string' && (icon = trim(icon))) {
 
-    params.className += ' s-toast-middle'
+    params.className += ' s-toast-middle';
 
     if (/\.(png|jpe?g|gif|svg)(\?.*)?$/i.test(icon) || icon.indexOf('data:image/') > -1) {
-      params.content += `<img class="s-toast-icon" src="${icon}"/>`
+      params.content += `<img class="s-toast-icon" src="${icon}"/>`;
     } else {
-      params.content += `<i class="${icon} s-toast-icon"></i>`
+      params.content += `<i class="${icon} s-toast-icon"></i>`;
     }
 
   }
 
   if (message || message === 0) {
-    params.content += `<p class="s-toast-text">${message}</p>`
+    params.content += `<p class="s-toast-text">${message}</p>`;
   }
 
-  instanceToast = Dialog(params).show()
+  instanceToast = Dialog(params).show();
 
-  return instanceToast
+  return instanceToast;
 }
 
 Toast.defaultOptions = {
@@ -78,16 +78,16 @@ Toast.defaultOptions = {
   }
 ].forEach(({ type, options }) => {
   Toast[type] = function (options) {
-    return Toast(extend({ type }, isObject(options) ? options : { message: options }))
-  }
-  Toast[type].defaultOptions = options
-})
+    return Toast(extend({ type }, isObject(options) ? options : { message: options }));
+  };
+  Toast[type].defaultOptions = options;
+});
 
 Toast.clear = function () {
   if (instanceToast) {
-    instanceToast.destroy(true)
-    instanceToast = null
+    instanceToast.destroy(true);
+    instanceToast = null;
   }
-}
+};
 
-export default Toast
+export default Toast;

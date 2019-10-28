@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.6
 * author 无痕
-* (c) Mon Oct 28 2019 14:10:17 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 17:47:14 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -57,40 +57,6 @@ function _defineProperty(obj, key, value) {
   }
 
   return obj;
-}
-
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(source, true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(source).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
 }
 
 // 空方法
@@ -316,37 +282,31 @@ var core = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-10-25 15:41:44
+ * @LastEditTime: 2019-10-28 17:21:16
  */
 // 是否为整数
 function isInteger(val) {
   return /^[1-9]\d*$/.test(val);
-}
+} // 是否为数字
 
 function isNumber$1(val) {
   return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val);
-}
+} // 是否为正确的手机号码格式
 
 function isPhone(val) {
   return /^1[3456789]\d{9}$/g.test(val);
-}
+} // 是否为电子邮箱
 
 function isEmail(val) {
   return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val);
-}
+} // 是否为带域名的链接地址
 
 function isUrl(val) {
   return /^(https|http|ftp|rtsp|mms)/.test(val);
-}
+} // 是否为合法date
 
 function isDate$1(val) {
   return !/Invalid|NaN/.test(new Date(val).toString());
-}
-function isDateISO(val) {
-  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/g.test(val);
-}
-function isDigits(val) {
-  return /^\d+$/.test(val);
 }
 
 var regExp = /*#__PURE__*/Object.freeze({
@@ -356,9 +316,7 @@ var regExp = /*#__PURE__*/Object.freeze({
   isPhone: isPhone,
   isEmail: isEmail,
   isUrl: isUrl,
-  isDate: isDate$1,
-  isDateISO: isDateISO,
-  isDigits: isDigits
+  isDate: isDate$1
 });
 
 /*
@@ -549,7 +507,7 @@ var base64 = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:46:54
  * @LastEditors:
- * @LastEditTime: 2019-10-28 10:44:04
+ * @LastEditTime: 2019-10-28 17:21:44
  */
 // 设置cookie
 function setCookie(name, value, days) {
@@ -565,7 +523,7 @@ function setCookie(name, value, days) {
 
     return document.cookie = [encodeURIComponent(name), '=', encodeURIComponent(value), expires ? '; expires=' + expires.toUTCString() : '', params.path ? '; path=' + params.path : '', params.domain ? '; domain=' + params.domain : '', params.secure ? '; secure' : ''].join('');
   }
-}
+} // 获取cookie
 
 function getCookie(name) {
   var result;
@@ -583,16 +541,16 @@ function getCookie(name) {
   }
 
   return result;
-}
+} // 删除cookie
 
 function removeCookie(name) {
   var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   setCookie(name, '', -1, params);
-}
+} // 清除全部cookie
 
 function cleanCookie() {
   var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var cookieNameList = document.cookie.match(/[^ =;]+(?=\=)/g) || [];
+  var cookieNameList = document.cookie.match(/[^ =;]+(?==)/g) || [];
   cookieNameList.forEach(function (name) {
     removeCookie(decodeURIComponent(name), params);
   });
@@ -678,14 +636,14 @@ function formatDate(date) {
     }
   });
   return fmt;
-}
+} // 时间段
 
 function formatDateRange(startDateTime, endDateTime) {
   var separator = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ' ~ ';
   var startformat = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'YYYY-MM-DD HH:mm';
   var endformat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'YYYY-MM-DD HH:mm';
   return startDateTime && endDateTime ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : '';
-}
+} // 格式化秒数为天,小时，分钟，秒 对象
 
 function formatSeconds(seconds) {
   var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'd,h,m,s';
@@ -715,7 +673,7 @@ function formatSeconds(seconds) {
     }
   });
   return result;
-}
+} // 格式化货币
 
 function formatMoney(number, places, symbol, thousand, decimal) {
   number = number || 0; // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
@@ -1867,10 +1825,17 @@ Confirm.defaultOptions = {
   cancelColor: '#323233'
 };
 
+/*
+ * @Name: sldt-utils
+ * @Descripttion: 一个常用方法库
+ * @Author: 无痕
+ * @Date: 2019-10-14 09:14:21
+ * @LastEditors:
+ * @LastEditTime: 2019-10-28 17:40:45
+ */
 var version = '2.6.6';
-var index = _objectSpread2({
-  version: version
-}, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, dom, {
+var index = Object.assign({
+  version: version,
   countDown: countDown,
   useRem: useRem,
   regExp: regExp,
@@ -1881,7 +1846,7 @@ var index = _objectSpread2({
   toast: Toast,
   alert: Alert,
   confirm: Confirm
-});
+}, core, base64, cookie, format, tools, transition, dom);
 
 exports.addClass = addClass;
 exports.alert = Alert;

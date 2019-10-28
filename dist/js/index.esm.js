@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.6
 * author 无痕
-* (c) Mon Oct 28 2019 14:10:17 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 17:47:14 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -29,61 +29,61 @@ const mouseup = () => hasTouch() ? 'touchend' : 'mouseup';
 
 // 判断是否是此对象上的实例属性
 function hasOwnProp (obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop)
+  return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 // 判断数据类型
 function protoType (value) {
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 }
 // 判断是否为类数组
 function isArrayLike (o) {
-  return o && typeof o === 'object' && isFinite(o.length) && o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296
+  return o && typeof o === 'object' && isFinite(o.length) && o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296;
 }
 // 判断是否为function
 function isFunction (value) {
-  return protoType(value) === 'function'
+  return protoType(value) === 'function';
 }
 // 判断是否为object
 function isObject (value) {
-  return protoType(value) === 'object'
+  return protoType(value) === 'object';
 }
 // 是否为数组
 function isArray (value) {
-  return protoType(value) === 'array'
+  return protoType(value) === 'array';
 }
 // 判断是否为number
 function isNumber (value) {
-  return protoType(value) === 'number'
+  return protoType(value) === 'number';
 }
 // 判断是否为Date对象
 function isDate (value) {
-  return protoType(value) === 'date'
+  return protoType(value) === 'date';
 }
 // 判断是否为promise对象
 function isPromise (value) {
-  return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function'
+  return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
 }
 // 类数组转数组
 function toArray (value) {
-  return isArrayLike(value) ? Array.prototype.slice.call(value) : []
+  return isArrayLike(value) ? Array.prototype.slice.call(value) : [];
 }
 // 去掉字符串2边空格
 function trim (str = '') {
-  return str !== null ? String(str).trim() : ''
+  return str !== null ? String(str).trim() : '';
 }
 // 数组和对象循环
 function each (obj, callback) {
-  if (!obj) return
+  if (!obj) return;
   if (isArrayLike(obj)) {
     for (let i = 0, l = obj.length; i < l; i++) {
       if (callback(obj[i], i, obj) === false) {
-        break
+        break;
       }
     }
   } else {
     for (const key of Object.keys(obj)) {
       if (callback(obj[key], key, obj) === false) {
-        break
+        break;
       }
     }
   }
@@ -116,20 +116,20 @@ function extend (...args) {
       merge(result, args[i]);
     }
   }
-  return result
+  return result;
 }
 // repeat
 function repeat (str, num) {
   num = parseInt(num) || 0;
-  return num ? new Array(num + 2).join(String(str)) : ''
+  return num ? new Array(num + 2).join(String(str)) : '';
 }
 // padStart
 function padStart (str, num, padStr) {
-  return new Array(num - String(str).length + 1).join(String(padStr)) + str
+  return new Array(num - String(str).length + 1).join(String(padStr)) + str;
 }
 // padEnd
 function padEnd (str, num, padStr) {
-  return String(str) + new Array(num - String(str).length + 1).join(String(padStr))
+  return String(str) + new Array(num - String(str).length + 1).join(String(padStr));
 }
 
 var core = /*#__PURE__*/Object.freeze({
@@ -175,30 +175,31 @@ var core = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-10-25 15:41:44
+ * @LastEditTime: 2019-10-28 17:21:16
  */
 // 是否为整数
 function isInteger (val) {
-  return /^[1-9]\d*$/.test(val)
-}// 是否为数字
+  return /^[1-9]\d*$/.test(val);
+}
+// 是否为数字
 function isNumber$1 (val) {
-  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val)
-}// 是否为正确的手机号码格式
+  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val);
+}
+// 是否为正确的手机号码格式
 function isPhone (val) {
-  return /^1[3456789]\d{9}$/g.test(val)
-}// 是否为电子邮件
+  return /^1[3456789]\d{9}$/g.test(val);
+}
+// 是否为电子邮箱
 function isEmail (val) {
-  return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val)
-}// 是否为带域名的链接地址
+  return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val);
+}
+// 是否为带域名的链接地址
 function isUrl (val) {
-  return /^(https|http|ftp|rtsp|mms)/.test(val)
-}// 是否为合法date
+  return /^(https|http|ftp|rtsp|mms)/.test(val);
+}
+// 是否为合法date
 function isDate$1 (val) {
-  return !/Invalid|NaN/.test(new Date(val).toString())
-}function isDateISO (val) {
-  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/g.test(val)
-}function isDigits (val) {
-  return /^\d+$/.test(val)
+  return !/Invalid|NaN/.test(new Date(val).toString());
 }
 
 var regExp = /*#__PURE__*/Object.freeze({
@@ -208,9 +209,7 @@ var regExp = /*#__PURE__*/Object.freeze({
   isPhone: isPhone,
   isEmail: isEmail,
   isUrl: isUrl,
-  isDate: isDate$1,
-  isDateISO: isDateISO,
-  isDigits: isDigits
+  isDate: isDate$1
 });
 
 /*
@@ -249,7 +248,7 @@ function utf16to8 (str) {
       out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
     }
   }
-  return out
+  return out;
 }
 
 function utf8to16 (str) {
@@ -270,20 +269,20 @@ function utf8to16 (str) {
       case 6:
       case 7:
         out += str.charAt(i - 1);
-        break
+        break;
       case 12:
       case 13:
         char2 = str.charCodeAt(i++);
         out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
-        break
+        break;
       case 14:
         char2 = str.charCodeAt(i++);
         char3 = str.charCodeAt(i++);
         out += String.fromCharCode(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
-        break
+        break;
     }
   }
-  return out
+  return out;
 }
 
 // 编码的方法
@@ -300,7 +299,7 @@ function base64encode (str = '') {
       out += base64EncodeChars.charAt(c1 >> 2);
       out += base64EncodeChars.charAt((c1 & 0x3) << 4);
       out += '==';
-      break
+      break;
     }
     c2 = str.charCodeAt(i++);
     if (i === len) {
@@ -308,7 +307,7 @@ function base64encode (str = '') {
       out += base64EncodeChars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
       out += base64EncodeChars.charAt((c2 & 0xF) << 2);
       out += '=';
-      break
+      break;
     }
     c3 = str.charCodeAt(i++);
     out += base64EncodeChars.charAt(c1 >> 2);
@@ -316,7 +315,7 @@ function base64encode (str = '') {
     out += base64EncodeChars.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
     out += base64EncodeChars.charAt(c3 & 0x3F);
   }
-  return out
+  return out;
 }
 // 解码的方法
 function base64decode (str = '') {
@@ -328,42 +327,42 @@ function base64decode (str = '') {
   while (i < len) {
     do {
       c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
-    } while (i < len && c1 === -1)
+    } while (i < len && c1 === -1);
     if (c1 === -1) {
-      break
+      break;
     }
     do {
       c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
-    } while (i < len && c2 === -1)
+    } while (i < len && c2 === -1);
     if (c2 === -1) {
-      break
+      break;
     }
     out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
     do {
       c3 = str.charCodeAt(i++) & 0xff;
       if (c3 === 61) {
-        return out
+        return out;
       }
       c3 = base64DecodeChars[c3];
-    } while (i < len && c3 === -1)
+    } while (i < len && c3 === -1);
     if (c3 === -1) {
-      break
+      break;
     }
     out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2));
 
     do {
       c4 = str.charCodeAt(i++) & 0xff;
       if (c4 === 61) {
-        return out
+        return out;
       }
       c4 = base64DecodeChars[c4];
-    } while (i < len && c4 === -1)
+    } while (i < len && c4 === -1);
     if (c4 === -1) {
-      break
+      break;
     }
     out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
   }
-  return out
+  return out;
 }
 
 var base64 = /*#__PURE__*/Object.freeze({
@@ -380,7 +379,7 @@ var base64 = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:46:54
  * @LastEditors:
- * @LastEditTime: 2019-10-28 10:44:04
+ * @LastEditTime: 2019-10-28 17:21:44
  */
 
 // 设置cookie
@@ -397,9 +396,10 @@ function setCookie (name, value, days, params = {}) {
       params.path ? '; path=' + params.path : '',
       params.domain ? '; domain=' + params.domain : '',
       params.secure ? '; secure' : ''
-    ].join(''))
+    ].join(''));
   }
-}// 获取cookie
+}
+// 获取cookie
 function getCookie (name) {
   let result;
   if (document.cookie) {
@@ -408,17 +408,19 @@ function getCookie (name) {
       let keyName = parts.shift();
       if (keyName && keyName === encodeURIComponent(name)) {
         result = decodeURIComponent(parts.join('='));
-        return true
+        return true;
       }
     });
   }
-  return result
-}// 删除cookie
+  return result;
+}
+// 删除cookie
 function removeCookie (name, params = {}) {
   setCookie(name, '', -1, params);
-}// 清除全部cookie
+}
+// 清除全部cookie
 function cleanCookie (params = {}) {
-  const cookieNameList = document.cookie.match(/[^ =;]+(?=\=)/g) || [];
+  const cookieNameList = document.cookie.match(/[^ =;]+(?==)/g) || [];
   cookieNameList.forEach(name => {
     removeCookie(decodeURIComponent(name), params);
   });
@@ -442,7 +444,7 @@ var cookie = /*#__PURE__*/Object.freeze({
  */
 // 时间格式化
 function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
-  if (!date) return ''
+  if (!date) return '';
   const type = protoType(date);
   if (type !== 'date') {
     if (type === 'string') {
@@ -489,11 +491,13 @@ function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('0'.repeat(RegExp.$1.length) + o[k]).substr(('' + o[k]).length)));
     }
   });
-  return fmt
-}// 时间段
+  return fmt;
+}
+// 时间段
 function formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 'YYYY-MM-DD HH:mm', endformat = 'YYYY-MM-DD HH:mm') {
-  return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : ''
-}// 格式化秒数为天,小时，分钟，秒 对象
+  return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : '';
+}
+// 格式化秒数为天,小时，分钟，秒 对象
 function formatSeconds (seconds, fmt = 'd,h,m,s') {
   const result = {};
   [
@@ -509,7 +513,8 @@ function formatSeconds (seconds, fmt = 'd,h,m,s') {
     }
   });
   return result;
-}// 格式化货币
+}
+// 格式化货币
 function formatMoney (number, places, symbol, thousand, decimal) {
   number = number || 0;
   // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
@@ -525,7 +530,7 @@ function formatMoney (number, places, symbol, thousand, decimal) {
   var negative = number < 0 ? '-' : '';
   var i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
   var j = (j = i.length) > 3 ? j % 3 : 0;
-  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '')
+  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
 }
 
 var format = /*#__PURE__*/Object.freeze({
@@ -546,20 +551,20 @@ function joinPath (...args) {
   return (length > 1 ? args.map((item, index) => {
     let path = String(item);
     if (index === 0) {
-      return path.replace(/\/+$/g, '')
+      return path.replace(/\/+$/g, '');
     } else if (index === length - 1) {
-      return path.replace(/^\/+/g, '')
+      return path.replace(/^\/+/g, '');
     } else {
-      return path.replace(/^\/+|\/+$/g, '')
+      return path.replace(/^\/+|\/+$/g, '');
     }
-  }) : args).join('/')
+  }) : args).join('/');
 }
 
 // 获取url参数
 function getUrlParam (name, url) {
   const reg = new RegExp('(\\?|&|^)' + name + '=([^&]*)(&|$)');
   const r = (url || window.location.search).match(reg);
-  return r ? unescape(r[2]) : undefined
+  return r ? unescape(r[2]) : undefined;
 }
 
 // 获取根节点到匹配节点的链数组
@@ -568,11 +573,11 @@ function getMatcheds (list, childrenKey, validator, matcheds = []) {
     const item = list[i];
     if (validator(item, matcheds)) {
       matcheds.push(item);
-      return matcheds
+      return matcheds;
     } else if (item[childrenKey] && item[childrenKey].length) {
       const matcheds = getMatcheds(item[childrenKey], childrenKey, validator, matcheds.concat(item));
       if (matcheds) {
-        return matcheds
+        return matcheds;
       }
     }
   }
@@ -580,7 +585,7 @@ function getMatcheds (list, childrenKey, validator, matcheds = []) {
 
 // 把手机号4位数字换为*
 function privatePhone (phone) {
-  return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, '$1****$2')
+  return ('' + phone).replace(/^(\d{3})\d{4}(\d{4})$/g, '$1****$2');
 }
 
 // 把不规则的数据格式转换为统一的数组[{key:value}]格式
@@ -605,7 +610,7 @@ function toArrayData (data, value = 'value', label = 'label') {
       }
     });
   }
-  return listData
+  return listData;
 }
 
 // 获取随机数
@@ -614,7 +619,7 @@ function getRandom (num) {
   for (let i = 0; i < num; i++) {
     str += Math.floor(Math.random() * 10);
   }
-  return str
+  return str;
 }
 
 // 加载一张图片
@@ -624,7 +629,7 @@ function loadImage (src) {
     img.onload = resolve;
     img.onerror = reject;
     img.src = src;
-  })
+  });
 }
 
 // 浏览器下载blob文件流
@@ -720,8 +725,8 @@ function removeClass (selector, value) {
 // 获取浏览器中最大z-index值
 function getMaxZindex (selector, minZindex) {
   return Math.max.apply(null, [Math.max(1, parseInt(minZindex) || 1)].concat(getElem(selector).map(el => {
-    return parseInt(el.style.zIndex) || 1
-  })))
+    return parseInt(el.style.zIndex) || 1;
+  })));
 }
 
 var dom = /*#__PURE__*/Object.freeze({
@@ -733,7 +738,7 @@ var dom = /*#__PURE__*/Object.freeze({
 });
 
 function toMs (s) {
-  return Number(s.slice(0, -1)) * 1000
+  return Number(s.slice(0, -1)) * 1000;
 }
 
 function getTimeout (delays, durations) {
@@ -742,14 +747,14 @@ function getTimeout (delays, durations) {
     delays = delays.concat(delays);
   }
   return Math.max.apply(null, durations.map(function (d, i) {
-    return toMs(d) + toMs(delays[i])
-  }))
+    return toMs(d) + toMs(delays[i]);
+  }));
 }
 
 // 最佳动画执行时机
 function nextFrame (fn) {
   const raf = (inBrowser() && window.requestAnimationFrame) ? window.requestAnimationFrame.bind(window) : setTimeout;
-  return raf(() => raf(fn, 5), 5)
+  return raf(() => raf(fn, 5), 5);
 }
 
 // 判断是否支持该css3属性
@@ -759,7 +764,7 @@ function supportCss3 (styleKey) {
   const preStyleArr = [toHumb(styleKey)];
   const htmlStyle = document.documentElement.style;
   preArr.forEach(pre => preStyleArr.push(toHumb(`${pre}-${styleKey}`)));
-  return preStyleArr.some(preStyle => preStyle in htmlStyle)
+  return preStyleArr.some(preStyle => preStyle in htmlStyle);
 }
 // 获取dom动画信息
 function getTransitionInfo (el) {
@@ -785,9 +790,9 @@ function getTransitionInfo (el) {
       timeout: timeout,
       propCount: propCount,
       hasTransform: hasTransform
-    }
+    };
   } else {
-    return null
+    return null;
   }
 }
 
@@ -846,7 +851,7 @@ function whenTransitionEnds (el, callback = noop) {
     nextFrame(trigger);
   }
 
-  return { off, trigger }
+  return { off, trigger };
 }
 
 var transition = /*#__PURE__*/Object.freeze({
@@ -873,12 +878,12 @@ var useRem = (function () {
       handler = function () {
         html.style.fontSize = 100 * (html.clientWidth / styleWidth) + 'px';
       };
-      if (!document.addEventListener) return
+      if (!document.addEventListener) return;
       window.addEventListener('orientationchange' in window ? 'orientationchange' : 'resize', handler);
       handler();
       document.addEventListener('DOMContentLoaded', handler);
     }
-  }
+  };
 })();
 
 /*
@@ -887,7 +892,7 @@ var useRem = (function () {
  * @Author: 无痕
  * @Date: 2019-08-30 14:44:25
  * @LastEditors:
- * @LastEditTime: 2019-10-10 14:16:06
+ * @LastEditTime: 2019-10-28 17:45:28
  */
 
 const isOnce = '[S_EVENT_EMIT_IS_ONCE]';
@@ -911,7 +916,7 @@ function addEvent (name, fn) {
 }
 
 class EventEmit {
-  constructor () {
+  constructor() {
     this[isOnce] = false;// 执行一次的绑定判断
     this[events] = {};// 存储函数对象
   }
@@ -924,14 +929,14 @@ class EventEmit {
     } else {
       addEvent.call(this, ...args);
     }
-    return this
+    return this;
   }
   // 订阅一次消息
   once (...args) {
     this[isOnce] = true;
     this.on(...args);
     this[isOnce] = false;
-    return this
+    return this;
   }
   // 发布消息
   emit (name, ...args) {
@@ -941,7 +946,7 @@ class EventEmit {
         fn.call(this, ...args);
       });
     }
-    return this
+    return this;
   }
   // 取消订阅
   off (name, fn) {
@@ -961,7 +966,7 @@ class EventEmit {
     } else {
       this[events] = {};
     }
-    return this
+    return this;
   }
 }
 
@@ -1007,7 +1012,7 @@ function countDown (seconds, callback = noop, complete = noop) {
   return {
     start,
     stop
-  }
+  };
 }
 
 /**
@@ -1029,7 +1034,7 @@ function debounce (fn, wait = 300, immediate = false) {
     timer = setTimeout(() => {
       fn.apply(this, args);
     }, wait);
-  }
+  };
 }
 
 /**
@@ -1063,7 +1068,7 @@ function throttle (fn, wait = 300, immediate = false) {
       }
       previous = now;
     }
-  }
+  };
 }
 
 const instance = '[S_DIALOG_INSTANCE]';
@@ -1078,7 +1083,7 @@ const isDestroy = '[S_DIALOG_IS_DESTROY]';
 const nextId = '[S_DIALOG_NEXT_ID]';
 
 function dialog (options) {
-  return new Dialog(options)
+  return new Dialog(options);
 }
 
 // 默认参数
@@ -1202,7 +1207,7 @@ class Dialog {
       }
       elem.appendChild(wrapper);
     } else {
-      if (elem[instance]) return elem[instance]
+      if (elem[instance]) return elem[instance];
     }
 
     addClass(elem, position ? ('s-dialog-position-' + position) : '');
@@ -1306,7 +1311,7 @@ class Dialog {
         }
       }
     });
-    return self
+    return self;
   }
   // 隐藏
   hide (callback) {
@@ -1366,11 +1371,11 @@ class Dialog {
         }
       }
     });
-    return self
+    return self;
   }
   // 切换
   toggle (callback) {
-    return this[this[visible] ? 'hide' : 'show'](callback)
+    return this[this[visible] ? 'hide' : 'show'](callback);
   }
   // 销毁
   destroy (removeElem = false) {
@@ -1437,7 +1442,7 @@ function Toast (options) {
 
   instanceToast = dialog(params).show();
 
-  return instanceToast
+  return instanceToast;
 }
 
 Toast.defaultOptions = {
@@ -1475,7 +1480,7 @@ Toast.defaultOptions = {
   }
 ].forEach(({ type, options }) => {
   Toast[type] = function (options) {
-    return Toast(extend({ type }, isObject(options) ? options : { message: options }))
+    return Toast(extend({ type }, isObject(options) ? options : { message: options }));
   };
   Toast[type].defaultOptions = options;
 });
@@ -1495,7 +1500,7 @@ function Alert (options) {
     params.onConfirm = resolve;
 
     dialog(params).show();
-  })
+  });
 }
 
 Alert.defaultOptions = {
@@ -1510,7 +1515,7 @@ Alert.defaultOptions = {
 };
 
 function Confirm (options) {
-  return Alert(extend({}, Confirm.defaultOptions, isObject(options) ? options : { content: options }))
+  return Alert(extend({}, Confirm.defaultOptions, isObject(options) ? options : { content: options }));
 }
 
 Confirm.defaultOptions = {
@@ -1524,20 +1529,13 @@ Confirm.defaultOptions = {
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-10-23 14:32:44
+ * @LastEditTime: 2019-10-28 17:40:45
  */
 
 const version = '2.6.6';
 
-var index = {
+var index = Object.assign({
   version,
-  ...core,
-  ...base64,
-  ...cookie,
-  ...format,
-  ...tools,
-  ...transition,
-  ...dom,
   countDown,
   useRem,
   regExp,
@@ -1548,7 +1546,15 @@ var index = {
   toast: Toast,
   alert: Alert,
   confirm: Confirm
-};
+},
+  core,
+  base64,
+  cookie,
+  format,
+  tools,
+  transition,
+  dom
+);
 
 export default index;
 export { addClass, Alert as alert, base64decode, base64encode, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, supportCss3, throttle, toArray, toArrayData, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };

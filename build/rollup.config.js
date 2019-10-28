@@ -10,7 +10,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import buble from 'rollup-plugin-buble';
 import copy from 'rollup-plugin-copy';
-
+import { eslint } from 'rollup-plugin-eslint';
 // web服务打开浏览器
 import serve from 'rollup-plugin-serve';
 // 压缩代码
@@ -93,6 +93,9 @@ export default function (ENV) {
         footer: format === 'cjs' ? `module.exports = exports['default']` : ''
       },
       plugins: [
+        eslint({
+          fix: true
+        }),
         postcss({
           extensions: ['css', 'scss'],
           extract: resolve(`${outputDir}/css/index${((isProd && suffix == '.min') ? '.min' : '')}.css`),
