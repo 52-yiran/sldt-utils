@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.5
+* sldt-utils v2.6.6
 * author 无痕
-* (c) Fri Oct 25 2019 16:41:03 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 09:17:27 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -1757,14 +1757,18 @@
     options = isObject(options) ? options : {
       message: options
     };
-    var type = options.type || 'default';
+    var type = trim(options.type);
     var params = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, options);
     var icon = params.icon,
         message = params.message;
-    params.className += " s-toast-".concat(type);
+
+    if (type) {
+      params.className += " s-toast-".concat(type);
+    }
+
     params.content = '';
 
-    if (typeof icon === 'string' && (icon = icon.trim())) {
+    if (typeof icon === 'string' && (icon = trim(icon))) {
       params.className += ' s-toast-middle';
 
       if (/\.(png|jpe?g|gif|svg)(\?.*)?$/i.test(icon) || icon.indexOf('data:image/') > -1) {
@@ -1784,7 +1788,6 @@
 
   Toast.defaultOptions = {
     className: 's-toast-dialog',
-    type: 'default',
     icon: '',
     message: '',
     duration: 2000,
@@ -1866,7 +1869,7 @@
     cancelColor: '#323233'
   };
 
-  var version = '2.6.5';
+  var version = '2.6.6';
   var index = _objectSpread2({
     version: version
   }, core, {}, base64, {}, cookie, {}, format, {}, tools, {}, transition, {}, dom, {

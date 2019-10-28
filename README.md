@@ -211,17 +211,13 @@ S.toast({
 //修改默认配置
 
 S.toast.defaultOptions={
-  type: 'default',
   icon: '',
-  message: '提示内容',
   duration: 2000
 }
 
 //修改type为success的默认配置
 S.toast.success.defaultOptions={
-  type: 'success',
   icon: '',
-  message: '提示内容',
   duration: 2000
 }
 

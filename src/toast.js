@@ -11,16 +11,18 @@ function Toast (options) {
 
   options = isObject(options) ? options : { message: options }
 
-  const type = options.type || 'default'
+  const type = trim(options.type)
   const params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options)
 
   let { icon, message } = params
 
-  params.className += ` s-toast-${type}`
+  if (type) {
+    params.className += ` s-toast-${type}`
+  }
 
   params.content = ''
 
-  if (typeof icon === 'string' && (icon = icon.trim())) {
+  if (typeof icon === 'string' && (icon = trim(icon))) {
 
     params.className += ' s-toast-middle'
 
@@ -43,7 +45,6 @@ function Toast (options) {
 
 Toast.defaultOptions = {
   className: 's-toast-dialog',
-  type: 'default',
   icon: '',
   message: '',
   duration: 2000,

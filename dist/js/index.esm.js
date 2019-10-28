@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.5
+* sldt-utils v2.6.6
 * author 无痕
-* (c) Fri Oct 25 2019 16:41:03 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 09:17:27 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -1408,16 +1408,18 @@ function Toast (options) {
 
   options = isObject(options) ? options : { message: options };
 
-  const type = options.type || 'default';
+  const type = trim(options.type);
   const params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options);
 
   let { icon, message } = params;
 
-  params.className += ` s-toast-${type}`;
+  if (type) {
+    params.className += ` s-toast-${type}`;
+  }
 
   params.content = '';
 
-  if (typeof icon === 'string' && (icon = icon.trim())) {
+  if (typeof icon === 'string' && (icon = trim(icon))) {
 
     params.className += ' s-toast-middle';
 
@@ -1440,7 +1442,6 @@ function Toast (options) {
 
 Toast.defaultOptions = {
   className: 's-toast-dialog',
-  type: 'default',
   icon: '',
   message: '',
   duration: 2000,
@@ -1526,7 +1527,7 @@ Confirm.defaultOptions = {
  * @LastEditTime: 2019-10-23 14:32:44
  */
 
-const version = '2.6.5';
+const version = '2.6.6';
 
 var index = {
   version,
