@@ -26,15 +26,17 @@
     position: relative;
     z-index: 2;
     background-color: white;
+    max-height: 100%;
+    overflow-y: auto;
   }
 
   .s-dialog-close-btn {
     position: absolute;
     right: 0;
     top: 0;
-    color: #999;
+    color: #aaa;
     padding: 12px;
-    font-size: 16px;
+    font-size: 14px;
     z-index: 99;
   }
 
@@ -44,9 +46,8 @@
 
     .s-dialog-mask,
     .s-dialog-wrapper {
+      animation-fill-mode: both;
       animation-duration: inherit;
-      animation-fill-mode: inherit;
-      animation-timing-function: inherit;
     }
 
     &.s-dialog-effect-enter {
@@ -67,14 +68,17 @@
   }
 }
 
+// 默认动画时间
+.s-dialog-effect {
+  animation-duration: .3s;
+}
+
 // middle
 .s-dialog-position-middle {
   .s-dialog-wrapper {
     position: absolute;
     left: 50%;
     top: 50%;
-    max-height: 100%;
-    overflow-y: auto;
     transform: translate3d(-50%, -50%, 0);
   }
 
@@ -175,8 +179,4 @@
       animation-name: s-animate-right-leave;
     }
   }
-}
-
-.s-dialog-effect {
-  animation-duration: .3s;
 }

@@ -415,26 +415,26 @@ button {
   .s-dialog .s-dialog-wrapper {
     position: relative;
     z-index: 2;
-    background-color: white; }
+    background-color: white;
+    max-height: 100%;
+    overflow-y: auto; }
   .s-dialog .s-dialog-close-btn {
     position: absolute;
     right: 0;
     top: 0;
-    color: #999;
+    color: #aaa;
     padding: 12px;
-    font-size: 16px;
+    font-size: 14px;
     z-index: 99; }
   .s-dialog {
     -webkit-animation-fill-mode: both;
             animation-fill-mode: both; }
     .s-dialog .s-dialog-mask,
     .s-dialog .s-dialog-wrapper {
+      -webkit-animation-fill-mode: both;
+              animation-fill-mode: both;
       -webkit-animation-duration: inherit;
-              animation-duration: inherit;
-      -webkit-animation-fill-mode: inherit;
-              animation-fill-mode: inherit;
-      -webkit-animation-timing-function: inherit;
-              animation-timing-function: inherit; }
+              animation-duration: inherit; }
     .s-dialog.s-dialog-effect-enter .s-dialog-mask,
     .s-dialog.s-dialog-effect-enter .s-dialog-wrapper {
       -webkit-animation-name: s-animate-fade-enter;
@@ -444,12 +444,14 @@ button {
       -webkit-animation-name: s-animate-fade-leave;
               animation-name: s-animate-fade-leave; }
 
+.s-dialog-effect {
+  -webkit-animation-duration: .3s;
+          animation-duration: .3s; }
+
 .s-dialog-position-middle .s-dialog-wrapper {
   position: absolute;
   left: 50%;
   top: 50%;
-  max-height: 100%;
-  overflow-y: auto;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0); }
 
@@ -514,10 +516,6 @@ button {
 .s-dialog-position-right.s-dialog-effect-leave .s-dialog-wrapper {
   -webkit-animation-name: s-animate-right-leave;
           animation-name: s-animate-right-leave; }
-
-.s-dialog-effect {
-  -webkit-animation-duration: .3s;
-          animation-duration: .3s; }
 
 .s-toast-dialog {
   max-width: 80%;
@@ -592,13 +590,13 @@ button {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    border-top: 1px solid #e7e7e7; }
+    border-top: 1px solid #eeeeee; }
     .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn {
       -webkit-box-flex: 1;
           -ms-flex: 1;
               flex: 1;
       height: 54px;
       font-size: 16px;
-      border-left: 1px solid #e7e7e7; }
+      border-left: 1px solid #eeeeee; }
       .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:first-child {
         border-left: 0; }
