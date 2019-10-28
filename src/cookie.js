@@ -4,15 +4,14 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:46:54
  * @LastEditors:
- * @LastEditTime: 2019-10-21 14:09:45
+ * @LastEditTime: 2019-10-28 10:44:04
  */
-import { protoType } from './core'
 
 // 设置cookie
 export function setCookie (name, value, days, params = {}) {
   if (value !== undefined) {
     let expires
-    if (protoType(days) === 'number') {
+    if (typeof days === 'number') {
       expires = new Date()
       expires.setTime(+expires + days * 864e+5)
     }
@@ -20,7 +19,7 @@ export function setCookie (name, value, days, params = {}) {
       encodeURIComponent(name), '=', encodeURIComponent(value),
       expires ? '; expires=' + expires.toUTCString() : '',
       params.path ? '; path=' + params.path : '',
-      params.domain ? '; domain=' + (protoType(params.domain) === 'function' ? params.domain(name) : params.domain) : '',
+      params.domain ? '; domain=' + params.domain : '',
       params.secure ? '; secure' : ''
     ].join(''))
   }
