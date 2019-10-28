@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.6
 * author 无痕
-* (c) Mon Oct 28 2019 09:05:44 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 11:32:39 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -551,21 +551,21 @@
    * @Author: 无痕
    * @Date: 2019-09-23 15:46:54
    * @LastEditors:
-   * @LastEditTime: 2019-10-21 14:09:45
+   * @LastEditTime: 2019-10-28 10:44:04
    */
-
+  // 设置cookie
   function setCookie(name, value, days) {
     var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
     if (value !== undefined) {
       var expires;
 
-      if (protoType(days) === 'number') {
+      if (typeof days === 'number') {
         expires = new Date();
         expires.setTime(+expires + days * 864e+5);
       }
 
-      return document.cookie = [encodeURIComponent(name), '=', encodeURIComponent(value), expires ? '; expires=' + expires.toUTCString() : '', params.path ? '; path=' + params.path : '', params.domain ? '; domain=' + (protoType(params.domain) === 'function' ? params.domain(name) : params.domain) : '', params.secure ? '; secure' : ''].join('');
+      return document.cookie = [encodeURIComponent(name), '=', encodeURIComponent(value), expires ? '; expires=' + expires.toUTCString() : '', params.path ? '; path=' + params.path : '', params.domain ? '; domain=' + params.domain : '', params.secure ? '; secure' : ''].join('');
     }
   }
 

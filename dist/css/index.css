@@ -392,8 +392,6 @@ button {
     border: 0; }
   .s-btn.s-btn-block {
     width: 100%; }
-  .s-btn.is-disabled {
-    cursor: not-allowed; }
 
 .s-dialog {
   display: none;

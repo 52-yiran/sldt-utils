@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.6
 * author 无痕
-* (c) Mon Oct 28 2019 10:45:20 GMT+0800 (GMT+08:00)
+* (c) Mon Oct 28 2019 13:14:39 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
