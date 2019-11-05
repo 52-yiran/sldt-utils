@@ -42,7 +42,7 @@ function delDir (path) {
   if (fs.existsSync(path)) {
     files = fs.readdirSync(path);
     files.forEach((file, index) => {
-      let curPath = path + "/" + file;
+      let curPath = path + '/' + file;
       if (fs.statSync(curPath).isDirectory()) {
         delDir(curPath); //递归删除文件夹
       } else {
@@ -59,7 +59,7 @@ function resolve (...args) {
 
 export default function (ENV) {
   const isProd = ENV === 'production';
-  const outputDir = isProd ? 'dist' : 'example/lib'
+  const outputDir = isProd ? 'dist' : 'example/lib';
   const time = new Date().toString();
 
   const banner =
@@ -78,8 +78,8 @@ export default function (ENV) {
     formatList.push(
       { format: 'umd', suffix: '.min' },
       { format: 'cjs', suffix: '.common' },
-      { format: 'es', suffix: '.esm' },
-    )
+      { format: 'es', suffix: '.esm' }
+    );
   }
   return formatList.map(({ format, suffix }) => {
     return {
@@ -90,7 +90,7 @@ export default function (ENV) {
         file: resolve(`${outputDir}/js/index${suffix}.js`),
         name: 'S',
         exports: 'named',
-        footer: format === 'cjs' ? `module.exports = exports['default']` : ''
+        footer: format === 'cjs' ? 'module.exports = exports[\'default\']' : ''
       },
       plugins: [
         eslint({
@@ -143,6 +143,6 @@ export default function (ENV) {
       watch: {
         include: 'src/**'
       }
-    }
-  })
+    };
+  });
 }

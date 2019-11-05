@@ -4,28 +4,13 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
  * @LastEditors:
- * @LastEditTime: 2019-10-24 15:11:37
+ * @LastEditTime: 2019-11-02 10:26:10
  */
-import { protoType } from './core';
+import { toDate } from './core';
+
 // 时间格式化
 export function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
-  if (!date) return '';
-  const type = protoType(date);
-  if (type !== 'date') {
-    if (type === 'string') {
-      if (/^\d*$/.test(date)) {
-        date = new Date(parseInt(date));
-      } else {
-        if (!/Invalid|NaN/.test(new Date(date).toString())) {
-          date = new Date(date);
-        } else {
-          date = new Date(date.replace(/-/g, '/'));
-        }
-      }
-    } else if (type === 'number') {
-      date = new Date(date);
-    }
-  }
+  if (!(date = toDate(date))) return '';
   const o = {
     'M+': date.getMonth() + 1, // 月份
     'D+': date.getDate(), // 日
@@ -78,6 +63,31 @@ export function formatSeconds (seconds, fmt = 'd,h,m,s') {
     }
   });
   return result;
+}
+
+// 格式化时间差
+export function formatDiffTime (date, now = new Date()) {
+  if (!(date = toDate(date))) return '';
+  if (!(now = toDate(now))) return '';
+
+  const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diff > 0) {
+    const { d, h, m, s } = formatSeconds(diff);
+    if (d > 7) {
+      return formatDate(date, 'YYYY-MM-DD');
+    } if (d) {
+      return d + '天前';
+    } else if (h) {
+      return h + '小时前';
+    } else if (m) {
+      return m + '分钟前';
+    } else if (s) {
+      return s + '秒前';
+    }
+  } else {
+    return '刚刚';
+  }
 }
 // 格式化货币
 export function formatMoney (number, places, symbol, thousand, decimal) {

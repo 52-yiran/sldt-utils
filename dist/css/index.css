@@ -595,7 +595,7 @@ button {
       -webkit-box-flex: 1;
           -ms-flex: 1;
               flex: 1;
-      height: 54px;
+      height: 50px;
       font-size: 16px;
       border-left: 1px solid #eeeeee; }
       .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:first-child {

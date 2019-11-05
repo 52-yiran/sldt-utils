@@ -25,8 +25,8 @@ export default function countDown (seconds, callback = noop, complete = noop) {
       seconds = newSeconds;
     }
     stop();
-    handler();
     interval = setInterval(handler, 1000);
+    handler();
   };
 
   const stop = function () {

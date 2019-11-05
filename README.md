@@ -28,6 +28,7 @@ S.isFunction(value)//判断是否为方法
 S.isObject(value)//判断是否为对象
 S.isArray(value)//判断是否为数组
 S.isPromise(value)//判断是否为Promise
+S.isDate(value)//判断new Date(value)之后是不是合法date对象
 ```
 
 ## *S.extend 深拷贝*
@@ -99,7 +100,6 @@ S.regExp.isNumber(val) //判断是否为数字
 S.regExp.isPhone(val) //判断是否为正确的手机号码格式
 S.regExp.isEmail(val) //判断是否为邮箱格式
 S.regExp.isUrl(val) //判断是否为带域名的绝对路径
-S.regExp.isDate(val) //判断是否为合法date
 ```
 ## *S.downloadBlob 浏览器下载blob文件流*
 ```
@@ -140,7 +140,7 @@ S.cleanCookie (params = {})
 ```
 ## *S.useRem 使用rem布局*
 ```
-S.useRem(设计稿宽度)
+S.useRem(styleWidth = 375,remUnit = 100);
 
 10px=0.1rem
 ```

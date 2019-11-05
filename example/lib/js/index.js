@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.6
+* sldt-utils v2.6.7
 * author 无痕
-* (c) Mon Oct 28 2019 17:43:21 GMT+0800 (GMT+08:00)
+* (c) Tue Nov 05 2019 16:29:10 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -147,10 +147,10 @@
 
   function isNumber(value) {
     return protoType(value) === 'number';
-  } // 判断是否为Date对象
+  } // 是否为合法date对象
 
-  function isDate(value) {
-    return protoType(value) === 'date';
+  function isDate(val) {
+    return !/Invalid|NaN/.test(new Date(val).toString());
   } // 判断是否为promise对象
 
   function isPromise(value) {
@@ -159,6 +159,33 @@
 
   function toArray(value) {
     return isArrayLike(value) ? Array.prototype.slice.call(value) : [];
+  } // 转合法date对象
+
+  function toDate(date) {
+    if (!date) { return; }
+    var type = protoType(date);
+
+    if (type !== 'date') {
+      if (type === 'string') {
+        if (/^\d*$/.test(date)) {
+          date = new Date(Number(date));
+        } else {
+          var newDate = date.replace(/-/g, '/');
+
+          if (isDate(newDate)) {
+            date = new Date(newDate);
+          } else {
+            date = new Date(date);
+          }
+        }
+      } else if (type === 'number') {
+        date = new Date(date);
+      }
+    }
+
+    if (isDate(date)) {
+      return date;
+    }
   } // 去掉字符串2边空格
 
   function trim() {
@@ -270,6 +297,7 @@
     isDate: isDate,
     isPromise: isPromise,
     toArray: toArray,
+    toDate: toDate,
     trim: trim,
     each: each,
     extend: extend,
@@ -284,15 +312,11 @@
    * @Author: 无痕
    * @Date: 2019-09-23 15:53:33
    * @LastEditors:
-   * @LastEditTime: 2019-10-28 17:21:16
+   * @LastEditTime: 2019-11-05 16:34:28
    */
   // 是否为整数
   function isInteger(val) {
     return /^[1-9]\d*$/.test(val);
-  } // 是否为数字
-
-  function isNumber$1(val) {
-    return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/g.test(val);
   } // 是否为正确的手机号码格式
 
   function isPhone(val) {
@@ -305,20 +329,53 @@
 
   function isUrl(val) {
     return /^(https|http|ftp|rtsp|mms)/.test(val);
-  } // 是否为合法date
+  } // 是否为有效的身份证号码
 
-  function isDate$1(val) {
-    return !/Invalid|NaN/.test(new Date(val).toString());
+  function isIdCard(idCard) {
+    // 15位和18位身份证号码的正则表达式
+    var regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/; // 如果通过该验证，说明身份证格式正确，但准确性还需计算
+
+    if ((idCard = String(idCard)) && regIdCard.test(idCard)) {
+      if (idCard.length === 18) {
+        // 将前17位加权因子保存在数组里
+        var idCardWi = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]; // 这是除以11后，可能产生的11位余数、验证码，也保存成数组
+
+        var idCardY = [1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2]; // 用来保存前17位各自乖以加权因子后的总和
+
+        var idCardWiSum = 0;
+
+        for (var i = 0; i < 17; i++) {
+          idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
+        }
+
+        var idCardMod = idCardWiSum % 11; //计算出校验码所在数组的位置
+
+        var idCardLast = idCard.substring(17); //得到最后一位身份证号码
+        // 如果等于2，则说明校验码是10，身份证号码最后一位应该是X
+
+        if (idCardMod === 2) {
+          if (idCardLast == 'X' || idCardLast == 'x') {
+            return true;
+          }
+        } else {
+          // 用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
+          if (idCardLast == idCardY[idCardMod]) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
   }
 
   var regExp = /*#__PURE__*/Object.freeze({
     __proto__: null,
     isInteger: isInteger,
-    isNumber: isNumber$1,
     isPhone: isPhone,
     isEmail: isEmail,
     isUrl: isUrl,
-    isDate: isDate$1
+    isIdCard: isIdCard
   });
 
   /*
@@ -572,30 +629,12 @@
    * @Author: 无痕
    * @Date: 2019-09-23 15:44:58
    * @LastEditors:
-   * @LastEditTime: 2019-10-24 15:11:37
+   * @LastEditTime: 2019-11-02 10:26:10
    */
 
   function formatDate(date) {
     var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'YYYY-MM-DD HH:mm';
-    if (!date) { return ''; }
-    var type = protoType(date);
-
-    if (type !== 'date') {
-      if (type === 'string') {
-        if (/^\d*$/.test(date)) {
-          date = new Date(parseInt(date));
-        } else {
-          if (!/Invalid|NaN/.test(new Date(date).toString())) {
-            date = new Date(date);
-          } else {
-            date = new Date(date.replace(/-/g, '/'));
-          }
-        }
-      } else if (type === 'number') {
-        date = new Date(date);
-      }
-    }
-
+    if (!(date = toDate(date))) { return ''; }
     var o = {
       'M+': date.getMonth() + 1,
       // 月份
@@ -675,6 +714,37 @@
       }
     });
     return result;
+  } // 格式化时间差
+
+  function formatDiffTime(date) {
+    var now = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Date();
+    if (!(date = toDate(date))) { return ''; }
+    if (!(now = toDate(now))) { return ''; }
+    var diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff > 0) {
+      var _formatSeconds = formatSeconds(diff),
+          d = _formatSeconds.d,
+          h = _formatSeconds.h,
+          m = _formatSeconds.m,
+          s = _formatSeconds.s;
+
+      if (d > 7) {
+        return formatDate(date, 'YYYY-MM-DD');
+      }
+
+      if (d) {
+        return d + '天前';
+      } else if (h) {
+        return h + '小时前';
+      } else if (m) {
+        return m + '分钟前';
+      } else if (s) {
+        return s + '秒前';
+      }
+    } else {
+      return '刚刚';
+    }
   } // 格式化货币
 
   function formatMoney(number, places, symbol, thousand, decimal) {
@@ -700,6 +770,7 @@
     formatDate: formatDate,
     formatDateRange: formatDateRange,
     formatSeconds: formatSeconds,
+    formatDiffTime: formatDiffTime,
     formatMoney: formatMoney
   });
 
@@ -1053,22 +1124,22 @@
     whenTransitionEnds: whenTransitionEnds
   });
 
-  /*
-   * @Name: rem.js
-   * @Descripttion: 使用rem
-   * @Author: 无痕
-   * @Date: 2019-09-26 11:44:03
-   * @LastEditors:
-   * @LastEditTime: 2019-10-08 14:54:38
+  /**
+   * @name: 使用rem 
+   * @param {styleWidth Number} 设计稿宽度
+   * @param {remUnit Number} 换算remUnit
    */
   var useRem = (function () {
     var handler;
-    return function (styleWidth) {
+    return function () {
+      var styleWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 375;
+      var remUnit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+
       if (!handler) {
         var html = document.documentElement;
 
         handler = function handler() {
-          html.style.fontSize = 100 * (html.clientWidth / styleWidth) + 'px';
+          html.style.fontSize = remUnit * (html.clientWidth / styleWidth) + 'px';
         };
 
         if (!document.addEventListener) { return; }
@@ -1226,8 +1297,8 @@
       }
 
       stop();
-      handler();
       interval = setInterval(handler, 1000);
+      handler();
     };
 
     var stop = function stop() {
@@ -1833,9 +1904,9 @@
    * @Author: 无痕
    * @Date: 2019-10-14 09:14:21
    * @LastEditors:
-   * @LastEditTime: 2019-10-28 17:40:45
+   * @LastEditTime: 2019-11-05 15:34:37
    */
-  var version = '2.6.6';
+  var version = '2.6.7';
   var index = Object.assign({
     version: version,
     countDown: countDown,
@@ -1866,6 +1937,7 @@
   exports.extend = extend;
   exports.formatDate = formatDate;
   exports.formatDateRange = formatDateRange;
+  exports.formatDiffTime = formatDiffTime;
   exports.formatMoney = formatMoney;
   exports.formatSeconds = formatSeconds;
   exports.getCookie = getCookie;
@@ -1916,6 +1988,7 @@
   exports.throttle = throttle;
   exports.toArray = toArray;
   exports.toArrayData = toArrayData;
+  exports.toDate = toDate;
   exports.toast = Toast;
   exports.trim = trim;
   exports.useRem = useRem;

@@ -1,6 +1,6 @@
 {
   "name": "sldt-utils",
-  "version": "2.6.6",
+  "version": "2.6.7",
   "description": "一个js常用方法库",
   "author": "无痕",
   "license": "MIT",
@@ -10,7 +10,7 @@
   "jsdelivr": "dist/js/index.js",
   "sideEffects": false,
   "scripts": {
-    "dev": "rollup -c build/dev.js -w",
+    "start": "rollup -c build/dev.js -w",
     "build": "rollup -c build/build.js",
     "prepublish": "npm run build"
   },

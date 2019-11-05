@@ -49,9 +49,9 @@ export function isArray (value) {
 export function isNumber (value) {
   return protoType(value) === 'number';
 }
-// 判断是否为Date对象
-export function isDate (value) {
-  return protoType(value) === 'date';
+// 是否为合法date对象
+export function isDate (val) {
+  return !/Invalid|NaN/.test(new Date(val).toString());
 }
 // 判断是否为promise对象
 export function isPromise (value) {
@@ -60,6 +60,30 @@ export function isPromise (value) {
 // 类数组转数组
 export function toArray (value) {
   return isArrayLike(value) ? Array.prototype.slice.call(value) : [];
+}
+// 转合法date对象
+export function toDate (date) {
+  if (!date) return;
+  const type = protoType(date);
+  if (type !== 'date') {
+    if (type === 'string') {
+      if (/^\d*$/.test(date)) {
+        date = new Date(Number(date));
+      } else {
+        const newDate = date.replace(/-/g, '/');
+        if (isDate(newDate)) {
+          date = new Date(newDate);
+        } else {
+          date = new Date(date);
+        }
+      }
+    } else if (type === 'number') {
+      date = new Date(date);
+    }
+  }
+  if (isDate(date)) {
+    return date;
+  }
 }
 // 去掉字符串2边空格
 export function trim (str = '') {

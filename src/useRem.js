@@ -1,18 +1,15 @@
-/*
- * @Name: rem.js
- * @Descripttion: 使用rem
- * @Author: 无痕
- * @Date: 2019-09-26 11:44:03
- * @LastEditors:
- * @LastEditTime: 2019-10-08 14:54:38
+/**
+ * @name: 使用rem 
+ * @param {styleWidth Number} 设计稿宽度
+ * @param {remUnit Number} 换算remUnit
  */
 export default (function () {
   let handler;
-  return function (styleWidth) {
+  return function (styleWidth = 375, remUnit = 100) {
     if (!handler) {
       const html = document.documentElement;
       handler = function () {
-        html.style.fontSize = 100 * (html.clientWidth / styleWidth) + 'px';
+        html.style.fontSize = remUnit * (html.clientWidth / styleWidth) + 'px';
       };
       if (!document.addEventListener) return;
       window.addEventListener('orientationchange' in window ? 'orientationchange' : 'resize', handler);
