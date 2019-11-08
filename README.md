@@ -245,7 +245,8 @@ S.toast.success.defaultOptions={
 
 ```
 
-## *S.dialog  弹框*
+## *S.dialog  弹框* 
+#### 目前只有一个与dom有关的插件 [dialog 效果链接](https://sldt.github.io/sldt-utils/example/dialog.html).
 ```
 // 默认参数
 dialog.defaultOptions = {
