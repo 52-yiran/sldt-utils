@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.7
+* sldt-utils v2.6.8
 * author 无痕
-* (c) Tue Nov 05 2019 16:36:38 GMT+0800 (GMT+08:00)
+* (c) Thu Nov 07 2019 17:35:38 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -76,9 +76,9 @@ function toDate (date) {
       if (/^\d*$/.test(date)) {
         date = new Date(Number(date));
       } else {
-        const newDate = date.replace(/-/g, '/');
-        if (isDate(newDate)) {
-          date = new Date(newDate);
+        const fmtDate = date.replace(/-/g, '/');
+        if (isDate(fmtDate)) {
+          date = new Date(fmtDate);
         } else {
           date = new Date(date);
         }
@@ -196,11 +196,11 @@ var core = /*#__PURE__*/Object.freeze({
 
 /*
  * @Name: regExp
- * @Descripttion: 常用正则验证方法
+ * @Descripttion: 常用验证方法
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-11-05 16:34:28
+ * @LastEditTime: 2019-11-07 17:18:08
  */
 // 是否为整数
 function isInteger (val) {
@@ -267,7 +267,7 @@ var regExp = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:48:15
  * @LastEditors:
- * @LastEditTime: 2019-10-22 15:30:26
+ * @LastEditTime: 2019-11-06 17:51:53
  */
 // 下面是64个基本的编码
 const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -489,7 +489,7 @@ var cookie = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
  * @LastEditors:
- * @LastEditTime: 2019-11-02 10:26:10
+ * @LastEditTime: 2019-11-07 17:27:19
  */
 
 // 时间格式化
@@ -531,7 +531,7 @@ function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
 function formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 'YYYY-MM-DD HH:mm', endformat = 'YYYY-MM-DD HH:mm') {
   return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : '';
 }
-// 格式化秒数为天,小时，分钟，秒 对象
+// 格式化秒数为周，天,小时，分钟，秒 对象,return {d,h,m,s}
 function formatSeconds (seconds, fmt = 'd,h,m,s') {
   const result = {};
   [
@@ -549,31 +549,41 @@ function formatSeconds (seconds, fmt = 'd,h,m,s') {
   return result;
 }
 
-// 格式化时间差
-function formatDiffTime (date, now = new Date()) {
+// 格式化时间差，默认与当前时间相比
+function formatDiffTime (date, now, maxDays, nowStr) {
+  now = now || new Date();
+  maxDays = maxDays || 7;
+  nowStr = nowStr || '刚刚';
+
   if (!(date = toDate(date))) return '';
   if (!(now = toDate(now))) return '';
 
   const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diff > 0) {
-    const { d, h, m, s } = formatSeconds(diff);
-    if (d > 7) {
-      return formatDate(date, 'YYYY-MM-DD');
-    } if (d) {
-      return d + '天前';
-    } else if (h) {
-      return h + '小时前';
-    } else if (m) {
-      return m + '分钟前';
-    } else if (s) {
-      return s + '秒前';
-    }
-  } else {
-    return '刚刚';
+  if (diff === 0) return nowStr;
+  const suffix = diff > 0 ? '前' : '后';
+  const { d, h, m, s } = formatSeconds(Math.abs(diff));
+  if (d > maxDays) {
+    return formatDate(date, 'YYYY-MM-DD');
+  } if (d) {
+    return d + `天${suffix}`;
+  } else if (h) {
+    return h + `小时${suffix}`;
+  } else if (m) {
+    return m + `分钟${suffix}`;
+  } else if (s) {
+    return s + `秒${suffix}`;
   }
 }
-// 格式化货币
+
+/**
+ * @name: // 格式化货币
+ * @param {number Number}  货币数字
+ * @param {places Number}  保留的小位数,2
+ * @param {symbol String}  货币符号：'￥'
+ * @param {thousand String} 用啥隔开：','
+ * @param {decimal String} 表示小数点:'.'
+ * @return: String
+ */
 function formatMoney (number, places, symbol, thousand, decimal) {
   number = number || 0;
   // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
@@ -586,10 +596,10 @@ function formatMoney (number, places, symbol, thousand, decimal) {
   decimal = decimal || '.';
   // negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
   // i表示处理过的纯数字
-  var negative = number < 0 ? '-' : '';
-  var i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
-  var j = (j = i.length) > 3 ? j % 3 : 0;
-  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
+  const negative = number < 0 ? '-' : '';
+  const i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
+  const j = i.length > 3 ? i.length % 3 : 0;
+  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
 }
 
 var format = /*#__PURE__*/Object.freeze({
@@ -920,6 +930,46 @@ var transition = /*#__PURE__*/Object.freeze({
   supportCss3: supportCss3,
   getTransitionInfo: getTransitionInfo,
   whenTransitionEnds: whenTransitionEnds
+});
+
+function setupWebViewJavascriptBridge (callback) {
+  if (window.WebViewJavascriptBridge) {
+    return callback(window.WebViewJavascriptBridge);
+  }
+  if (window.WVJBCallbacks) {
+    return window.WVJBCallbacks.push(callback);
+  }
+  window.WVJBCallbacks = [callback];
+  const WVJBIframe = document.createElement('iframe');
+  WVJBIframe.style.display = 'none';
+  WVJBIframe.src = 'https://__bridge_loaded__';
+  document.documentElement.appendChild(WVJBIframe);
+  setTimeout(() => {
+    document.documentElement.removeChild(WVJBIframe);
+  }, 0);
+}
+
+// 在需要调用客户端方法的组件中（事先需要与客户端同事约定好方法名）
+function bridgeCallhandler (name, data, callback) {
+  setupWebViewJavascriptBridge(function (bridge) {
+    bridge.callHandler(name, data, callback || noop);
+  });
+}
+
+// 当客户端需要调用 js 函数时,事先注册约定好的函数即可
+function bridgeRegisterhandler (name, callback) {
+  setupWebViewJavascriptBridge(function (bridge) {
+    bridge.registerHandler(name, function (data, responseCallback) {
+      callback(data, responseCallback);
+    });
+  });
+}
+
+var bridge = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  setupWebViewJavascriptBridge: setupWebViewJavascriptBridge,
+  bridgeCallhandler: bridgeCallhandler,
+  bridgeRegisterhandler: bridgeRegisterhandler
 });
 
 /**
@@ -1586,10 +1636,10 @@ Confirm.defaultOptions = {
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-05 15:34:37
+ * @LastEditTime: 2019-11-07 17:33:10
  */
 
-const version = '2.6.7';
+const version = '2.6.8';
 
 var index = Object.assign({
   version,
@@ -1610,8 +1660,9 @@ var index = Object.assign({
   format,
   tools,
   transition,
-  dom
+  dom,
+  bridge
 );
 
 export default index;
-export { addClass, Alert as alert, base64decode, base64encode, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatDiffTime, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, supportCss3, throttle, toArray, toArrayData, toDate, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };
+export { addClass, Alert as alert, base64decode, base64encode, bridgeCallhandler, bridgeRegisterhandler, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatDiffTime, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, setupWebViewJavascriptBridge, supportCss3, throttle, toArray, toArrayData, toDate, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };

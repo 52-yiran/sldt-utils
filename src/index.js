@@ -4,8 +4,9 @@
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-05 15:34:37
+ * @LastEditTime: 2019-11-07 17:33:10
  */
+
 import * as core from './core';
 import * as regExp from './regExp';
 import * as base64 from './base64';
@@ -14,6 +15,7 @@ import * as format from './format';
 import * as tools from './tools';
 import * as dom from './dom';
 import * as transition from './transition';
+import * as bridge from './bridge';
 
 import useRem from './useRem';
 import eventEmit from './eventEmit';
@@ -47,6 +49,7 @@ export * from './format';
 export * from './tools';
 export * from './dom';
 export * from './transition';
+export * from './bridge';
 
 export default Object.assign({
   version,
@@ -67,5 +70,6 @@ export default Object.assign({
   format,
   tools,
   transition,
-  dom
+  dom,
+  bridge
 );

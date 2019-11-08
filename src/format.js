@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:44:58
  * @LastEditors:
- * @LastEditTime: 2019-11-02 10:26:10
+ * @LastEditTime: 2019-11-07 17:27:19
  */
 import { toDate } from './core';
 
@@ -47,7 +47,7 @@ export function formatDate (date, fmt = 'YYYY-MM-DD HH:mm') {
 export function formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 'YYYY-MM-DD HH:mm', endformat = 'YYYY-MM-DD HH:mm') {
   return (startDateTime && endDateTime) ? formatDate(startDateTime, startformat) + separator + formatDate(endDateTime, endformat) : '';
 }
-// 格式化秒数为天,小时，分钟，秒 对象
+// 格式化秒数为周，天,小时，分钟，秒 对象,return {d,h,m,s}
 export function formatSeconds (seconds, fmt = 'd,h,m,s') {
   const result = {};
   [
@@ -65,31 +65,41 @@ export function formatSeconds (seconds, fmt = 'd,h,m,s') {
   return result;
 }
 
-// 格式化时间差
-export function formatDiffTime (date, now = new Date()) {
+// 格式化时间差，默认与当前时间相比
+export function formatDiffTime (date, now, maxDays, nowStr) {
+  now = now || new Date();
+  maxDays = maxDays || 7;
+  nowStr = nowStr || '刚刚';
+
   if (!(date = toDate(date))) return '';
   if (!(now = toDate(now))) return '';
 
   const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diff > 0) {
-    const { d, h, m, s } = formatSeconds(diff);
-    if (d > 7) {
-      return formatDate(date, 'YYYY-MM-DD');
-    } if (d) {
-      return d + '天前';
-    } else if (h) {
-      return h + '小时前';
-    } else if (m) {
-      return m + '分钟前';
-    } else if (s) {
-      return s + '秒前';
-    }
-  } else {
-    return '刚刚';
+  if (diff === 0) return nowStr;
+  const suffix = diff > 0 ? '前' : '后';
+  const { d, h, m, s } = formatSeconds(Math.abs(diff));
+  if (d > maxDays) {
+    return formatDate(date, 'YYYY-MM-DD');
+  } if (d) {
+    return d + `天${suffix}`;
+  } else if (h) {
+    return h + `小时${suffix}`;
+  } else if (m) {
+    return m + `分钟${suffix}`;
+  } else if (s) {
+    return s + `秒${suffix}`;
   }
 }
-// 格式化货币
+
+/**
+ * @name: // 格式化货币
+ * @param {number Number}  货币数字
+ * @param {places Number}  保留的小位数,2
+ * @param {symbol String}  货币符号：'￥'
+ * @param {thousand String} 用啥隔开：','
+ * @param {decimal String} 表示小数点:'.'
+ * @return: String
+ */
 export function formatMoney (number, places, symbol, thousand, decimal) {
   number = number || 0;
   // 保留的小位数 可以写成 formatMoney(542986,3) 后面的是保留的小位数，否则默 认保留两位
@@ -102,8 +112,8 @@ export function formatMoney (number, places, symbol, thousand, decimal) {
   decimal = decimal || '.';
   // negative表示如果钱是负数有就显示“-”如果不是负数 就不显示负号
   // i表示处理过的纯数字
-  var negative = number < 0 ? '-' : '';
-  var i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
-  var j = (j = i.length) > 3 ? j % 3 : 0;
-  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '￥1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
+  const negative = number < 0 ? '-' : '';
+  const i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + '';
+  const j = i.length > 3 ? i.length % 3 : 0;
+  return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
 }

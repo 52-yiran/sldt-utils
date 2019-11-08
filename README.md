@@ -52,10 +52,15 @@ S.formatDateRange (startDateTime, endDateTime, separator = ' ~ ', startformat = 
 S.formatSeconds (seconds,fmt='d,h,m,s') //fmt全部参数'w,d,h,m,s',返回fmt{ d, h, m, s }
 ```
 
+## *S.formatDiffTime 格式化时间差，默认与当前时间相比*
+```
+S.formatDiffTime (date, now=new Date(), maxDays=7, nowStr='刚刚') //'10秒前' ，'10天前'
+```
+
 ## *S.formatMoney 格式化货币*
 ```
 S.formatMoney (number, places, symbol, thousand, decimal)
-S.formatMoney (1000, 2, '$')
+S.formatMoney (1000, 2, '$', ',', '.')
 ```
 
 ## *S.countDown 倒计秒数*
@@ -93,13 +98,15 @@ S.debounce(fn, wait = 300, immediate = false) //返回一个新函数
 S.throttle(fn, wait = 300, immediate = false) //返回一个新函数
 ```
 
-## *S.regExp 常用正则方法*
+## *S.regExp 常用校验方法*
 ```
 S.regExp.isInteger(val) //判断是否为正整数
 S.regExp.isNumber(val) //判断是否为数字
 S.regExp.isPhone(val) //判断是否为正确的手机号码格式
 S.regExp.isEmail(val) //判断是否为邮箱格式
 S.regExp.isUrl(val) //判断是否为带域名的绝对路径
+S.regExp.isIdCard(val) //判断是否为有效的身份证号码
+
 ```
 ## *S.downloadBlob 浏览器下载blob文件流*
 ```
@@ -158,6 +165,21 @@ S.addClass(selecter,class)
 ## *S.removeClass 移除class*
 ```
 S.removeClass(selecter,class)
+```
+
+## *S.setupWebViewJavascriptBridge 与ios 原生app交互*
+```
+S.setupWebViewJavascriptBridge(callback)
+```
+
+## *S.bridgeCallhandler 与ios原生app交互,在需要调用客户端方法的组件中（事先需要与客户端同事约定好方法名）*
+```
+S.bridgeCallhandler(name, data, callback)
+```
+
+## *S.bridgeRegisterhandler 与ios原生app交互, 当客户端需要调用 js 函数时,事先注册约定好的函数即可*
+```
+S.bridgeRegisterhandler(name, data, callback)
 ```
 
 ## *S.alert*

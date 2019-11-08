@@ -1,10 +1,10 @@
 /*
  * @Name: regExp
- * @Descripttion: 常用正则验证方法
+ * @Descripttion: 常用验证方法
  * @Author: 无痕
  * @Date: 2019-09-23 15:53:33
  * @LastEditors:
- * @LastEditTime: 2019-11-05 16:34:28
+ * @LastEditTime: 2019-11-07 17:18:08
  */
 // 是否为整数
 export function isInteger (val) {

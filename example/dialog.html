@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./lib/css/index.css">
+</head>
+<style>
+  .btn-list .s-btn {
+    color: white;
+    font-size: 20px;
+    height: 50px;
+    margin-bottom: 20px;
+    width: 46%;
+    margin: 10px 2%;
+  }
+
+  .btn-list .s-primary-btn {
+    background: #1989fa;
+  }
+
+  .btn-list .s-success-btn {
+    background: #07c160;
+  }
+
+  .btn-list .s-danger-btn {
+    background: #ee0a24;
+  }
+
+  .middle-dialog .s-dialog-wrapper {
+    width: 70%;
+    height: 40vh;
+    border-radius: 4px;
+  }
+
+  .top-dialog .s-dialog-wrapper,
+  .bottom-dialog .s-dialog-wrapper {
+    height: 30vh;
+  }
+</style>
+
+<body>
+
+  <div class="btn-list">
+    <button id="showMiddle" class="s-btn s-primary-btn" style="width: 96%;">middle</button>
+    <button id="showLeft" class="s-btn s-success-btn">left</button>
+    <button id="showRight" class="s-btn s-success-btn">right</button>
+    <button id="showTop" class="s-btn s-success-btn">top</button>
+    <button id="showBottom" class="s-btn s-success-btn">bottom</button>
+
+
+    <button id="showAlert" class="s-btn s-primary-btn">alert</button>
+    <button id="showConfirm" class="s-btn s-primary-btn">confirm</button>
+    <button id="showTitle" class="s-btn s-success-btn" style="width: 96%;">含有title</button>
+
+
+    <button id="showLoading" class="s-btn s-primary-btn" style="width: 96%;">loading</button>
+
+    <button id="showText" class="s-btn s-success-btn" style="width: 96%;">text</button>
+
+    <button id="showSuccess" class="s-btn s-success-btn">success</button>
+    <button id="showFail" class="s-btn s-danger-btn">fail</button>
+
+    <button id="showCustom" class="s-btn s-success-btn" style="width: 96%;">自定义图标</button>
+  </div>
+
+  <div class="s-dialog middle-dialog">
+    <div class="s-dialog-wrapper"></div>
+  </div>
+  <div class="s-dialog left-dialog">
+    <div class="s-dialog-wrapper"></div>
+  </div>
+  <div class="s-dialog right-dialog">
+    <div class="s-dialog-wrapper"></div>
+  </div>
+  <div class="s-dialog top-dialog">
+    <div class="s-dialog-wrapper"></div>
+  </div>
+  <div class="s-dialog bottom-dialog">
+    <div class="s-dialog-wrapper"></div>
+  </div>
+
+  <script src="./lib/js/index.js"></script>
+
+  <script>
+    S.dialog({
+      el: '.middle-dialog',
+      position: 'middle',
+      closeBtn: true,
+      onInit() {
+        S.getElem('#showMiddle')[0].addEventListener('click', () => {
+          this.show();
+        })
+      }
+    })
+
+    S.dialog({
+      el: '.left-dialog',
+      position: 'left',
+      onInit() {
+        S.getElem('#showLeft')[0].addEventListener('click', () => {
+          this.show();
+        })
+      }
+    })
+
+    S.dialog({
+      el: '.right-dialog',
+      position: 'right',
+      onInit() {
+        S.getElem('#showRight')[0].addEventListener('click', () => {
+          this.show();
+        })
+      }
+    })
+
+    S.dialog({
+      el: '.top-dialog',
+      position: 'top',
+      onInit() {
+        S.getElem('#showTop')[0].addEventListener('click', () => {
+          this.show();
+        })
+      }
+    })
+
+    S.dialog({
+      el: '.bottom-dialog',
+      position: 'bottom',
+      onInit() {
+        S.getElem('#showBottom')[0].addEventListener('click', () => {
+          this.show();
+        })
+      }
+    })
+
+    S.getElem('#showTitle')[0].addEventListener('click', () => {
+      S.confirm({
+        title: '提示',
+        content: '确定提交吗'
+      }).then(() => {
+        S.toast('以提交')
+      }, () => { })
+    })
+
+    S.getElem('#showAlert')[0].addEventListener('click', () => {
+      S.alert('确定提交吗？').then(() => {
+        S.toast('以提交')
+      }, () => { })
+    })
+
+    S.getElem('#showConfirm')[0].addEventListener('click', () => {
+      S.confirm('确定删除吗？').then(() => {
+        S.toast.success('删除成功')
+      }, () => { })
+    })
+
+    S.getElem('#showText')[0].addEventListener('click', () => {
+      S.toast('提示信息')
+    })
+
+    S.getElem('#showLoading')[0].addEventListener('click', () => {
+      S.toast.loading('加载中...')
+      setTimeout(S.toast.clear, 2000)
+    })
+
+    S.getElem('#showSuccess')[0].addEventListener('click', () => {
+      S.toast.success('提交成功')
+    })
+
+    S.getElem('#showFail')[0].addEventListener('click', () => {
+      S.toast.fail('提交失败')
+    })
+
+    S.getElem('#showCustom')[0].addEventListener('click', () => {
+      S.toast({
+        icon: 'https://iconfont.alicdn.com/t/1513135809432.jpg@100h_100w.jpg',
+        message: '提示文字'
+      })
+    })
+  </script>
+</body>
+
+</html>

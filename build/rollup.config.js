@@ -41,7 +41,7 @@ function delDir (path) {
   let files = [];
   if (fs.existsSync(path)) {
     files = fs.readdirSync(path);
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       let curPath = path + '/' + file;
       if (fs.statSync(curPath).isDirectory()) {
         delDir(curPath); //递归删除文件夹
@@ -54,13 +54,16 @@ function delDir (path) {
 }
 
 function resolve (...args) {
+  // eslint-disable-next-line no-undef
   return path.resolve(__dirname, '../', ...args);
 }
 
 export default function (ENV) {
-  const isProd = ENV === 'production';
-  const outputDir = isProd ? 'dist' : 'example/lib';
+  const isDev = ENV === 'development';
+  const outputDir = !isDev ? 'dist' : 'example/lib';
   const time = new Date().toString();
+  const host = getIPAdress();
+  const port = 10001;
 
   const banner =
     `/*!
@@ -74,7 +77,7 @@ export default function (ENV) {
   // 清除文件
   delDir(outputDir);
 
-  if (isProd) {
+  if (!isDev) {
     formatList.push(
       { format: 'umd', suffix: '.min' },
       { format: 'cjs', suffix: '.common' },
@@ -98,8 +101,8 @@ export default function (ENV) {
         }),
         postcss({
           extensions: ['css', 'scss'],
-          extract: resolve(`${outputDir}/css/index${((isProd && suffix == '.min') ? '.min' : '')}.css`),
-          minimize: isProd && suffix == '.min',
+          extract: resolve(`${outputDir}/css/index${((!isDev && suffix == '.min') ? '.min' : '')}.css`),
+          minimize: !isDev && suffix == '.min',
           plugins: [
             simplevars(),
             nested(),
@@ -116,7 +119,7 @@ export default function (ENV) {
         format !== 'es' && commonjs(),
         format !== 'es' && buble(),
         // 压缩
-        isProd && suffix === '.min' && terser({
+        !isDev && suffix === '.min' && terser({
           output: {
             ascii_only: true // 仅输出ascii字符
           },
@@ -132,13 +135,13 @@ export default function (ENV) {
           ]
         }),
         // dev时
-        !isProd && serve({
+        isDev && (serve({
           open: true, // 是否打开浏览器
           contentBase: 'example/', // 入口HTML 文件位置
           historyApiFallback: true, // Set to true to return index.html instead of 404
-          host: getIPAdress(),
-          port: 10001,
-        })
+          host,
+          port,
+        }))
       ],
       watch: {
         include: 'src/**'

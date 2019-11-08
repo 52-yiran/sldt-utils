@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-09-23 15:48:15
  * @LastEditors:
- * @LastEditTime: 2019-10-22 15:30:26
+ * @LastEditTime: 2019-11-06 17:51:53
  */
 // 下面是64个基本的编码
 const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';

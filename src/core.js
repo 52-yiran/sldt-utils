@@ -70,9 +70,9 @@ export function toDate (date) {
       if (/^\d*$/.test(date)) {
         date = new Date(Number(date));
       } else {
-        const newDate = date.replace(/-/g, '/');
-        if (isDate(newDate)) {
-          date = new Date(newDate);
+        const fmtDate = date.replace(/-/g, '/');
+        if (isDate(fmtDate)) {
+          date = new Date(fmtDate);
         } else {
           date = new Date(date);
         }
