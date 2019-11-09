@@ -422,8 +422,8 @@ button {
     position: absolute;
     right: 0;
     top: 0;
-    color: #aaa;
-    padding: 12px;
+    color: #999;
+    padding: 14px;
     font-size: 14px;
     z-index: 99; }
   .s-dialog {
@@ -566,10 +566,8 @@ button {
             transform: none; }
 
 .s-alert-dialog .s-dialog-wrapper {
-  color: white;
   border-radius: 5px;
-  width: 75%;
-  min-width: 260px;
+  width: 80%;
   max-width: 320px; }
   .s-alert-dialog .s-dialog-wrapper .s-dialog-header {
     padding-top: 24px;
@@ -580,7 +578,7 @@ button {
     max-height: 60vh;
     padding: 32px;
     overflow-y: auto;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
     white-space: pre-wrap;
     text-align: center;

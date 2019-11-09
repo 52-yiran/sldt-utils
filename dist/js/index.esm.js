@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.8
 * author 无痕
-* (c) Thu Nov 07 2019 17:35:38 GMT+0800 (GMT+08:00)
+* (c) Sat Nov 09 2019 17:18:46 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -428,7 +428,7 @@ var base64 = /*#__PURE__*/Object.freeze({
  * @Author: 无痕
  * @Date: 2019-09-23 15:46:54
  * @LastEditors:
- * @LastEditTime: 2019-10-28 17:21:44
+ * @LastEditTime: 2019-11-09 16:50:35
  */
 
 // 设置cookie
@@ -453,8 +453,8 @@ function getCookie (name) {
   let result;
   if (document.cookie) {
     document.cookie.split('; ').some(item => {
-      let parts = item.split('=');
-      let keyName = parts.shift();
+      const parts = item.split('=');
+      const keyName = parts.shift();
       if (keyName && keyName === encodeURIComponent(name)) {
         result = decodeURIComponent(parts.join('='));
         return true;
@@ -469,8 +469,7 @@ function removeCookie (name, params = {}) {
 }
 // 清除全部cookie
 function cleanCookie (params = {}) {
-  const cookieNameList = document.cookie.match(/[^ =;]+(?==)/g) || [];
-  cookieNameList.forEach(name => {
+  (document.cookie.match(/[^ =;]+(?==)/g) || []).forEach(name => {
     removeCookie(decodeURIComponent(name), params);
   });
 }

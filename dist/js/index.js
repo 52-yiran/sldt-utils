@@ -1,7 +1,7 @@
 /*!
 * sldt-utils v2.6.8
 * author 无痕
-* (c) Thu Nov 07 2019 17:35:38 GMT+0800 (GMT+08:00)
+* (c) Sat Nov 09 2019 17:18:46 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 (function (global, factory) {
@@ -566,7 +566,7 @@
    * @Author: 无痕
    * @Date: 2019-09-23 15:46:54
    * @LastEditors:
-   * @LastEditTime: 2019-10-28 17:21:44
+   * @LastEditTime: 2019-11-09 16:50:35
    */
   // 设置cookie
   function setCookie(name, value, days) {
@@ -609,8 +609,7 @@
 
   function cleanCookie() {
     var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var cookieNameList = document.cookie.match(/[^ =;]+(?==)/g) || [];
-    cookieNameList.forEach(function (name) {
+    (document.cookie.match(/[^ =;]+(?==)/g) || []).forEach(function (name) {
       removeCookie(decodeURIComponent(name), params);
     });
   }

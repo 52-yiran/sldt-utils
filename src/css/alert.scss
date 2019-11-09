@@ -1,10 +1,8 @@
 .s-alert-dialog {
 
   .s-dialog-wrapper {
-    color: white;
     border-radius: 5px;
-    width: 75%;
-    min-width: 260px;
+    width: 80%;
     max-width: 320px;
 
     .s-dialog-header {
@@ -18,7 +16,7 @@
       max-height: 60vh;
       padding: 32px;
       overflow-y: auto;
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1.2;
       white-space: pre-wrap;
       text-align: center;
