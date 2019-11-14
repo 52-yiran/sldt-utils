@@ -93,7 +93,7 @@ export default function (ENV) {
         file: resolve(`${outputDir}/js/index${suffix}.js`),
         name: 'S',
         exports: 'named',
-        footer: format === 'cjs' ? 'module.exports = exports[\'default\']' : ''
+        footer: format === 'cjs' ? 'module.exports = exports;' : ''
       },
       plugins: [
         eslint({
@@ -144,7 +144,8 @@ export default function (ENV) {
         }))
       ],
       watch: {
-        include: 'src/**'
+        include: 'src/**',
+        clearScreen: true
       }
     };
   });

@@ -19,7 +19,6 @@ Alert.defaultOptions = {
   content: '',
   confirmText: '确定',
   confirmColor: '#1989fa',
-  maskOpacity: 0.5,
   isOnce: true,
   preventTouchmove: true
 };

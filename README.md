@@ -1,12 +1,15 @@
 # sldt-utils
 
 ## 引入方式
-#### 1. npm 安装
+#### 1. npm 引入
 ```
 npm i sldt-utils -S
 
 import 'sldt-utils/dist/css/index.min.css'
-import S from 'sldt-utils'
+import * as S from 'sldt-utils'
+
+//引入src下源文件
+import * as S from 'sldt-utils/src'
 ```
 #### 2. umd静态引入 全局变量为S
 ```

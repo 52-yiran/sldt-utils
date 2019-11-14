@@ -169,7 +169,7 @@ class Dialog {
     const wrapper = getElem('.s-dialog-wrapper', elem)[0];
     // 关闭 x
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0];
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-cross"></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0];
     }

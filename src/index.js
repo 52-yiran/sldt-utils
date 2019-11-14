@@ -4,19 +4,20 @@
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-07 17:33:10
+ * @LastEditTime: 2019-11-14 09:58:51
  */
+export const version = '_VERSION_';
 
-import * as core from './core';
+export * from './core';
+export * from './base64';
+export * from './cookie';
+export * from './format';
+export * from './tools';
+export * from './dom';
+export * from './transition';
+export * from './bridge';
+
 import * as regExp from './regExp';
-import * as base64 from './base64';
-import * as cookie from './cookie';
-import * as format from './format';
-import * as tools from './tools';
-import * as dom from './dom';
-import * as transition from './transition';
-import * as bridge from './bridge';
-
 import useRem from './useRem';
 import eventEmit from './eventEmit';
 import countDown from './countDown';
@@ -26,8 +27,6 @@ import dialog from './dialog';
 import toast from './toast';
 import alert from './alert';
 import confirm from './confirm';
-
-export const version = '_VERSION_';
 
 export {
   useRem,
@@ -41,35 +40,3 @@ export {
   alert,
   confirm
 };
-
-export * from './core';
-export * from './base64';
-export * from './cookie';
-export * from './format';
-export * from './tools';
-export * from './dom';
-export * from './transition';
-export * from './bridge';
-
-export default Object.assign({
-  version,
-  countDown,
-  useRem,
-  regExp,
-  eventEmit,
-  debounce,
-  throttle,
-  dialog,
-  toast,
-  alert,
-  confirm
-},
-  core,
-  base64,
-  cookie,
-  format,
-  tools,
-  transition,
-  dom,
-  bridge
-);

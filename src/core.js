@@ -49,10 +49,6 @@ export function isArray (value) {
 export function isNumber (value) {
   return protoType(value) === 'number';
 }
-// 是否为合法date对象
-export function isDate (val) {
-  return !/Invalid|NaN/.test(new Date(val).toString());
-}
 // 判断是否为promise对象
 export function isPromise (value) {
   return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
@@ -65,13 +61,16 @@ export function toArray (value) {
 export function toDate (date) {
   if (!date) return;
   const type = protoType(date);
+  const isValidDate = function (date) {
+    return !/Invalid|NaN/.test(date.toString());
+  };
   if (type !== 'date') {
     if (type === 'string') {
       if (/^\d*$/.test(date)) {
         date = new Date(Number(date));
       } else {
         const fmtDate = date.replace(/-/g, '/');
-        if (isDate(fmtDate)) {
+        if (isValidDate(fmtDate)) {
           date = new Date(fmtDate);
         } else {
           date = new Date(date);
@@ -81,7 +80,7 @@ export function toDate (date) {
       date = new Date(date);
     }
   }
-  if (isDate(date)) {
+  if (isValidDate(date)) {
     return date;
   }
 }
@@ -93,7 +92,7 @@ export function trim (str = '') {
 export function each (obj, callback) {
   if (!obj) return;
   if (isArrayLike(obj)) {
-    for (let i = 0, l = obj.length; i < l; i++) {
+    for (let i = 0, len = obj.length; i < len; i++) {
       if (callback(obj[i], i, obj) === false) {
         break;
       }
@@ -127,7 +126,7 @@ export function extend (...args) {
       });
     }
   };
-  for (const l = args.length; i < l; i++) {
+  for (const len = args.length; i < len; i++) {
     if (!result && allowMerge(args[i])) {
       result = args[i];
     } else {

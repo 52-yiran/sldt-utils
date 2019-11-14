@@ -5,10 +5,10 @@
 }
 
 body {
-  font-family: system-ui;
+  font-family: PingFang SC, 'Helvetica Neue', Arial, sans-serif;
   min-height: 100vh;
   font-size: 0;
-  line-height: 1;
+  line-height: 1.2;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   background-color: white;
@@ -156,6 +156,12 @@ th {
 
 input,
 textarea,
-button {
+button,
+select {
   outline: none;
+
+  &:disabled {
+    opacity: 1;
+    -webkit-text-fill-color: currentColor;
+  }
 }

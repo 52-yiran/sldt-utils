@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.6.8
+* sldt-utils v2.7.0
 * author 无痕
-* (c) Sat Nov 09 2019 17:18:46 GMT+0800 (GMT+08:00)
+* (c) Thu Nov 14 2019 11:35:03 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -55,10 +55,6 @@ function isArray (value) {
 function isNumber (value) {
   return protoType(value) === 'number';
 }
-// 是否为合法date对象
-function isDate (val) {
-  return !/Invalid|NaN/.test(new Date(val).toString());
-}
 // 判断是否为promise对象
 function isPromise (value) {
   return !!value && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
@@ -71,13 +67,16 @@ function toArray (value) {
 function toDate (date) {
   if (!date) return;
   const type = protoType(date);
+  const isValidDate = function (date) {
+    return !/Invalid|NaN/.test(date.toString());
+  };
   if (type !== 'date') {
     if (type === 'string') {
       if (/^\d*$/.test(date)) {
         date = new Date(Number(date));
       } else {
         const fmtDate = date.replace(/-/g, '/');
-        if (isDate(fmtDate)) {
+        if (isValidDate(fmtDate)) {
           date = new Date(fmtDate);
         } else {
           date = new Date(date);
@@ -87,7 +86,7 @@ function toDate (date) {
       date = new Date(date);
     }
   }
-  if (isDate(date)) {
+  if (isValidDate(date)) {
     return date;
   }
 }
@@ -99,7 +98,7 @@ function trim (str = '') {
 function each (obj, callback) {
   if (!obj) return;
   if (isArrayLike(obj)) {
-    for (let i = 0, l = obj.length; i < l; i++) {
+    for (let i = 0, len = obj.length; i < len; i++) {
       if (callback(obj[i], i, obj) === false) {
         break;
       }
@@ -133,7 +132,7 @@ function extend (...args) {
       });
     }
   };
-  for (const l = args.length; i < l; i++) {
+  for (const len = args.length; i < len; i++) {
     if (!result && allowMerge(args[i])) {
       result = args[i];
     } else {
@@ -155,111 +154,6 @@ function padStart (str, num, padStr) {
 function padEnd (str, num, padStr) {
   return String(str) + new Array(num - String(str).length + 1).join(String(padStr));
 }
-
-var core = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  noop: noop,
-  inBrowser: inBrowser,
-  isMobile: isMobile,
-  isWeixin: isWeixin,
-  isIE: isIE,
-  isIE9: isIE9,
-  isEdge: isEdge,
-  isAndroid: isAndroid,
-  isIOS: isIOS,
-  isChrome: isChrome,
-  isIPhone: isIPhone,
-  isIPad: isIPad,
-  isWebApp: isWebApp,
-  hasTouch: hasTouch,
-  mousedown: mousedown,
-  mousemove: mousemove,
-  mouseup: mouseup,
-  hasOwnProp: hasOwnProp,
-  protoType: protoType,
-  isArrayLike: isArrayLike,
-  isFunction: isFunction,
-  isObject: isObject,
-  isArray: isArray,
-  isNumber: isNumber,
-  isDate: isDate,
-  isPromise: isPromise,
-  toArray: toArray,
-  toDate: toDate,
-  trim: trim,
-  each: each,
-  extend: extend,
-  repeat: repeat,
-  padStart: padStart,
-  padEnd: padEnd
-});
-
-/*
- * @Name: regExp
- * @Descripttion: 常用验证方法
- * @Author: 无痕
- * @Date: 2019-09-23 15:53:33
- * @LastEditors:
- * @LastEditTime: 2019-11-07 17:18:08
- */
-// 是否为整数
-function isInteger (val) {
-  return /^[1-9]\d*$/.test(val);
-}
-// 是否为正确的手机号码格式
-function isPhone (val) {
-  return /^1[3456789]\d{9}$/g.test(val);
-}
-// 是否为电子邮箱
-function isEmail (val) {
-  return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val);
-}
-// 是否为带域名的链接地址
-function isUrl (val) {
-  return /^(https|http|ftp|rtsp|mms)/.test(val);
-}
-// 是否为有效的身份证号码
-function isIdCard (idCard) {
-  // 15位和18位身份证号码的正则表达式
-  const regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
-  // 如果通过该验证，说明身份证格式正确，但准确性还需计算
-  if ((idCard = String(idCard)) && regIdCard.test(idCard)) {
-    if (idCard.length === 18) {
-      // 将前17位加权因子保存在数组里
-      const idCardWi = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-      // 这是除以11后，可能产生的11位余数、验证码，也保存成数组
-      const idCardY = [1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2];
-      // 用来保存前17位各自乖以加权因子后的总和
-      let idCardWiSum = 0;
-      for (let i = 0; i < 17; i++) {
-        idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
-      }
-      const idCardMod = idCardWiSum % 11;//计算出校验码所在数组的位置
-      const idCardLast = idCard.substring(17);//得到最后一位身份证号码
-      // 如果等于2，则说明校验码是10，身份证号码最后一位应该是X
-      if (idCardMod === 2) {
-        if (idCardLast == 'X' || idCardLast == 'x') {
-          return true;
-        }
-      } else {
-        // 用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
-        if (idCardLast == idCardY[idCardMod]) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-var regExp = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  isInteger: isInteger,
-  isPhone: isPhone,
-  isEmail: isEmail,
-  isUrl: isUrl,
-  isIdCard: isIdCard
-});
 
 /*
  * @Name: base64
@@ -414,14 +308,6 @@ function base64decode (str = '') {
   return out;
 }
 
-var base64 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  utf16to8: utf16to8,
-  utf8to16: utf8to16,
-  base64encode: base64encode,
-  base64decode: base64decode
-});
-
 /*
  * @Name: cookie
  * @Descripttion: 浏览器cookie封装
@@ -473,14 +359,6 @@ function cleanCookie (params = {}) {
     removeCookie(decodeURIComponent(name), params);
   });
 }
-
-var cookie = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  setCookie: setCookie,
-  getCookie: getCookie,
-  removeCookie: removeCookie,
-  cleanCookie: cleanCookie
-});
 
 /*
  * @Name: format
@@ -601,15 +479,6 @@ function formatMoney (number, places, symbol, thousand, decimal) {
   return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '');
 }
 
-var format = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  formatDate: formatDate,
-  formatDateRange: formatDateRange,
-  formatSeconds: formatSeconds,
-  formatDiffTime: formatDiffTime,
-  formatMoney: formatMoney
-});
-
 /*
   小方法收集
 */
@@ -713,18 +582,6 @@ function downloadBlob (blob, filename) {
   window.URL.revokeObjectURL(href); // 释放掉blob对象
 }
 
-var tools = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  joinPath: joinPath,
-  getUrlParam: getUrlParam,
-  getMatcheds: getMatcheds,
-  privatePhone: privatePhone,
-  toArrayData: toArrayData,
-  getRandom: getRandom,
-  loadImage: loadImage,
-  downloadBlob: downloadBlob
-});
-
 // 获取或生成dom节点
 function getElem (selector, context) {
   let arr = [];
@@ -797,14 +654,6 @@ function getMaxZindex (selector, minZindex) {
     return parseInt(el.style.zIndex) || 1;
   })));
 }
-
-var dom = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getElem: getElem,
-  addClass: addClass,
-  removeClass: removeClass,
-  getMaxZindex: getMaxZindex
-});
 
 function toMs (s) {
   return Number(s.slice(0, -1)) * 1000;
@@ -923,14 +772,6 @@ function whenTransitionEnds (el, callback = noop) {
   return { off, trigger };
 }
 
-var transition = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  nextFrame: nextFrame,
-  supportCss3: supportCss3,
-  getTransitionInfo: getTransitionInfo,
-  whenTransitionEnds: whenTransitionEnds
-});
-
 function setupWebViewJavascriptBridge (callback) {
   if (window.WebViewJavascriptBridge) {
     return callback(window.WebViewJavascriptBridge);
@@ -964,11 +805,71 @@ function bridgeRegisterhandler (name, callback) {
   });
 }
 
-var bridge = /*#__PURE__*/Object.freeze({
+/*
+ * @Name: regExp
+ * @Descripttion: 常用验证方法
+ * @Author: 无痕
+ * @Date: 2019-09-23 15:53:33
+ * @LastEditors:
+ * @LastEditTime: 2019-11-07 17:18:08
+ */
+// 是否为整数
+function isInteger (val) {
+  return /^[1-9]\d*$/.test(val);
+}
+// 是否为正确的手机号码格式
+function isPhone (val) {
+  return /^1[3456789]\d{9}$/g.test(val);
+}
+// 是否为电子邮箱
+function isEmail (val) {
+  return /^[A-Za-z0-9_-]+@[a-zA-Z0-9_-]+(\.)?[A-Za-z0-9_-]+\.(com|cn)$/g.test(val);
+}
+// 是否为带域名的链接地址
+function isUrl (val) {
+  return /^(https|http|ftp|rtsp|mms)/.test(val);
+}
+// 是否为有效的身份证号码
+function isIdCard (idCard) {
+  // 15位和18位身份证号码的正则表达式
+  const regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+  // 如果通过该验证，说明身份证格式正确，但准确性还需计算
+  if ((idCard = String(idCard)) && regIdCard.test(idCard)) {
+    if (idCard.length === 18) {
+      // 将前17位加权因子保存在数组里
+      const idCardWi = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+      // 这是除以11后，可能产生的11位余数、验证码，也保存成数组
+      const idCardY = [1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2];
+      // 用来保存前17位各自乖以加权因子后的总和
+      let idCardWiSum = 0;
+      for (let i = 0; i < 17; i++) {
+        idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
+      }
+      const idCardMod = idCardWiSum % 11;//计算出校验码所在数组的位置
+      const idCardLast = idCard.substring(17);//得到最后一位身份证号码
+      // 如果等于2，则说明校验码是10，身份证号码最后一位应该是X
+      if (idCardMod === 2) {
+        if (idCardLast == 'X' || idCardLast == 'x') {
+          return true;
+        }
+      } else {
+        // 用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
+        if (idCardLast == idCardY[idCardMod]) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+var regExp = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  setupWebViewJavascriptBridge: setupWebViewJavascriptBridge,
-  bridgeCallhandler: bridgeCallhandler,
-  bridgeRegisterhandler: bridgeRegisterhandler
+  isInteger: isInteger,
+  isPhone: isPhone,
+  isEmail: isEmail,
+  isUrl: isUrl,
+  isIdCard: isIdCard
 });
 
 /**
@@ -976,21 +877,22 @@ var bridge = /*#__PURE__*/Object.freeze({
  * @param {styleWidth Number} 设计稿宽度
  * @param {remUnit Number} 换算remUnit
  */
-var useRem = (function () {
-  let handler;
-  return function (styleWidth = 375, remUnit = 100) {
-    if (!handler) {
-      const html = document.documentElement;
-      handler = function () {
-        html.style.fontSize = remUnit * (html.clientWidth / styleWidth) + 'px';
-      };
-      if (!document.addEventListener) return;
-      window.addEventListener('orientationchange' in window ? 'orientationchange' : 'resize', handler);
-      handler();
-      document.addEventListener('DOMContentLoaded', handler);
-    }
-  };
-})();
+
+let handler;
+
+function useRem (styleWidth = 375, remUnit = 100) {
+  // 单例，只允许调用一次
+  if (!handler) {
+    const html = document.documentElement;
+    handler = function () {
+      html.style.fontSize = remUnit * (html.clientWidth / styleWidth) + 'px';
+    };
+    if (!document.addEventListener) return;
+    window.addEventListener('orientationchange' in window ? 'orientationchange' : 'resize', handler);
+    handler();
+    document.addEventListener('DOMContentLoaded', handler);
+  }
+}
 
 /*
  * @Name: EventEmit
@@ -1341,7 +1243,7 @@ class Dialog {
     const wrapper = getElem('.s-dialog-wrapper', elem)[0];
     // 关闭 x
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-close"></i></button>')[0];
+      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-cross"></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0];
     }
@@ -1511,7 +1413,7 @@ class Dialog {
   }
 }
 
-let instanceToast = null;
+let instanceToast;
 
 function Toast (options) {
 
@@ -1561,35 +1463,33 @@ Toast.defaultOptions = {
   isOnce: true
 };
 
-[
-  {
-    type: 'success',
-    options: {
-      icon: 's-icon-success'
-    }
-  },
-  {
-    type: 'fail',
-    options: {
-      icon: 's-icon-fail'
-    }
-  },
-  {
-    type: 'loading',
-    options: {
-      icon: 's-icon-loading-circular',
-      effect: false,
-      position: 'middle',
-      duration: 0,
-      preventTouchmove: true
-    }
-  }
-].forEach(({ type, options }) => {
-  Toast[type] = function (options) {
-    return Toast(extend({ type }, isObject(options) ? options : { message: options }));
-  };
-  Toast[type].defaultOptions = options;
-});
+function SuccessToast (options) {
+  return Toast(extend({ type: 'success' }, isObject(options) ? options : { message: options }));
+}
+SuccessToast.defaultOptions = {
+  icon: 's-icon-success'
+};
+Toast.success = SuccessToast;
+
+function FailToast (options) {
+  return Toast(extend({ type: 'fail' }, isObject(options) ? options : { message: options }));
+}
+FailToast.defaultOptions = {
+  icon: 's-icon-fail'
+};
+Toast.fail = FailToast;
+
+function LoadingToast (options) {
+  return Toast(extend({ type: 'loading' }, isObject(options) ? options : { message: options }));
+}
+LoadingToast.defaultOptions = {
+  icon: 's-icon-loading',
+  effect: false,
+  position: 'middle',
+  duration: 0,
+  preventTouchmove: true
+};
+Toast.loading = LoadingToast;
 
 Toast.clear = function () {
   if (instanceToast) {
@@ -1615,7 +1515,6 @@ Alert.defaultOptions = {
   content: '',
   confirmText: '确定',
   confirmColor: '#1989fa',
-  maskOpacity: 0.5,
   isOnce: true,
   preventTouchmove: true
 };
@@ -1635,33 +1534,8 @@ Confirm.defaultOptions = {
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-07 17:33:10
+ * @LastEditTime: 2019-11-14 09:58:51
  */
+const version = '2.7.0';
 
-const version = '2.6.8';
-
-var index = Object.assign({
-  version,
-  countDown,
-  useRem,
-  regExp,
-  eventEmit: EventEmit,
-  debounce,
-  throttle,
-  dialog,
-  toast: Toast,
-  alert: Alert,
-  confirm: Confirm
-},
-  core,
-  base64,
-  cookie,
-  format,
-  tools,
-  transition,
-  dom,
-  bridge
-);
-
-export default index;
-export { addClass, Alert as alert, base64decode, base64encode, bridgeCallhandler, bridgeRegisterhandler, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatDiffTime, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isDate, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, setupWebViewJavascriptBridge, supportCss3, throttle, toArray, toArrayData, toDate, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };
+export { addClass, Alert as alert, base64decode, base64encode, bridgeCallhandler, bridgeRegisterhandler, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatDiffTime, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, setupWebViewJavascriptBridge, supportCss3, throttle, toArray, toArrayData, toDate, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };

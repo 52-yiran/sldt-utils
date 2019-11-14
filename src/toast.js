@@ -3,7 +3,7 @@ import './css/toast.scss';
 
 import { extend, isObject, trim } from './core';
 
-let instanceToast = null;
+let instanceToast;
 
 function Toast (options) {
 
@@ -53,35 +53,33 @@ Toast.defaultOptions = {
   isOnce: true
 };
 
-[
-  {
-    type: 'success',
-    options: {
-      icon: 's-icon-success'
-    }
-  },
-  {
-    type: 'fail',
-    options: {
-      icon: 's-icon-fail'
-    }
-  },
-  {
-    type: 'loading',
-    options: {
-      icon: 's-icon-loading-circular',
-      effect: false,
-      position: 'middle',
-      duration: 0,
-      preventTouchmove: true
-    }
-  }
-].forEach(({ type, options }) => {
-  Toast[type] = function (options) {
-    return Toast(extend({ type }, isObject(options) ? options : { message: options }));
-  };
-  Toast[type].defaultOptions = options;
-});
+function SuccessToast (options) {
+  return Toast(extend({ type: 'success' }, isObject(options) ? options : { message: options }));
+}
+SuccessToast.defaultOptions = {
+  icon: 's-icon-success'
+};
+Toast.success = SuccessToast;
+
+function FailToast (options) {
+  return Toast(extend({ type: 'fail' }, isObject(options) ? options : { message: options }));
+}
+FailToast.defaultOptions = {
+  icon: 's-icon-fail'
+};
+Toast.fail = FailToast;
+
+function LoadingToast (options) {
+  return Toast(extend({ type: 'loading' }, isObject(options) ? options : { message: options }));
+}
+LoadingToast.defaultOptions = {
+  icon: 's-icon-loading',
+  effect: false,
+  position: 'middle',
+  duration: 0,
+  preventTouchmove: true
+};
+Toast.loading = LoadingToast;
 
 Toast.clear = function () {
   if (instanceToast) {
