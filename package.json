@@ -1,6 +1,6 @@
 {
   "name": "sldt-utils",
-  "version": "2.7.0",
+  "version": "2.7.3",
   "description": "一个js常用方法库",
   "author": "无痕",
   "license": "MIT",
@@ -12,7 +12,7 @@
   "scripts": {
     "start": "rollup -c build/dev.js -w",
     "build": "rollup -c build/build.js",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",

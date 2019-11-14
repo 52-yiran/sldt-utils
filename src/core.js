@@ -60,28 +60,21 @@ export function toArray (value) {
 // 转合法date对象
 export function toDate (date) {
   if (!date) return;
-  const type = protoType(date);
   const isValidDate = function (date) {
-    return !/Invalid|NaN/.test(date.toString());
+    return !/Invalid|NaN/.test((protoType(date) === 'date' ? date : new Date(date)).toString());
   };
-  if (type !== 'date') {
-    if (type === 'string') {
-      if (/^\d*$/.test(date)) {
-        date = new Date(Number(date));
-      } else {
-        const fmtDate = date.replace(/-/g, '/');
-        if (isValidDate(fmtDate)) {
-          date = new Date(fmtDate);
-        } else {
-          date = new Date(date);
-        }
+  if (typeof date === 'string') {
+    if (/^\d*$/.test(date)) {
+      date = Number(date);
+    } else {
+      const fmtDate = date.replace(/-/g, '/');
+      if (isValidDate(fmtDate)) {
+        date = fmtDate;
       }
-    } else if (type === 'number') {
-      date = new Date(date);
     }
   }
   if (isValidDate(date)) {
-    return date;
+    return protoType(date) === 'date' ? date : new Date(date);
   }
 }
 // 去掉字符串2边空格

@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.7.0
+* sldt-utils v2.7.3
 * author 无痕
-* (c) Thu Nov 14 2019 11:35:03 GMT+0800 (GMT+08:00)
+* (c) Thu Nov 14 2019 15:01:00 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 // 空方法
@@ -66,28 +66,21 @@ function toArray (value) {
 // 转合法date对象
 function toDate (date) {
   if (!date) return;
-  const type = protoType(date);
   const isValidDate = function (date) {
-    return !/Invalid|NaN/.test(date.toString());
+    return !/Invalid|NaN/.test((protoType(date) === 'date' ? date : new Date(date)).toString());
   };
-  if (type !== 'date') {
-    if (type === 'string') {
-      if (/^\d*$/.test(date)) {
-        date = new Date(Number(date));
-      } else {
-        const fmtDate = date.replace(/-/g, '/');
-        if (isValidDate(fmtDate)) {
-          date = new Date(fmtDate);
-        } else {
-          date = new Date(date);
-        }
+  if (typeof date === 'string') {
+    if (/^\d*$/.test(date)) {
+      date = Number(date);
+    } else {
+      const fmtDate = date.replace(/-/g, '/');
+      if (isValidDate(fmtDate)) {
+        date = fmtDate;
       }
-    } else if (type === 'number') {
-      date = new Date(date);
     }
   }
   if (isValidDate(date)) {
-    return date;
+    return protoType(date) === 'date' ? date : new Date(date);
   }
 }
 // 去掉字符串2边空格
@@ -1536,6 +1529,6 @@ Confirm.defaultOptions = {
  * @LastEditors:
  * @LastEditTime: 2019-11-14 09:58:51
  */
-const version = '2.7.0';
+const version = '2.7.3';
 
 export { addClass, Alert as alert, base64decode, base64encode, bridgeCallhandler, bridgeRegisterhandler, cleanCookie, Confirm as confirm, countDown, debounce, dialog, downloadBlob, each, EventEmit as eventEmit, extend, formatDate, formatDateRange, formatDiffTime, formatMoney, formatSeconds, getCookie, getElem, getMatcheds, getMaxZindex, getRandom, getTransitionInfo, getUrlParam, hasOwnProp, hasTouch, inBrowser, isAndroid, isArray, isArrayLike, isChrome, isEdge, isFunction, isIE, isIE9, isIOS, isIPad, isIPhone, isMobile, isNumber, isObject, isPromise, isWebApp, isWeixin, joinPath, loadImage, mousedown, mousemove, mouseup, nextFrame, noop, padEnd, padStart, privatePhone, protoType, regExp, removeClass, removeCookie, repeat, setCookie, setupWebViewJavascriptBridge, supportCss3, throttle, toArray, toArrayData, toDate, Toast as toast, trim, useRem, utf16to8, utf8to16, version, whenTransitionEnds };

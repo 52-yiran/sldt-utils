@@ -40,6 +40,11 @@ S.extend(obj,{})//深拷贝,return obj;
 S.extend(true,obj,{})//深度拷贝合并,return obj;
 ```
 
+## *S.toDate 转合法date日期时间对象*
+```
+S.toDate (Date对象|字符串时间|时间戳|字符串时间戳) 如果是能转成合法date,则返回date对象,否则返回undefined;
+```
+
 ## *S.formatDate 时间格式化*
 ```
 S.formatDate (date, fmt = 'YYYY-MM-DD HH:mm')

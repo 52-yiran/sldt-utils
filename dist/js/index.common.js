@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.7.0
+* sldt-utils v2.7.3
 * author 无痕
-* (c) Thu Nov 14 2019 11:35:03 GMT+0800 (GMT+08:00)
+* (c) Thu Nov 14 2019 15:01:00 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -157,32 +157,25 @@ function toArray(value) {
 
 function toDate(date) {
   if (!date) { return; }
-  var type = protoType(date);
 
   var isValidDate = function isValidDate(date) {
-    return !/Invalid|NaN/.test(date.toString());
+    return !/Invalid|NaN/.test((protoType(date) === 'date' ? date : new Date(date)).toString());
   };
 
-  if (type !== 'date') {
-    if (type === 'string') {
-      if (/^\d*$/.test(date)) {
-        date = new Date(Number(date));
-      } else {
-        var fmtDate = date.replace(/-/g, '/');
+  if (typeof date === 'string') {
+    if (/^\d*$/.test(date)) {
+      date = Number(date);
+    } else {
+      var fmtDate = date.replace(/-/g, '/');
 
-        if (isValidDate(fmtDate)) {
-          date = new Date(fmtDate);
-        } else {
-          date = new Date(date);
-        }
+      if (isValidDate(fmtDate)) {
+        date = fmtDate;
       }
-    } else if (type === 'number') {
-      date = new Date(date);
     }
   }
 
   if (isValidDate(date)) {
-    return date;
+    return protoType(date) === 'date' ? date : new Date(date);
   }
 } // 去掉字符串2边空格
 
@@ -1862,7 +1855,7 @@ Confirm.defaultOptions = {
  * @LastEditors:
  * @LastEditTime: 2019-11-14 09:58:51
  */
-var version = '2.7.0';
+var version = '2.7.3';
 
 exports.addClass = addClass;
 exports.alert = Alert;
