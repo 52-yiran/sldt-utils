@@ -300,6 +300,9 @@ td,
 th {
   padding: 0; }
 
+button::after {
+  border: 0; }
+
 input,
 textarea,
 button,
@@ -389,6 +392,64 @@ select {
 .s-overflow-hidden {
   overflow: hidden; }
 
+.s-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; }
+
+.s-multi-ellipsis-l2,
+.s-multi-ellipsis-l3 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; }
+
+.s-multi-ellipsis-l3 {
+  -webkit-line-clamp: 3; }
+
+[class*=s-hairline]::after {
+  position: absolute;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  content: ' ';
+  pointer-events: none;
+  top: -50%;
+  right: -50%;
+  bottom: -50%;
+  left: -50%;
+  border: 0 solid #ebedf0;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5); }
+
+.s-hairline,
+.s-hairline-bottom,
+.s-hairline-left,
+.s-hairline-right,
+.s-hairline-surround,
+.s-hairline-top,
+.s-hairline-top-bottom {
+  position: relative; }
+
+.s-hairline-top::after {
+  border-top-width: 1px; }
+
+.s-hairline-left::after {
+  border-left-width: 1px; }
+
+.s-hairline-right::after {
+  border-right-width: 1px; }
+
+.s-hairline-bottom::after {
+  border-bottom-width: 1px; }
+
+.s-hairline-top-bottom::after,
+.s-hairline-unset-top-bottom::after {
+  border-width: 1px 0; }
+
+.s-hairline-surround::after {
+  border-width: 1px; }
+
 .s-btn {
   position: relative;
   -webkit-appearance: none;
@@ -422,12 +483,13 @@ select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; }
-  .s-btn::after {
-    border: 0; }
   .s-btn.s-btn-block {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
     width: 100%; }
 
-.s-dialog {
+.s-popup {
   display: none;
   position: fixed;
   left: 0;
@@ -437,22 +499,22 @@ select {
   margin: 0;
   padding: 0;
   -webkit-overflow-scrolling: touch; }
-  .s-dialog.s-dialog-visible {
+  .s-popup.s-popup-visible {
     display: block; }
-  .s-dialog .s-dialog-mask {
+  .s-popup .s-popup-mask {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
     z-index: 1; }
-  .s-dialog .s-dialog-wrapper {
+  .s-popup .s-popup-wrapper {
     position: relative;
     z-index: 2;
     background-color: white;
     max-height: 100%;
     overflow-y: auto; }
-  .s-dialog .s-dialog-close-btn {
+  .s-popup .s-popup-close-btn {
     position: absolute;
     right: 0;
     top: 0;
@@ -460,98 +522,130 @@ select {
     color: #969799;
     padding: 14px;
     z-index: 99; }
-  .s-dialog {
+  .s-popup {
     -webkit-animation-fill-mode: both;
             animation-fill-mode: both; }
-    .s-dialog .s-dialog-mask,
-    .s-dialog .s-dialog-wrapper {
+    .s-popup .s-popup-mask,
+    .s-popup .s-popup-wrapper {
       -webkit-animation-fill-mode: both;
               animation-fill-mode: both;
       -webkit-animation-duration: inherit;
               animation-duration: inherit; }
-    .s-dialog.s-dialog-effect-enter .s-dialog-mask,
-    .s-dialog.s-dialog-effect-enter .s-dialog-wrapper {
+    .s-popup.s-popup-effect-enter .s-popup-mask,
+    .s-popup.s-popup-effect-enter .s-popup-wrapper {
       -webkit-animation-name: s-animate-fade-enter;
               animation-name: s-animate-fade-enter; }
-    .s-dialog.s-dialog-effect-leave .s-dialog-mask,
-    .s-dialog.s-dialog-effect-leave .s-dialog-wrapper {
+    .s-popup.s-popup-effect-leave .s-popup-mask,
+    .s-popup.s-popup-effect-leave .s-popup-wrapper {
       -webkit-animation-name: s-animate-fade-leave;
               animation-name: s-animate-fade-leave; }
 
-.s-dialog-effect {
+.s-popup-effect {
   -webkit-animation-duration: .3s;
           animation-duration: .3s; }
 
-.s-dialog-position-middle .s-dialog-wrapper {
+.s-popup-position-middle .s-popup-wrapper {
   position: absolute;
   left: 50%;
   top: 50%;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0); }
 
-.s-dialog-position-middle.s-dialog-effect-enter .s-dialog-wrapper {
+.s-popup-position-middle.s-popup-effect-enter .s-popup-wrapper {
   -webkit-animation-name: s-animate-middle-enter;
           animation-name: s-animate-middle-enter; }
 
-.s-dialog-position-middle.s-dialog-effect-leave .s-dialog-wrapper {
+.s-popup-position-middle.s-popup-effect-leave .s-popup-wrapper {
   -webkit-animation-name: s-animate-middle-leave;
           animation-name: s-animate-middle-leave; }
 
-.s-dialog-position-top .s-dialog-wrapper {
+.s-popup-position-top .s-popup-wrapper {
   position: absolute;
   top: 0;
   width: 100%; }
 
-.s-dialog-position-top.s-dialog-effect-enter .s-dialog-wrapper {
+.s-popup-position-top.s-popup-effect-enter .s-popup-wrapper {
   -webkit-animation-name: s-animate-top-enter;
           animation-name: s-animate-top-enter; }
 
-.s-dialog-position-top.s-dialog-effect-leave .s-dialog-wrapper {
+.s-popup-position-top.s-popup-effect-leave .s-popup-wrapper {
   -webkit-animation-name: s-animate-top-leave;
           animation-name: s-animate-top-leave; }
 
-.s-dialog-position-bottom .s-dialog-wrapper {
+.s-popup-position-bottom .s-popup-wrapper {
   position: absolute;
   bottom: 0;
   width: 100%; }
 
-.s-dialog-position-bottom.s-dialog-effect-enter .s-dialog-wrapper {
+.s-popup-position-bottom.s-popup-effect-enter .s-popup-wrapper {
   -webkit-animation-name: s-animate-bottom-enter;
           animation-name: s-animate-bottom-enter; }
 
-.s-dialog-position-bottom.s-dialog-effect-leave .s-dialog-wrapper {
+.s-popup-position-bottom.s-popup-effect-leave .s-popup-wrapper {
   -webkit-animation-name: s-animate-bottom-leave;
           animation-name: s-animate-bottom-leave; }
 
-.s-dialog-position-left .s-dialog-wrapper {
+.s-popup-position-left .s-popup-wrapper {
   position: absolute;
   left: 0;
   width: 60%;
   height: 100%; }
 
-.s-dialog-position-left.s-dialog-effect-enter .s-dialog-wrapper {
+.s-popup-position-left.s-popup-effect-enter .s-popup-wrapper {
   -webkit-animation-name: s-animate-left-enter;
           animation-name: s-animate-left-enter; }
 
-.s-dialog-position-left.s-dialog-effect-leave .s-dialog-wrapper {
+.s-popup-position-left.s-popup-effect-leave .s-popup-wrapper {
   -webkit-animation-name: s-animate-left-leave;
           animation-name: s-animate-left-leave; }
 
-.s-dialog-position-right .s-dialog-wrapper {
+.s-popup-position-right .s-popup-wrapper {
   position: absolute;
   right: 0;
   width: 60%;
   height: 100%; }
 
-.s-dialog-position-right.s-dialog-effect-enter .s-dialog-wrapper {
+.s-popup-position-right.s-popup-effect-enter .s-popup-wrapper {
   -webkit-animation-name: s-animate-right-enter;
           animation-name: s-animate-right-enter; }
 
-.s-dialog-position-right.s-dialog-effect-leave .s-dialog-wrapper {
+.s-popup-position-right.s-popup-effect-leave .s-popup-wrapper {
   -webkit-animation-name: s-animate-right-leave;
           animation-name: s-animate-right-leave; }
 
-.s-toast-dialog {
+.s-dialog .s-popup-wrapper {
+  border-radius: 5px;
+  width: 80%;
+  max-width: 320px; }
+  .s-dialog .s-popup-wrapper .s-dialog-header {
+    padding-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    color: #323233; }
+  .s-dialog .s-popup-wrapper .s-dialog-message {
+    max-height: 60vh;
+    padding: 24px;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    text-align: center;
+    word-wrap: break-word;
+    color: black; }
+  .s-dialog .s-popup-wrapper .s-dialog-footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+    .s-dialog .s-popup-wrapper .s-dialog-footer .s-btn {
+      -webkit-box-flex: 1;
+          -ms-flex: 1;
+              flex: 1;
+      height: 50px;
+      font-size: 16px; }
+      .s-dialog .s-popup-wrapper .s-dialog-footer .s-btn:first-child {
+        border-left: 0; }
+
+.s-toast {
   max-width: 80%;
   top: 50%;
   left: 50%;
@@ -559,23 +653,23 @@ select {
   bottom: auto;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0); }
-  .s-toast-dialog .s-dialog-wrapper {
+  .s-toast .s-popup-wrapper {
     color: white;
     text-align: center;
     background-color: rgba(50, 50, 51, .88);
     border-radius: 4px;
     padding: 13px 16px;
     min-width: 100px; }
-    .s-toast-dialog .s-dialog-wrapper .s-toast-icon {
+    .s-toast .s-popup-wrapper .s-toast-icon {
       font-size: 40px;
       width: 1em;
       height: 1em;
       line-height: 1; }
-    .s-toast-dialog .s-dialog-wrapper .s-toast-text {
+    .s-toast .s-popup-wrapper .s-toast-text {
       font-size: 14px;
       line-height: 1.2;
       text-align: center; }
-  .s-toast-dialog.s-toast-middle .s-dialog-wrapper {
+  .s-toast.s-toast-middle .s-popup-wrapper {
     padding: 16px;
     width: 120px;
     height: 120px;
@@ -588,9 +682,9 @@ select {
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center; }
-    .s-toast-dialog.s-toast-middle .s-dialog-wrapper .s-toast-text {
+    .s-toast.s-toast-middle .s-popup-wrapper .s-toast-text {
       margin-top: 10px; }
-  .s-toast-dialog.s-toast-loading {
+  .s-toast.s-toast-loading {
     max-width: 100%;
     top: 0;
     left: 0;
@@ -598,37 +692,3 @@ select {
     bottom: 0;
     -webkit-transform: none;
             transform: none; }
-
-.s-alert-dialog .s-dialog-wrapper {
-  border-radius: 5px;
-  width: 80%;
-  max-width: 320px; }
-  .s-alert-dialog .s-dialog-wrapper .s-dialog-header {
-    padding-top: 24px;
-    font-size: 16px;
-    text-align: center;
-    color: #323233; }
-  .s-alert-dialog .s-dialog-wrapper .s-dialog-content {
-    max-height: 60vh;
-    padding: 32px;
-    overflow-y: auto;
-    font-size: 16px;
-    line-height: 1.2;
-    white-space: pre-wrap;
-    text-align: center;
-    word-wrap: break-word;
-    color: black; }
-  .s-alert-dialog .s-dialog-wrapper .s-dialog-footer {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    border-top: 1px solid #eeeeee; }
-    .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn {
-      -webkit-box-flex: 1;
-          -ms-flex: 1;
-              flex: 1;
-      height: 50px;
-      font-size: 16px;
-      border-left: 1px solid #eeeeee; }
-      .s-alert-dialog .s-dialog-wrapper .s-dialog-footer .s-btn:first-child {
-        border-left: 0; }

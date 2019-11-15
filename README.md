@@ -190,26 +190,9 @@ S.bridgeCallhandler(name, data, callback)
 S.bridgeRegisterhandler(name, data, callback)
 ```
 
-## *S.alert*
+## *S.dialog  模态确认框*
 ```
-S.alert(1)
-S.alert({
-  title: '提示',
-  content: '1',
-  confirmText: '确定',
-  confirmColor: '#1989fa',
-}).then(()=>{
-
-},()=>{})
-```
-
-## *S.confirm*
-```
-S.confirm(1).then(()=>{
-
-},()=>{})
-
-S.confirm({
+S.dialog({
   title: '提示',
   content: '1',
   cancelText: '取消',
@@ -220,6 +203,19 @@ S.confirm({
 
 },()=>{})
 
+S.dialog.alert(1)
+S.dialog.alert({
+  title: '提示',
+  content: '1',
+  confirmText: '确定',
+  confirmColor: '#1989fa',
+}).then(()=>{
+
+},()=>{})
+
+S.dialog.confirm(1).then(()=>{
+
+},()=>{});
 ```
 
 ## *S.toast  提示信息弹框*
@@ -253,60 +249,51 @@ S.toast.success.defaultOptions={
 
 ```
 
-## *S.dialog  弹框* 
-#### 目前只有一个与dom有关的插件 [dialog 效果链接](https://sldt.github.io/sldt-utils/example/dialog.html).
+## *S.popup  底层弹框* 
+#### 目前只有一个与dom有关的插件 [popup 效果链接](https://sldt.github.io/sldt-utils/example/popup.html).
 ```
 // 默认参数
-dialog.defaultOptions = {
+popup.defaultOptions = {
   el: null, // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
+  content: '', // dom节点 | 字符串内容 | function返回值
   className: '', // 弹框class
   effect: true, // 是否使用过渡效果
-  position: 'middle', // 弹框显示位置,left,right,top,middle,bottom
+  position: 'middle', // 弹框显示位置
   mountElem: 'body', // 弹框挂载的容器，为空则不会挂载
   closeBtn: false, // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
-  title: '', // 标题
-  content: '', // 字符串html内容
-  cancelClass: 's-btn s-dialog-cancel-btn', // 取消按钮class
-  cancelText: '', // 取消按钮文字
-  cancelColor: '', // 取消按钮颜色
-  confirmClass: 's-btn s-dialog-confirm-btn', // 确认按钮class
-  confirmText: '', // 确认按钮文字
-  confirmColor: '', // 确认按钮颜色
   isOnce: false, // 是否为一次性弹框，关闭后立即销毁，并删除dom
-  zindexSelector: '.s-dialog.s-dialog-visible', // z-index层级比较选择器
+  zindexSelector: '.s-popup.s-popup-visible', // z-index层级比较选择器
   zindexStart: 2000, // z-index初始值
   mask: true, // 是否显示遮罩
   maskOpacity: 0.7, // 遮罩透明度
   maskClose: true, // 点击遮罩是否关闭弹框
-  lockScroll: false, // 是否阻止外层滚动,
+  lockScroll: true, // 是否阻止外层滚动,
   duration: 0, // 自动关闭时间,number
   preventTouchmove: false, // 是否阻止弹层touchmove滚动，手机上滚动穿透
   // 生命周期
   onInit: undefined, // 初始化
   onShow: undefined, // 显示后
   onHide: undefined, // 关闭后
-  onCancel: undefined, // 点击遮罩，取消按钮关闭时
-  onConfirm: undefined, // 点击确认按钮关闭时
   onBeforeShow: undefined, // 显示时拦截钩子,参数为next()可异步阻止显示
   onBeforeHide: undefined, // 隐藏时拦截钩子,参数为next()可异步阻止关闭
   onBeforeDestroy: undefined, // 销毁前
   onDestroy: undefined // 销毁后
-}
+};
 ```
 #### 1.传统使用方式
 ```
   html
   
-    <div class="s-dialog demoDialog">
-      <div class="s-dialog-wrapper">
+    <div class="s-popup demoPopup">
+      <div class="s-popup-wrapper">
         123
       </div>
     </div>
     
  js
  
-  var demoDialog=S.dialog({
-    el:'.demoDialog',
+  var demoPopup=S.popup({
+    el:'.demoPopup',
     position: 'left',
     closeBtn: true,
     maskClose:false,
@@ -318,20 +305,20 @@ dialog.defaultOptions = {
     }
   })
   
-  demoDialog.show(callback) //显示
-  demoDialog.hide(callback) //隐藏
-  demoDialog.toggle(callback) //切换
-  demoDialog.destroy(removeElem) //销毁，removeElem是否删除dom节点,默认false
+  demoPopup.show(callback) //显示
+  demoPopup.hide(callback) //隐藏
+  demoPopup.toggle(callback) //切换
+  demoPopup.destroy(removeElem) //销毁，removeElem是否删除dom节点,默认false
 ```
 
-#### 2.在vue中使用dialog封装弹框组件
+#### 2.在vue中使用Popup封装弹框组件
 
 ```
 组件
 
 <template>
-  <div class="s-dialog">
-    <div class="s-dialog-wrapper">
+  <div class="s-popup">
+    <div class="s-popup-wrapper">
       <slot></slot>
     </div>
   </div>
@@ -340,10 +327,10 @@ dialog.defaultOptions = {
 <script>
 // import 'sldt-utils/dist/css/index.min.css'//全局引入
 
-import { dialog as Dialog } from 'sldt-utils'
+import { popup as Popup } from 'sldt-utils'
 
 export default {
-  name: 'sDialog',
+  name: 's-popup',
   props: {
     value: {
       type: Boolean,
@@ -408,7 +395,7 @@ export default {
         beforeShow,
         beforeHide
       } = this
-      this.$dialog = Dialog({
+      this.$popup = Popup({
         el: this.$el,
         position,
         effect,
@@ -452,12 +439,12 @@ export default {
   methods: {
     updateVisible () {
       this.$nextTick(() => {
-        this.$dialog[this.value ? 'show' : 'hide']()
+        this.$popup[this.value ? 'show' : 'hide']()
       })
     }
   },
   beforeDestroy () {
-    this.$dialog && this.$dialog.destroy()
+    this.$popup && this.$popup.destroy()
   }
 }
 </script>
@@ -470,20 +457,20 @@ export default {
 <template>
   <section>
     <button @click="visible=true">显示</button>
-    <s-dialog
-      class="demo-dialog"
+    <s-popup
+      class="demo-popup"
       v-model="visible"
       :closeBtn="true"
       :beforeHide="beforeHide"
       @hide="hide"
     >
       <button @click="visible=false">关闭</button>
-    </s-dialog>
+    </s-popup>
   </section>
 </template>
 
 <script>
-import sDialog from '@/components/s-dialog'
+import sPopup from '@/components/s-popup'
 export default {
   data () {
     return {
@@ -491,12 +478,12 @@ export default {
     }
   },
   components: {
-    sDialog
+    sPopup
   },
   methods: {
     beforeHide () {
       return new Promise((resolve, reject) => {
-        this.$S.confirm('确定关闭吗？').then(resolve, reject)
+        this.$S.dialog.confirm('确定关闭吗？').then(resolve, reject)
       })
     },
     hide () {
@@ -507,8 +494,8 @@ export default {
 </script>
 
 <style lang="scss">
-.demo-dialog {
-  .s-dialog-wrapper {
+.demo-popup {
+  .s-popup-wrapper {
     width: 200px;
     height: 200px;
     background-color: white;

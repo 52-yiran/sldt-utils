@@ -1,182 +1,41 @@
 .s-dialog {
-  display: none;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 0;
-  -webkit-overflow-scrolling: touch;
 
-  &.s-dialog-visible {
-    display: block;
-  }
+  .s-popup-wrapper {
+    border-radius: 5px;
+    width: 80%;
+    max-width: 320px;
 
-  .s-dialog-mask {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .s-dialog-wrapper {
-    position: relative;
-    z-index: 2;
-    background-color: white;
-    max-height: 100%;
-    overflow-y: auto;
-  }
-
-  .s-dialog-close-btn {
-    position: absolute;
-    right: 0;
-    top: 0;
-    font-size: 18px;
-    color: #969799;
-    padding: 14px;
-    z-index: 99;
-  }
-
-  // 动画效果
-  & {
-    animation-fill-mode: both;
-
-    .s-dialog-mask,
-    .s-dialog-wrapper {
-      animation-fill-mode: both;
-      animation-duration: inherit;
+    .s-dialog-header {
+      padding-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      color: #323233;
     }
 
-    &.s-dialog-effect-enter {
+    .s-dialog-message {
+      max-height: 60vh;
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 16px;
+      line-height: 1.2;
+      white-space: pre-wrap;
+      text-align: center;
+      word-wrap: break-word;
+      color: black;
+    }
 
-      .s-dialog-mask,
-      .s-dialog-wrapper {
-        animation-name: s-animate-fade-enter;
+    .s-dialog-footer {
+      display: flex;
+
+      .s-btn {
+        flex: 1;
+        height: 50px;
+        font-size: 16px;
+
+        &:first-child {
+          border-left: 0;
+        }
       }
-    }
-
-    &.s-dialog-effect-leave {
-
-      .s-dialog-mask,
-      .s-dialog-wrapper {
-        animation-name: s-animate-fade-leave;
-      }
-    }
-  }
-}
-
-// 默认动画时间
-.s-dialog-effect {
-  animation-duration: .3s;
-}
-
-// middle
-.s-dialog-position-middle {
-  .s-dialog-wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate3d(-50%, -50%, 0);
-  }
-
-  &.s-dialog-effect-enter {
-    .s-dialog-wrapper {
-      animation-name: s-animate-middle-enter;
-    }
-  }
-
-  &.s-dialog-effect-leave {
-    .s-dialog-wrapper {
-      animation-name: s-animate-middle-leave;
-    }
-  }
-}
-
-// top
-.s-dialog-position-top {
-  .s-dialog-wrapper {
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-
-  &.s-dialog-effect-enter {
-    .s-dialog-wrapper {
-      animation-name: s-animate-top-enter;
-    }
-  }
-
-  &.s-dialog-effect-leave {
-    .s-dialog-wrapper {
-      animation-name: s-animate-top-leave;
-    }
-  }
-}
-
-// bottom
-.s-dialog-position-bottom {
-  .s-dialog-wrapper {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-
-  &.s-dialog-effect-enter {
-    .s-dialog-wrapper {
-      animation-name: s-animate-bottom-enter;
-    }
-  }
-
-  &.s-dialog-effect-leave {
-    .s-dialog-wrapper {
-      animation-name: s-animate-bottom-leave;
-    }
-  }
-}
-
-// left
-.s-dialog-position-left {
-  .s-dialog-wrapper {
-    position: absolute;
-    left: 0;
-    width: 60%;
-    height: 100%;
-  }
-
-  &.s-dialog-effect-enter {
-    .s-dialog-wrapper {
-      animation-name: s-animate-left-enter;
-    }
-  }
-
-  &.s-dialog-effect-leave {
-    .s-dialog-wrapper {
-      animation-name: s-animate-left-leave;
-    }
-  }
-}
-
-// right
-.s-dialog-position-right {
-  .s-dialog-wrapper {
-    position: absolute;
-    right: 0;
-    width: 60%;
-    height: 100%;
-  }
-
-  &.s-dialog-effect-enter {
-    .s-dialog-wrapper {
-      animation-name: s-animate-right-enter;
-    }
-  }
-
-  &.s-dialog-effect-leave {
-    .s-dialog-wrapper {
-      animation-name: s-animate-right-leave;
     }
   }
 }

@@ -1,4 +1,4 @@
-.s-toast-dialog {
+.s-toast {
   max-width: 80%;
   top: 50%;
   left: 50%;
@@ -6,7 +6,7 @@
   bottom: auto;
   transform: translate3d(-50%, -50%, 0);
 
-  .s-dialog-wrapper {
+  .s-popup-wrapper {
     color: white;
     text-align: center;
     background-color: rgba(50, 50, 51, 0.88);
@@ -29,7 +29,7 @@
   }
 
   &.s-toast-middle {
-    .s-dialog-wrapper {
+    .s-popup-wrapper {
       padding: 16px;
       width: 120px;
       height: 120px;

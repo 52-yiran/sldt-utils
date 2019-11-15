@@ -154,6 +154,10 @@ th {
   padding: 0
 }
 
+button::after {
+  border: 0;
+}
+
 input,
 textarea,
 button,

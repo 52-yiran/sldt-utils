@@ -35,14 +35,14 @@
     background: #ee0a24;
   }
 
-  .middle-dialog .s-dialog-wrapper {
+  .middle-popup .s-popup-wrapper {
     width: 70%;
     height: 40vh;
     border-radius: 4px;
   }
 
-  .top-dialog .s-dialog-wrapper,
-  .bottom-dialog .s-dialog-wrapper {
+  .top-popup .s-popup-wrapper,
+  .bottom-popup .s-popup-wrapper {
     height: 30vh;
   }
 </style>
@@ -72,27 +72,27 @@
     <button id="showCustom" class="s-btn s-success-btn" style="width: 96%;">自定义图标</button>
   </div>
 
-  <div class="s-dialog middle-dialog">
-    <div class="s-dialog-wrapper"></div>
+  <div class="s-popup middle-popup">
+    <div class="s-popup-wrapper"></div>
   </div>
-  <div class="s-dialog left-dialog">
-    <div class="s-dialog-wrapper"></div>
+  <div class="s-popup left-popup">
+    <div class="s-popup-wrapper"></div>
   </div>
-  <div class="s-dialog right-dialog">
-    <div class="s-dialog-wrapper"></div>
+  <div class="s-popup right-popup">
+    <div class="s-popup-wrapper"></div>
   </div>
-  <div class="s-dialog top-dialog">
-    <div class="s-dialog-wrapper"></div>
+  <div class="s-popup top-popup">
+    <div class="s-popup-wrapper"></div>
   </div>
-  <div class="s-dialog bottom-dialog">
-    <div class="s-dialog-wrapper"></div>
+  <div class="s-popup bottom-popup">
+    <div class="s-popup-wrapper"></div>
   </div>
 
   <script src="./lib/js/index.js"></script>
 
   <script>
-    S.dialog({
-      el: '.middle-dialog',
+    S.popup({
+      el: '.middle-popup',
       position: 'middle',
       closeBtn: true,
       onInit() {
@@ -102,8 +102,8 @@
       }
     })
 
-    S.dialog({
-      el: '.left-dialog',
+    S.popup({
+      el: '.left-popup',
       position: 'left',
       onInit() {
         S.getElem('#showLeft')[0].addEventListener('click', () => {
@@ -112,8 +112,8 @@
       }
     })
 
-    S.dialog({
-      el: '.right-dialog',
+    S.popup({
+      el: '.right-popup',
       position: 'right',
       onInit() {
         S.getElem('#showRight')[0].addEventListener('click', () => {
@@ -122,8 +122,8 @@
       }
     })
 
-    S.dialog({
-      el: '.top-dialog',
+    S.popup({
+      el: '.top-popup',
       position: 'top',
       onInit() {
         S.getElem('#showTop')[0].addEventListener('click', () => {
@@ -132,8 +132,8 @@
       }
     })
 
-    S.dialog({
-      el: '.bottom-dialog',
+    S.popup({
+      el: '.bottom-popup',
       position: 'bottom',
       onInit() {
         S.getElem('#showBottom')[0].addEventListener('click', () => {
@@ -143,22 +143,22 @@
     })
 
     S.getElem('#showTitle')[0].addEventListener('click', () => {
-      S.confirm({
+      S.dialog.confirm({
         title: '提示',
-        content: '确定提交吗'
+        message: '确定提交吗'
       }).then(() => {
         S.toast('以提交')
       }, () => { })
     })
 
     S.getElem('#showAlert')[0].addEventListener('click', () => {
-      S.alert('确定提交吗？').then(() => {
+      S.dialog.alert('确定提交吗？').then(() => {
         S.toast('以提交')
       }, () => { })
     })
 
     S.getElem('#showConfirm')[0].addEventListener('click', () => {
-      S.confirm('确定删除吗？').then(() => {
+      S.dialog.confirm('确定删除吗？').then(() => {
         S.toast.success('删除成功')
       }, () => { })
     })
@@ -168,7 +168,7 @@
     })
 
     S.getElem('#showLoading')[0].addEventListener('click', () => {
-      S.toast.loading({message:'加载中...'})
+      S.toast.loading({ message: '加载中...' })
       setTimeout(S.toast.clear, 2000)
     })
 

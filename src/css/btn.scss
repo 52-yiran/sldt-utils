@@ -20,11 +20,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  &::after {
-    border: 0;
-  }
-
   &.s-btn-block {
+    display: flex;
     width: 100%;
   }
 }

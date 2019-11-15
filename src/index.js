@@ -4,7 +4,7 @@
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-14 09:58:51
+ * @LastEditTime: 2019-11-15 11:49:26
  */
 export const version = '_VERSION_';
 
@@ -23,10 +23,9 @@ import eventEmit from './eventEmit';
 import countDown from './countDown';
 import debounce from './debounce';
 import throttle from './throttle';
+import popup from './popup';
 import dialog from './dialog';
 import toast from './toast';
-import alert from './alert';
-import confirm from './confirm';
 
 export {
   useRem,
@@ -35,8 +34,7 @@ export {
   debounce,
   throttle,
   regExp,
+  popup,
   dialog,
-  toast,
-  alert,
-  confirm
+  toast
 };

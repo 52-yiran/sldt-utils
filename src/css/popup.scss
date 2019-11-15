@@ -1,0 +1,182 @@
+.s-popup {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+
+  &.s-popup-visible {
+    display: block;
+  }
+
+  .s-popup-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .s-popup-wrapper {
+    position: relative;
+    z-index: 2;
+    background-color: white;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .s-popup-close-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 18px;
+    color: #969799;
+    padding: 14px;
+    z-index: 99;
+  }
+
+  // 动画效果
+  & {
+    animation-fill-mode: both;
+
+    .s-popup-mask,
+    .s-popup-wrapper {
+      animation-fill-mode: both;
+      animation-duration: inherit;
+    }
+
+    &.s-popup-effect-enter {
+
+      .s-popup-mask,
+      .s-popup-wrapper {
+        animation-name: s-animate-fade-enter;
+      }
+    }
+
+    &.s-popup-effect-leave {
+
+      .s-popup-mask,
+      .s-popup-wrapper {
+        animation-name: s-animate-fade-leave;
+      }
+    }
+  }
+}
+
+// 默认动画时间
+.s-popup-effect {
+  animation-duration: .3s;
+}
+
+// middle
+.s-popup-position-middle {
+  .s-popup-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  &.s-popup-effect-enter {
+    .s-popup-wrapper {
+      animation-name: s-animate-middle-enter;
+    }
+  }
+
+  &.s-popup-effect-leave {
+    .s-popup-wrapper {
+      animation-name: s-animate-middle-leave;
+    }
+  }
+}
+
+// top
+.s-popup-position-top {
+  .s-popup-wrapper {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  &.s-popup-effect-enter {
+    .s-popup-wrapper {
+      animation-name: s-animate-top-enter;
+    }
+  }
+
+  &.s-popup-effect-leave {
+    .s-popup-wrapper {
+      animation-name: s-animate-top-leave;
+    }
+  }
+}
+
+// bottom
+.s-popup-position-bottom {
+  .s-popup-wrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  &.s-popup-effect-enter {
+    .s-popup-wrapper {
+      animation-name: s-animate-bottom-enter;
+    }
+  }
+
+  &.s-popup-effect-leave {
+    .s-popup-wrapper {
+      animation-name: s-animate-bottom-leave;
+    }
+  }
+}
+
+// left
+.s-popup-position-left {
+  .s-popup-wrapper {
+    position: absolute;
+    left: 0;
+    width: 60%;
+    height: 100%;
+  }
+
+  &.s-popup-effect-enter {
+    .s-popup-wrapper {
+      animation-name: s-animate-left-enter;
+    }
+  }
+
+  &.s-popup-effect-leave {
+    .s-popup-wrapper {
+      animation-name: s-animate-left-leave;
+    }
+  }
+}
+
+// right
+.s-popup-position-right {
+  .s-popup-wrapper {
+    position: absolute;
+    right: 0;
+    width: 60%;
+    height: 100%;
+  }
+
+  &.s-popup-effect-enter {
+    .s-popup-wrapper {
+      animation-name: s-animate-right-enter;
+    }
+  }
+
+  &.s-popup-effect-leave {
+    .s-popup-wrapper {
+      animation-name: s-animate-right-leave;
+    }
+  }
+}

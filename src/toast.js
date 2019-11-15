@@ -1,4 +1,4 @@
-import Dialog from './dialog';
+import Popup from './popup';
 import './css/toast.scss';
 
 import { extend, isObject, trim } from './core';
@@ -12,39 +12,41 @@ function Toast (options) {
   options = isObject(options) ? options : { message: options };
 
   const type = trim(options.type);
-  const params = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options);
 
-  let { icon, message } = params;
+  options = extend({}, Toast.defaultOptions, (Toast[type] && Toast[type].defaultOptions), options);
+
+  let { icon, message } = options;
 
   if (type) {
-    params.className += ` s-toast-${type}`;
+    options.className += ` s-toast-${type}`;
   }
 
-  params.content = '';
+  options.content = '<div class="s-toast-content">';
 
   if (typeof icon === 'string' && (icon = trim(icon))) {
 
-    params.className += ' s-toast-middle';
+    options.className += ' s-toast-middle';
 
     if (/\.(png|jpe?g|gif|svg)(\?.*)?$/i.test(icon) || icon.indexOf('data:image/') > -1) {
-      params.content += `<img class="s-toast-icon" src="${icon}"/>`;
+      options.content += `<img class="s-toast-icon" src="${icon}"/>`;
     } else {
-      params.content += `<i class="${icon} s-toast-icon"></i>`;
+      options.content += `<i class="${icon} s-toast-icon"></i>`;
     }
 
   }
 
   if (message || message === 0) {
-    params.content += `<p class="s-toast-text">${message}</p>`;
+    options.content += `<p class="s-toast-text">${message}</p>`;
   }
+  options.content += '</div>';
 
-  instanceToast = Dialog(params).show();
+  instanceToast = Popup(options).show();
 
   return instanceToast;
 }
 
 Toast.defaultOptions = {
-  className: 's-toast-dialog',
+  className: 's-toast',
   icon: '',
   message: '',
   duration: 2000,
