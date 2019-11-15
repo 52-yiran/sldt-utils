@@ -1,7 +1,7 @@
 /*!
-* sldt-utils v2.7.3
+* sldt-utils v3.0.0
 * author 无痕
-* (c) Thu Nov 14 2019 15:01:00 GMT+0800 (GMT+08:00)
+* (c) Fri Nov 15 2019 18:23:41 GMT+0800 (GMT+08:00)
 * @license MIT
 */
 'use strict';
@@ -1335,23 +1335,25 @@ function throttle (fn) {
   };
 }
 
-var instance = '[S_DIALOG_INSTANCE]';
-var visible = '[S_DIALOG_VISIBLE]';
-var visibleTimeOutId = '[S_DIALOG_VISIBLE_TIME_OUT_ID]';
-var autoCloseTimeOutId = '[S_DIALOG_AUTO_CLOSE_TIME_OUT_ID]';
-var effectControl = '[S_DIALOG_EFFECT_CONTROL]';
-var inDestroy = '[S_DIALOG_IN_DESTROY]';
-var isDestroy = '[S_DIALOG_IS_DESTROY]';
-var nextId = '[S_DIALOG_NEXT_ID]';
+var instance = '[S_POPUP_INSTANCE]';
+var visible = '[S_POPUP_VISIBLE]';
+var visibleTimeOutId = '[S_POPUP_VISIBLE_TIME_OUT_ID]';
+var autoCloseTimeOutId = '[S_POPUP_AUTO_CLOSE_TIME_OUT_ID]';
+var effectControl = '[S_POPUP_EFFECT_CONTROL]';
+var inDestroy = '[S_POPUP_IN_DESTROY]';
+var isDestroy = '[S_POPUP_IS_DESTROY]';
+var nextId = '[S_POPUP_NEXT_ID]';
 
-function dialog(options) {
-  return new Dialog(options);
+function popup(options) {
+  return new Popup(options);
 } // 默认参数
 
 
-dialog.defaultOptions = {
+popup.defaultOptions = {
   el: null,
   // 与dom节点建立联系，为dom节点对象，设此属性后，不会重新构建dom，实例属性el也将等于此dom节点
+  content: '',
+  // dom节点 | 字符串内容 | function返回值
   className: '',
   // 弹框class
   effect: true,
@@ -1362,25 +1364,9 @@ dialog.defaultOptions = {
   // 弹框挂载的容器，为空则不会挂载
   closeBtn: false,
   // 关闭x,(String,Boolean),为ture则使用内置html字符串，为字符串则使用字符串html
-  title: '',
-  // 标题
-  content: '',
-  // 字符串html内容
-  cancelClass: 's-btn s-dialog-cancel-btn',
-  // 取消按钮class
-  cancelText: '',
-  // 取消按钮文字
-  cancelColor: '',
-  // 取消按钮颜色
-  confirmClass: 's-btn s-dialog-confirm-btn',
-  // 确认按钮class
-  confirmText: '',
-  // 确认按钮文字
-  confirmColor: '',
-  // 确认按钮颜色
   isOnce: false,
   // 是否为一次性弹框，关闭后立即销毁，并删除dom
-  zindexSelector: '.s-dialog.s-dialog-visible',
+  zindexSelector: '.s-popup.s-popup-visible',
   // z-index层级比较选择器
   zindexStart: 2000,
   // z-index初始值
@@ -1403,10 +1389,6 @@ dialog.defaultOptions = {
   // 显示后
   onHide: undefined,
   // 关闭后
-  onCancel: undefined,
-  // 点击遮罩，取消按钮关闭时
-  onConfirm: undefined,
-  // 点击确认按钮关闭时
   onBeforeShow: undefined,
   // 显示时拦截钩子,参数为next()可异步阻止显示
   onBeforeHide: undefined,
@@ -1417,36 +1399,26 @@ dialog.defaultOptions = {
 
 };
 
-var Dialog =
+var Popup =
 /*#__PURE__*/
 function () {
-  function Dialog(params) {
-    _classCallCheck(this, Dialog);
+  function Popup(params) {
+    _classCallCheck(this, Popup);
 
     var self = this;
 
-    var _self$options = self.options = extend({}, dialog.defaultOptions, params),
+    var _self$options = self.options = extend({}, popup.defaultOptions, params),
         el = _self$options.el,
         className = _self$options.className,
         effect = _self$options.effect,
         position = _self$options.position,
         mountElem = _self$options.mountElem,
         closeBtn = _self$options.closeBtn,
-        title = _self$options.title,
-        content = _self$options.content,
-        cancelText = _self$options.cancelText,
-        cancelClass = _self$options.cancelClass,
-        cancelColor = _self$options.cancelColor,
-        confirmText = _self$options.confirmText,
-        confirmClass = _self$options.confirmClass,
-        confirmColor = _self$options.confirmColor,
         mask = _self$options.mask,
         maskOpacity = _self$options.maskOpacity,
         maskClose = _self$options.maskClose,
         preventTouchmove = _self$options.preventTouchmove,
-        onInit = _self$options.onInit,
-        onCancel = _self$options.onCancel,
-        onConfirm = _self$options.onConfirm; // 弹框显示状态
+        onInit = _self$options.onInit; // 弹框显示状态
 
 
     self[visible] = false; // 弹框显示隐藏定时器,防止多次显示，隐藏同步切换
@@ -1459,54 +1431,23 @@ function () {
 
     self[inDestroy] = false; // 判断是否执行过销毁
 
-    self[isDestroy] = false; // 内部cancel关闭
-
-    function cancel() {
-      // 触发取消后生命周期钩子
-      isFunction(onCancel) && onCancel.call(self);
-      self.hide();
-    } // 内部confirm关闭
-
-
-    function confirm() {
-      // 触发确认后生命周期钩子
-      isFunction(onConfirm) && onConfirm.call(self);
-      self.hide();
-    } // 根dom节点
-
+    self[isDestroy] = false; // 根dom节点
 
     var elem = getElem(el)[0];
 
     if (!elem) {
-      elem = getElem('<div class="s-dialog"></div>')[0];
-      var _wrapper = getElem('<div class="s-dialog-wrapper"></div>')[0]; // 标题
+      elem = getElem('<div class="s-popup"></div>')[0];
+      var _wrapper = getElem('<div class="s-popup-wrapper"></div>')[0];
+      var content = self.options.content;
 
-      if (title !== '') {
-        _wrapper.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0]);
-      } // 内容
+      if (isFunction(content)) {
+        content = content.call(self);
+      }
 
-
-      if (content !== '') {
-        _wrapper.appendChild(getElem('<div class="s-dialog-content">' + content + '</div>')[0]);
-      } // 按钮
-
-
-      if (cancelText !== '' || confirmText !== '') {
-        var footer = getElem('<div class="s-dialog-footer"></div>')[0];
-
-        if (cancelText !== '') {
-          var cancelBtn = getElem("<button class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</button>"))[0];
-          cancelBtn.addEventListener('click', cancel);
-          footer.appendChild(cancelBtn);
-        }
-
-        if (confirmText !== '') {
-          var confirmBtn = getElem("<button class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</button>"))[0];
-          confirmBtn.addEventListener('click', confirm);
-          footer.appendChild(confirmBtn);
-        }
-
-        _wrapper.appendChild(footer);
+      if (content instanceof HTMLElement) {
+        _wrapper.appendChild(content);
+      } else if (typeof content !== 'undefined' && content !== '') {
+        _wrapper.innerHTML = content;
       }
 
       elem.appendChild(_wrapper);
@@ -1514,8 +1455,8 @@ function () {
       if (elem[instance]) { return elem[instance]; }
     }
 
-    addClass(elem, position ? 's-dialog-position-' + position : '');
-    addClass(elem, effect ? 's-dialog-effect' : '');
+    addClass(elem, position ? 's-popup-position-' + position : '');
+    addClass(elem, effect ? 's-popup-effect' : '');
     addClass(elem, className);
     elem[instance] = self; // 锁定touchmove滚动
 
@@ -1526,19 +1467,21 @@ function () {
     self.el = elem; // 是否显示遮罩
 
     if (mask) {
-      self.mask = getElem('<div class="s-dialog-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
+      self.mask = getElem('<div class="s-popup-mask" style="background-color: rgba(0, 0, 0, ' + maskOpacity + ');"></div>')[0]; // 点击遮罩是否关闭
 
-      maskClose && self.mask.addEventListener('click', cancel);
+      maskClose && self.mask.addEventListener('click', function () {
+        return self.hide();
+      });
       self.mask.addEventListener('touchmove', function (e) {
         e.preventDefault();
       });
       elem.insertBefore(self.mask, elem.firstElementChild);
     }
 
-    var wrapper = getElem('.s-dialog-wrapper', elem)[0]; // 关闭 x
+    var wrapper = getElem('.s-popup-wrapper', elem)[0]; // 关闭 x
 
     if (closeBtn === true) {
-      self.closeBtn = getElem('<button class="s-btn s-dialog-close-btn"><i class="s-icon-cross"></i></button>')[0];
+      self.closeBtn = getElem('<button class="s-btn s-popup-close-btn"><i class="s-icon-cross"></i></button>')[0];
     } else if (typeof closeBtn === 'string' && closeBtn) {
       self.closeBtn = getElem(closeBtn)[0];
     }
@@ -1547,7 +1490,9 @@ function () {
       self.wrapper = wrapper;
 
       if (self.closeBtn) {
-        self.closeBtn.addEventListener('click', cancel);
+        self.closeBtn.addEventListener('click', function () {
+          return self.hide();
+        });
         wrapper.appendChild(self.closeBtn);
       }
     } // 挂载dom
@@ -1560,7 +1505,7 @@ function () {
   } // 显示
 
 
-  _createClass(Dialog, [{
+  _createClass(Popup, [{
     key: "show",
     value: function show(callback) {
       var self = this;
@@ -1581,7 +1526,7 @@ function () {
 
               self.el.style.zIndex = getMaxZindex(opt.zindexSelector, opt.zindexStart) + 1; // 显示
 
-              addClass(self.el, 's-dialog-visible s-dialog-effect-enter'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+              addClass(self.el, 's-popup-visible s-popup-effect-enter'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
 
               self[effectControl] = whenTransitionEnds(self.el, function () {
                 // 清除执行效果回调函数执行控制对象对象记录
@@ -1597,7 +1542,7 @@ function () {
                 } // 移除效果class
 
 
-                removeClass(self.el, 's-dialog-effect-enter'); // 触发参数回掉
+                removeClass(self.el, 's-popup-effect-enter'); // 触发参数回掉
 
                 isFunction(callback) && callback.call(self); // 触发显示后生命周期钩子
 
@@ -1638,16 +1583,16 @@ function () {
 
               clearTimeout(self[autoCloseTimeOutId]); // 开始执行效果
 
-              addClass(self.el, 's-dialog-effect-leave'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
+              addClass(self.el, 's-popup-effect-leave'); // 弹框效果执行完毕,记录效果执行回掉方法控制器
 
               self[effectControl] = whenTransitionEnds(self.el, function () {
                 // 清除执行效果回调函数执行控制对象对象记录
                 self[effectControl] && (self[effectControl] = null); // 关闭隐藏
 
-                removeClass(self.el, 's-dialog-visible s-dialog-effect-leave');
+                removeClass(self.el, 's-popup-visible s-popup-effect-leave');
                 self.el.style.zIndex = ''; // 解除body滚动锁定
 
-                !getElem('.s-dialog.s-dialog-visible').length && removeClass('body', 's-overflow-hidden'); // 触发参数回掉
+                !getElem('.s-popup.s-popup-visible').length && removeClass('body', 's-overflow-hidden'); // 触发参数回掉
 
                 isFunction(callback) && callback.call(self); // 触发隐藏后生命周期钩子
 
@@ -1700,7 +1645,7 @@ function () {
         var fn = function fn() {
           clearTimeout(self[visibleTimeOutId]);
           clearTimeout(self[autoCloseTimeOutId]);
-          removeClass(self.el, "s-dialog-effect s-dialog-position-".concat(position, " ").concat(className));
+          removeClass(self.el, "s-popup-effect s-popup-position-".concat(position, " ").concat(className));
           delete self.el[instance];
           self.mask && self.mask.parentNode.removeChild(self.mask);
           self.closeBtn && self.closeBtn.parentNode.removeChild(self.closeBtn);
@@ -1716,8 +1661,106 @@ function () {
     }
   }]);
 
-  return Dialog;
+  return Popup;
 }();
+
+function Dialog(options) {
+  return new Promise(function (resolve, reject) {
+    options = extend({}, Dialog.defaultOptions, isObject(options) ? options : {
+      message: options
+    });
+    var instanceDialog;
+    var _options = options,
+        title = _options.title,
+        message = _options.message,
+        cancelClass = _options.cancelClass,
+        cancelText = _options.cancelText,
+        cancelColor = _options.cancelColor,
+        confirmClass = _options.confirmClass,
+        confirmText = _options.confirmText,
+        confirmColor = _options.confirmColor;
+    var content = getElem('<div class="s-dialog-content"></div>')[0]; // 标题
+
+    if (title !== '') {
+      content.appendChild(getElem('<div class="s-dialog-header">' + title + '</div>')[0]);
+    } // 内容
+
+
+    if (message !== '') {
+      content.appendChild(getElem('<div class="s-dialog-message">' + message + '</div>')[0]);
+    } // 按钮
+
+
+    if (cancelText !== '' || confirmText !== '') {
+      var footer = getElem('<div class="s-dialog-footer s-hairline-top"></div>')[0];
+
+      if (cancelText !== '') {
+        var cancelBtn = getElem("<a class=\"".concat(cancelClass, "\" style=\"").concat(cancelColor ? "color:".concat(cancelColor) : '', "\">").concat(cancelText, "</a>"))[0];
+        cancelBtn.addEventListener('click', function () {
+          instanceDialog.hide();
+          reject();
+        });
+        footer.appendChild(cancelBtn);
+      }
+
+      if (confirmText !== '') {
+        var confirmBtn = getElem("<a class=\"".concat(confirmClass, "\" style=\"").concat(confirmColor ? "color:".concat(confirmColor) : '', "\">").concat(confirmText, "</a>"))[0];
+        confirmBtn.addEventListener('click', function () {
+          instanceDialog.hide();
+          resolve();
+        });
+        footer.appendChild(confirmBtn);
+      }
+
+      content.appendChild(footer);
+    }
+
+    options.content = content;
+    instanceDialog = popup(options);
+    instanceDialog.show();
+  });
+}
+
+Dialog.defaultOptions = {
+  className: 's-dialog',
+  maskClose: false,
+  isOnce: true,
+  preventTouchmove: true,
+  title: '',
+  message: '',
+  cancelClass: 's-btn s-hairline-right',
+  // 取消按钮class
+  cancelText: '',
+  // 取消按钮文字
+  cancelColor: '#323233',
+  // 取消按钮颜色
+  confirmClass: 's-btn',
+  // 确认按钮class
+  confirmText: '确定',
+  // 确认按钮文字
+  confirmColor: '#1989fa' // 确认按钮颜色
+
+};
+
+function Alert(options) {
+  return Dialog(extend({}, Alert.defaultOptions, isObject(options) ? options : {
+    message: options
+  }));
+}
+
+Alert.defaultOptions = {};
+
+function Confirm(options) {
+  return Dialog(extend({}, Confirm.defaultOptions, isObject(options) ? options : {
+    message: options
+  }));
+}
+
+Confirm.defaultOptions = {
+  cancelText: '取消'
+};
+Dialog.alert = Alert;
+Dialog.confirm = Confirm;
 
 var instanceToast;
 
@@ -1727,36 +1770,38 @@ function Toast(options) {
     message: options
   };
   var type = trim(options.type);
-  var params = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, options);
-  var icon = params.icon,
-      message = params.message;
+  options = extend({}, Toast.defaultOptions, Toast[type] && Toast[type].defaultOptions, options);
+  var _options = options,
+      icon = _options.icon,
+      message = _options.message;
 
   if (type) {
-    params.className += " s-toast-".concat(type);
+    options.className += " s-toast-".concat(type);
   }
 
-  params.content = '';
+  options.content = '<div class="s-toast-content">';
 
   if (typeof icon === 'string' && (icon = trim(icon))) {
-    params.className += ' s-toast-middle';
+    options.className += ' s-toast-middle';
 
     if (/\.(png|jpe?g|gif|svg)(\?.*)?$/i.test(icon) || icon.indexOf('data:image/') > -1) {
-      params.content += "<img class=\"s-toast-icon\" src=\"".concat(icon, "\"/>");
+      options.content += "<img class=\"s-toast-icon\" src=\"".concat(icon, "\"/>");
     } else {
-      params.content += "<i class=\"".concat(icon, " s-toast-icon\"></i>");
+      options.content += "<i class=\"".concat(icon, " s-toast-icon\"></i>");
     }
   }
 
   if (message || message === 0) {
-    params.content += "<p class=\"s-toast-text\">".concat(message, "</p>");
+    options.content += "<p class=\"s-toast-text\">".concat(message, "</p>");
   }
 
-  instanceToast = dialog(params).show();
+  options.content += '</div>';
+  instanceToast = popup(options).show();
   return instanceToast;
 }
 
 Toast.defaultOptions = {
-  className: 's-toast-dialog',
+  className: 's-toast',
   icon: '',
   message: '',
   duration: 2000,
@@ -1815,59 +1860,25 @@ Toast.clear = function () {
   }
 };
 
-function Alert(options) {
-  return new Promise(function (resolve, reject) {
-    var params = extend({}, Alert.defaultOptions, isObject(options) ? options : {
-      content: options
-    });
-    params.onCancel = reject;
-    params.onConfirm = resolve;
-    dialog(params).show();
-  });
-}
-
-Alert.defaultOptions = {
-  className: 's-alert-dialog',
-  title: '',
-  content: '',
-  confirmText: '确定',
-  confirmColor: '#1989fa',
-  isOnce: true,
-  preventTouchmove: true
-};
-
-function Confirm(options) {
-  return Alert(extend({}, Confirm.defaultOptions, isObject(options) ? options : {
-    content: options
-  }));
-}
-
-Confirm.defaultOptions = {
-  cancelText: '取消',
-  cancelColor: '#323233'
-};
-
 /*
  * @Name: sldt-utils
  * @Descripttion: 一个常用方法库
  * @Author: 无痕
  * @Date: 2019-10-14 09:14:21
  * @LastEditors:
- * @LastEditTime: 2019-11-14 09:58:51
+ * @LastEditTime: 2019-11-15 11:49:26
  */
-var version = '2.7.3';
+var version = '3.0.0';
 
 exports.addClass = addClass;
-exports.alert = Alert;
 exports.base64decode = base64decode;
 exports.base64encode = base64encode;
 exports.bridgeCallhandler = bridgeCallhandler;
 exports.bridgeRegisterhandler = bridgeRegisterhandler;
 exports.cleanCookie = cleanCookie;
-exports.confirm = Confirm;
 exports.countDown = countDown;
 exports.debounce = debounce;
-exports.dialog = dialog;
+exports.dialog = Dialog;
 exports.downloadBlob = downloadBlob;
 exports.each = each;
 exports.eventEmit = EventEmit;
@@ -1913,6 +1924,7 @@ exports.nextFrame = nextFrame;
 exports.noop = noop;
 exports.padEnd = padEnd;
 exports.padStart = padStart;
+exports.popup = popup;
 exports.privatePhone = privatePhone;
 exports.protoType = protoType;
 exports.regExp = regExp;
