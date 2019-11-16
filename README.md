@@ -31,7 +31,6 @@ S.isFunction(value)//判断是否为方法
 S.isObject(value)//判断是否为对象
 S.isArray(value)//判断是否为数组
 S.isPromise(value)//判断是否为Promise
-S.isDate(value)//判断new Date(value)之后是不是合法date对象
 ```
 
 ## *S.extend 深拷贝*
